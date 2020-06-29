@@ -1,0 +1,14 @@
+﻿  Block.cpp
+  Bullet.cpp
+  Collision.cpp
+  DXMain.cpp
+  FontData.cpp
+  GameMain.cpp
+  GameManager.cpp
+  InputManager.cpp
+  Player.cpp
+  Result.cpp
+  Stage.cpp
+  コードを生成中...
+     ライブラリ D:\ドキュメント\Visual Studio 2017\Projects\Batoshetto\Batoshetto\Debug\Batoshetto.lib とオブジェクト D:\ドキュメント\Visual Studio 2017\Projects\Batoshetto\Batoshetto\Debug\Batoshetto.exp を作成中
+  Batoshetto.vcxproj -> D:\ドキュメント\Visual Studio 2017\Projects\Batoshetto\Batoshetto\Debug\Batoshetto.exe
