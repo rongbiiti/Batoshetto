@@ -60,3 +60,7 @@ void GameManager::ToHidePhase(void) {
 	SetPhaseStatus(HIDE);
 	ShooterChange();
 }
+
+GameManager::~GameManager() {
+	delete this;
+}

@@ -150,3 +150,7 @@ bool Bullet::IsHitBlock(void) {
 	}
 	return false;
 }
+
+Bullet::~Bullet() {
+	delete this;
+}

@@ -26,3 +26,7 @@ void Block::DecrementBlockHP(void) {
 		isAlive = false;
 	}
 }
+
+Block::~Block() {
+	delete this;
+}

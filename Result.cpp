@@ -23,5 +23,5 @@ void Result::DrawResult() {
 }
 
 Result::~Result() {
-	
+	delete this;
 }

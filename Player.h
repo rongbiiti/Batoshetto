@@ -9,6 +9,7 @@ class GameMain;
 class Player {
 public:
 	Player(int num, unsigned int color, bool shooter, GameMain* main);
+	~Player();
 	void HidingPlayerControll(void);
 	void ShooterPlayerControll(void);
 

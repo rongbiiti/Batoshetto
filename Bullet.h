@@ -10,6 +10,7 @@ class GameMain;
 class Bullet {
 public:
 	Bullet(void);				// コンストラクタ
+	~Bullet(void);
 
 	void BulletInit(bool alive, float rx, float ry, float ang, GameMain* main);	// 初期化用関数
 	void BulletControll(void);	// 弾が実際に動くときの処理
