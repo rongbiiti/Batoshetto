@@ -62,5 +62,5 @@ void GameManager::ToHidePhase(void) {
 }
 
 GameManager::~GameManager() {
-	delete this;
+	
 }

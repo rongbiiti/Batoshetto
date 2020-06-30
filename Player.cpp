@@ -27,18 +27,7 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 void Player::ShooterPlayerControll(void) {
 	preX = x;
 	preY = y;
-	if (inputManager->k_Buf[KEY_INPUT_W] != 0) {
-		y -= moveSpeed;
-	}
-	if (inputManager->k_Buf[KEY_INPUT_S] != 0) {
-		y += moveSpeed;
-	}
-	/*if (inputManager->k_Buf[KEY_INPUT_A] != 0) {
-		x -= moveSpeed;
-	}
-	if (inputManager->k_Buf[KEY_INPUT_D] != 0) {
-		x += moveSpeed;
-	}*/
+	
 	if (inputManager->k_Buf[KEY_INPUT_UP] != 0) {
 		angle -= 2;
 	}
@@ -82,7 +71,7 @@ void Player::ShooterPlayerControll(void) {
 	targetx = cosf(angle * DX_PI_F / 180) * 300 + x;
 	targety = sinf(angle * DX_PI_F / 180) * 300 + y;
 
-	if (inputManager->k_Buf[KEY_INPUT_F] == 1) {
+	if (inputManager->k_Button[XINPUT_BUTTON_B] == 1) {
 		float rx = cosf(angle * DX_PI_F / 180) + x;
 		float ry = sinf(angle * DX_PI_F / 180) + y;
 		gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
@@ -94,16 +83,16 @@ void Player::HidingPlayerControll(void) {
 	preX = x;
 	preY = y;
 
-	if (inputManager->k_Buf[KEY_INPUT_W] != 0) {
+	if (inputManager->ThumbLY >= 0.45f) {
 		y -= moveSpeed;
 	}
-	if (inputManager->k_Buf[KEY_INPUT_S] != 0) {
+	if (inputManager->ThumbLY <= -0.45f) {
 		y += moveSpeed;
 	}
-	if (inputManager->k_Buf[KEY_INPUT_A] != 0) {
+	if (inputManager->ThumbLX <= -0.45f) {
 		x -= moveSpeed;
 	}
-	if (inputManager->k_Buf[KEY_INPUT_D] != 0) {
+	if (inputManager->ThumbLX >= 0.45f) {
 		x += moveSpeed;
 	}
 
@@ -169,5 +158,5 @@ void Player::BlockHitCheck(void) {
 }
 
 Player::~Player() {
-	delete this;
+	
 }

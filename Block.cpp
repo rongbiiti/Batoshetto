@@ -28,5 +28,5 @@ void Block::DecrementBlockHP(void) {
 }
 
 Block::~Block() {
-	delete this;
+	
 }

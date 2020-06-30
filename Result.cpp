@@ -16,12 +16,11 @@ void Result::DrawResult() {
 	}
 	
 	DrawFormatStringToHandle(500, 560, 0xFFFFFF, fontData->f_FontData[1], "F‰Ÿ‚µ‚ÄÄŠJ");
-	if (inputManager->k_Buf[KEY_INPUT_F] == 1) {
+	if (inputManager->k_Button[XINPUT_BUTTON_B] == 1) {
 		gameManager->SetPhaseStatus(GameManager::INIT);
 		this->~Result();
 	}
 }
 
 Result::~Result() {
-	delete this;
 }
