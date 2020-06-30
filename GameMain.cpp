@@ -47,10 +47,29 @@ int GameMain::FirstInit(void) {
 
 	bullet = new Bullet();
 
-	player[0] = new Player(0, 0xE71122, true, this);
-	player[1] = new Player(1, 0x1122E7, false, this);
+	player[GameManager::RED] = new Player(0, 0xE71122, true, this);
+	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
 
 	return 1;
+}
+
+void GameMain::Init() {
+	gameManager->~GameManager();
+	gameManager = new GameManager(this);
+
+	for (int i = 0; i < BLOCK_MAX; i++) {
+		block[i]->~Block();
+		block[i] = new Block(i, fontData);
+	}
+
+	bullet->~Bullet();
+	bullet = new Bullet();
+
+	player[GameManager::RED]->~Player();
+	player[GameManager::RED] = new Player(0, 0xE71122, true, this);
+
+	player[GameManager::BLUE]->~Player();
+	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
 }
 
 void GameMain::GameLoop(void) {
@@ -78,19 +97,8 @@ void GameMain::Update(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::INIT:
-		inputManager = new InputManager;
-		fontData = new FontData;
-
-		gameManager = new GameManager(this);
-
-		for (int i = 0; i < BLOCK_MAX; i++) {
-			block[i] = new Block(i, fontData);
-		}
-
-		bullet = new Bullet();
-
-		player[0] = new Player(0, 0xE71122, true, this);
-		player[1] = new Player(1, 0x1122E7, false, this);
+		Init();
+		
 		return;
 		break;
 	case GameManager::HIDE:

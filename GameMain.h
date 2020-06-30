@@ -39,6 +39,8 @@ private:
 	GameMain* main;
 	bool FPSUpdate(void);	// FPSを固定するための関数
 	void UpdateWait(void);	// FPSを固定するための関数
+
+	void Init(void);		// ゲームリプレイ時などにクラスを生成しなおす
 	
 	void Update(void);		// オブジェクトの処理を進めて値を更新する
 	void Output(void);		// オブジェクトの描画系関数を呼び出す

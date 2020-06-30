@@ -167,3 +167,7 @@ void Player::BlockHitCheck(void) {
 		}
 	}
 }
+
+Player::~Player() {
+	delete this;
+}

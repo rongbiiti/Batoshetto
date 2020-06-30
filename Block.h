@@ -7,6 +7,7 @@
 class Block {
 public:
 	Block(int num, FontData* font);
+	~Block();
 	void DrawBlocks(void);
 
 	bool IsAlive(void) { return isAlive; }

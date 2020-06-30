@@ -8,6 +8,7 @@ class GameMain;
 class GameManager {
 public:
 	GameManager(GameMain* main);
+	~GameManager();
 	enum PHASE {
 		INIT,
 		HIDE,
