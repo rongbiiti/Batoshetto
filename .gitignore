@@ -146,3 +146,5 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+.vs/Batoshetto/v15/Browse.VC.db
+Log.txt
