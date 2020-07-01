@@ -1,11 +1,12 @@
 #include "GameMain.h"
 
-GameMain::GameMain(void) {
-	SCREEN_WIDTH_HALF = SCREEN_WIDTH / 2;
-	SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;
-	main = this;
+// コンストラクタ
+GameMain::GameMain(void) {	
+	SCREEN_WIDTH_HALF = SCREEN_WIDTH / 2;		// 計算に使う画面の横幅の半分の数値を初期化しておく
+	SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;		// 計算に使う画面の高さの半分の数値を初期化しておく
 }
 
+// FPSを固定するための関数
 bool GameMain::FPSUpdate(void) {
 	if (mCount == 0) { //1フレーム目なら時刻を記憶
 		mStartTime = GetNowCount();
@@ -20,6 +21,7 @@ bool GameMain::FPSUpdate(void) {
 	return true;
 }
 
+// FPSを固定するための関数
 void GameMain::UpdateWait(void) {
 	int tookTime = GetNowCount() - mStartTime;	//かかった時間
 	int waitTime = mCount * 1000 / FPS - tookTime;	//待つべき時間
@@ -36,23 +38,24 @@ int GameMain::FirstInit(void) {
 	offscreen_handle = MakeScreen(DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
 	SetDrawScreen(offscreen_handle);
 
-	inputManager = new InputManager;
-	fontData = new FontData;
+	inputManager = new InputManager;		// 入力管理クラスを生成。ポインタを保存しておく。
+	fontData = new FontData;				// フォントデータ管理クラスを生成。ポインタを保存しておく。
 
-	gameManager = new GameManager(this);
+	gameManager = new GameManager(this);	// ゲーム進行管理クラスを生成。ポインタを保存しておく。
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i] = new Block(i, fontData);
+		block[i] = new Block(i, fontData);	// ブロックオブジェクトを生成。ポインタを保存しておく。
 	}
 
-	bullet = new Bullet();
+	bullet = new Bullet();					// 弾オブジェクトを生成。ポインタを保存しておく。
 
-	player[GameManager::RED] = new Player(0, 0xE71122, true, this);
-	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
+	player[GameManager::RED] = new Player(GameManager::RED, 0xE71122, true, this);		// プレイヤーREDを生成。ポインタを保存しておく。
+	player[GameManager::BLUE] = new Player(GameManager::BLUE, 0x1122E7, false, this);	// プレイヤーBLUEを生成。ポインタを保存しておく。
 
 	return 1;
 }
 
+// ゲームリプレイ時などにクラスを生成しなおす
 void GameMain::Init() {
 	gameManager->~GameManager();
 	gameManager = new GameManager(this);
@@ -72,8 +75,9 @@ void GameMain::Init() {
 	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
 }
 
+// ゲームループ
 void GameMain::GameLoop(void) {
-	inputManager->InputKey();
+	inputManager->InputKey();	// 入力を受け取る
 
 	while (ProcessMessage() == 0 && (inputManager->k_Buf[KEY_INPUT_ESCAPE] == 0)) {
 		FPSUpdate();	//FPS更新
@@ -82,74 +86,84 @@ void GameMain::GameLoop(void) {
 		ClearDrawScreen();
 
 		inputManager->InputKey();	// 入力を受け取る
-		Update();
-		Output();
+		Update();	// オブジェクトの処理を進めて値を更新する
+		Output();	// オブジェクトの描画系関数を呼び出す
 
 		SetDrawScreen(DX_SCREEN_BACK);
-		DrawExtendGraph(0, 0, DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, offscreen_handle, FALSE);	// 画面を描画用の大きさに引き伸ばして描画する
+		// 画面を描画用の大きさに引き伸ばして描画する
+		DrawExtendGraph(0, 0, DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, offscreen_handle, FALSE);
 		ScreenFlip();
 
 		UpdateWait();		//FPS待機
 	}
 }
 
+// オブジェクトの処理を進めて値を更新する
 void GameMain::Update(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::INIT:
+		// 初期化フェーズ
 		Init();
 		
 		return;
 		break;
+
 	case GameManager::HIDE:
+		// 隠れる側フェーズ
 		gameManager->HideTimerControll();
 		player[gameManager->GetNowHider()]->HidingPlayerControll();
-		//PlayerHitCheck();
 		return;
 		break;
 
 	case GameManager::SHOT:
+		// 撃つ側フェーズ
 		gameManager->ShotTimerControll();
 		player[gameManager->GetNowShooter()]->ShooterPlayerControll();
-		//DrawTargetAngle();
-		//PlayerHitCheck();
 		return;
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		// 弾の跳弾待ちフェーズ
 		bullet->BulletControll();
 		return;
 		break;
 
 	case GameManager::RESULT:
+		// リザルト画面
 		return;
 		break;
 	}
 	
 }
 
+// オブジェクトの描画系関数を呼び出す
 void GameMain::Output(void) {
+	// プレイヤー描画
 	player[GameManager::RED]->DrawPlayer();
 	player[GameManager::BLUE]->DrawPlayer();
 	
-	//DrawWalls();
+	// ブロック描画
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i]->DrawBlocks();
 	}
-	DrawDebugInfo();
+	DrawDebugInfo();	// デバッグ情報描画
 
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::HIDE:
+		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "隠れろ！");
 		break;
 
 	case GameManager::SHOT:
+		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "撃て！");
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		// 弾描画関数
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
 			DrawFormatStringToHandle(420, 120, 0xFFFFFF, fontData->f_FontData[1], "跳弾残り %d回", bullet->GetRicochetCount());
@@ -163,19 +177,10 @@ void GameMain::Output(void) {
 	}
 }
 
+// デバッグ情報を描画するための関数
 void GameMain::DrawDebugInfo(void) {
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "%.1fFPS", mFps);
 	DrawFormatStringToHandle(0, 20, 0xFFFFFF, fontData->f_FontData[0], "隠れる時間残り%dフレ", gameManager->GetHideTime());
 	DrawFormatStringToHandle(0, 40, 0xFFFFFF, fontData->f_FontData[0], "狙える時間残り%dフレ", gameManager->GetShotTime());
-	//for (int i = 0; i < 2; i++) {
-	//	DrawFormatStringToHandle(0 + i * 200, 60, 0xFFFFFF, fontData->f_FontData[0], "%d %dPのx", player[i]->x, i+1);
-	//	DrawFormatStringToHandle(0 + i * 200, 80, 0xFFFFFF, fontData->[0], "%d %dPのy", player[i]->y, i+1);
-	//	DrawFormatStringToHandle(0 + i * 200, 100, 0xFFFFFF, fontData->f_FontData[0], "%d %dPのtarx", player[i]->targetx, i + 1);
-	//	DrawFormatStringToHandle(0 + i * 200, 120, 0xFFFFFF, fontData->f_FontData[0], "%d %dPのtary", player[i]->targety, i + 1);
-	//	DrawFormatStringToHandle(0 + i * 200, 140, 0xFFFFFF, fontData->f_FontData[0], "%d %dPのangle", player[i]->angle, i + 1);
-	//}
-	//DrawFormatStringToHandle(0, 160, 0xFFFFFF, fontData->f_FontData[0], "弾の位置X %f", bullet->x);
-	//DrawFormatStringToHandle(0, 180, 0xFFFFFF, fontData->f_FontData[0], "弾の位置Y %f", bullet->y);
-	//DrawFormatStringToHandle(0, 200, 0xFFFFFF, fontData->f_FontData[0], "弾の進行X %f.5", cos(bullet->angle * DX_PI / 180) * g_Bullet.movespeedx);
-	//DrawFormatStringToHandle(0, 220, 0xFFFFFF, fontData->f_FontData[0], "弾の進行Y %f.5", sin(bullet->angle * DX_PI / 180) * g_Bullet.movespeedy);
+	
 }
