@@ -171,6 +171,7 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::RESULT:
+		// ƒŠƒUƒ‹ƒg‰æ–Ê•`‰æ
 		result->DrawResult();
 		return;
 		break;
