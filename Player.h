@@ -2,8 +2,8 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
-#include "GameMain.h"
 #include "Collision.h"
+#include "GameMain.h"
 
 class GameMain;
 class Player {
@@ -42,7 +42,7 @@ private:
 	unsigned int color;		// 色
 	int moveSpeed;			// 移動速度
 	bool isShooter;			// 撃つ方か、否か。
-	int angle;				// 角度
+	float angle;				// 角度
 	int preX, preY;			// 移動前の座標
 	int num;				// REDかBLUEか
 };

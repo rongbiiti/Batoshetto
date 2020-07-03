@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "GameMain.h"
 #include <math.h>
 
 // コンストラクタ

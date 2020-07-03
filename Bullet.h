@@ -6,7 +6,6 @@
 #include "Collision.h"
 #include "GameMain.h"
 
-class GameMain;
 class Bullet {
 public:
 	Bullet(void);				// コンストラクタ。メンバ変数の初期化をする。衝突判定をしてくれるクラスも生成する。

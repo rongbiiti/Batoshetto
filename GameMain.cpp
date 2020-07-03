@@ -1,4 +1,8 @@
 #include "GameMain.h"
+#include "GameManager.h"
+#include "Player.h"
+#include "Bullet.h"
+#include "Result.h"
 
 // コンストラクタ
 GameMain::GameMain(void) {	
@@ -79,7 +83,7 @@ void GameMain::Init() {
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// 入力を受け取る
 
-	while (ProcessMessage() == 0 && (inputManager->k_Buf[KEY_INPUT_ESCAPE] == 0)) {
+	while (ProcessMessage() == 0 && (inputManager->In_Button()[InputManager::BACK] == 0) && inputManager->In_Key()[KEY_INPUT_ESCAPE] == 0) {
 		FPSUpdate();	//FPS更新
 
 		SetDrawScreen(offscreen_handle);

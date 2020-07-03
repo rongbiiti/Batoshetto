@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "GameManager.h"
+#include "GameMain.h"
 #include <math.h>
 
 // コンストラクタ。REDかBLUEか、色、撃つ側か否か、GameMainオブジェクトのポインタを引数で受け取る。
@@ -37,12 +39,11 @@ void Player::ShooterPlayerControll(void) {
 	preY = y;
 	
 	// 角度変更
-	if (inputManager->k_Buf[KEY_INPUT_UP] != 0) {
-		angle -= 2;
-	}
-	if (inputManager->k_Buf[KEY_INPUT_DOWN] != 0) {
-		angle += 2;
-	}
+	float rad = atan2(inputManager->In_Stick_LY(), inputManager->In_Stick_LX());
+	angle = -rad * 180.0f / DX_PI_F;
+	if (angle < 0) angle += 360;
+	DrawFormatStringToHandle(700, 600, 0xffffff, gameMain->fontData->f_FontData[1], "%f", rad);
+	DrawFormatStringToHandle(700, 700, 0xffffff, gameMain->fontData->f_FontData[1], "%f", angle);
 
 	// 角度が0～360の範囲になるようにしている。
 	if (360 < angle) {
@@ -86,7 +87,7 @@ void Player::ShooterPlayerControll(void) {
 	targety = sinf(angle * DX_PI_F / 180) * 300 + y;	// 狙っている方向のY座標
 
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
-	if (inputManager->k_Button[XINPUT_BUTTON_B] == 1) {
+	if (inputManager->In_Button()[InputManager::A] == 1) {
 		float rx = cosf(angle * DX_PI_F / 180) + x;		// X進行方向
 		float ry = sinf(angle * DX_PI_F / 180) + y;		// Y進行方向
 
@@ -103,19 +104,19 @@ void Player::HidingPlayerControll(void) {
 	preY = y;
 
 	// 移動処理
-	if (inputManager->ThumbLY >= 0.45f) {
+	if (inputManager->In_Stick_LY() >= 0.45f) {
 		// 左スティックが上に傾けられていたら上に移動する
 		y -= moveSpeed;
 	}
-	if (inputManager->ThumbLY <= -0.45f) {
+	if (inputManager->In_Stick_LY() <= -0.45f) {
 		// 左スティックが下に傾けられていたら下に移動する
 		y += moveSpeed;
 	}
-	if (inputManager->ThumbLX <= -0.45f) {
+	if (inputManager->In_Stick_LX() <= -0.45f) {
 		// 左スティックが左に傾けられていたら左に移動する
 		x -= moveSpeed;
 	}
-	if (inputManager->ThumbLX >= 0.45f) {
+	if (inputManager->In_Stick_LX() >= 0.45f) {
 		// 左スティックが右に傾けられていたら右に移動する
 		x += moveSpeed;
 	}
