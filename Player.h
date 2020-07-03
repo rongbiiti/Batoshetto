@@ -8,33 +8,34 @@
 class GameMain;
 class Player {
 public:
+	// コンストラクタ。REDかBLUEか、色、撃つ側か否か、GameMainオブジェクトのポインタを引数で受け取る。
 	Player(int num, unsigned int color, bool shooter, GameMain* main);
-	~Player();
-	void HidingPlayerControll(void);
-	void ShooterPlayerControll(void);
+	~Player();							// デストラクタ
+	void HidingPlayerControll(void);	// 隠れる側時の操作処理
+	void ShooterPlayerControll(void);	// 撃つ側時の操作処理
 
-	void DrawPlayer(void);
-	void DrawTargetAngle(void);
-	void SetIsShooter(bool value) { isShooter = value; }
+	void DrawPlayer(void);				// 描画用
+	void DrawTargetAngle(void);			// 撃つ側時に狙っている方向に線を引いて描画する
+	void SetIsShooter(bool value) { isShooter = value; }		// メンバ変数isShooterに値をセットする
 
-	bool GetIsShooter(void) { return isShooter; }
-	int GetPlayerX(void) { return x; }
-	int GetPlayerY(void) { return y; }
-	int GetPlayerSize(void) { return size; }
-	int GetPlayerNum(void) { return num; }
+	bool GetIsShooter(void) { return isShooter; }		// 現在撃つ側か否かを返す
+	int GetPlayerX(void) { return x; }					// プレイヤーのX中心座標を返す
+	int GetPlayerY(void) { return y; }					// プレイヤーのY中心座標を返す
+	int GetPlayerSize(void) { return size; }			// プレイヤーの直径サイズを返す
+	int GetPlayerNum(void) { return num; }				// プレイヤーがREDかBLUEかを返す
 
 private:
-	Collision* collision;
+	Collision* collision;			// 生成した衝突判定するクラスのポインタ
 
-	const int PlayerMoveSpeed = 3;
-	const int PlayerStartPositionX[2] = { 60, 1100 };
-	const int PlayerStartPositionY[2] = { 200, 600 };
-	const int PlayerSize = 18;
+	const int PlayerMoveSpeed = 3;						// プレイヤーの移動速度
+	const int PlayerStartPositionX[2] = { 60, 1100 };	// プレイヤーの初期X座標
+	const int PlayerStartPositionY[2] = { 200, 600 };	// プレイヤーの初期Y座標
+	const int PlayerSize = 18;		// プレイヤーの直径サイズ
 
 	void BlockHitCheck(void);		// ブロックと当たり判定
 
-	GameMain* gameMain;
-	InputManager* inputManager;
+	GameMain* gameMain;			// コンストラクタで受け取ったGameMainのポインタを保存しておく変数
+	InputManager* inputManager;	// 入力管理クラスのポインタを入れる変数
 	int x, y;				// 座標 x,y
 	float targetx, targety;	// 照準の座標
 	int size;				// サイズ直径
