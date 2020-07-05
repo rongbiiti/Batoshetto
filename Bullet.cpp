@@ -7,12 +7,14 @@ Bullet::Bullet(void)
 {
 	isAlive = false;			// 弾が生きているか
 	x = 0, y = 0;				// 座標 x,y
+	preX = 0, preY = 0;
 	moveX = 0, moveY = 0;		// 移動 x,y
 	ricochetCount = 0;		// 残り跳弾回数
 	movespeedx = BulletMoveSpeed, movespeedy = BulletMoveSpeed;			// 移動速度
 	angle = 0;				// 角度
 	hitFlg = false;
 	collision = new Collision;	// 衝突判定してくれるオブジェクトを生成し、ポインタを保存しておく
+	gameMain = NULL;
 }
 
 // 初期化用関数
@@ -59,6 +61,8 @@ void Bullet::DrawBullet(void) {
 	int dx = (int)x;
 	int dy = (int)y;
 	DrawCircle(dx, dy, Size, color);
+	DrawFormatStringToHandle(200, 550, 0xffffff, gameMain->fontData->f_FontData[0], "preX%.2f", preprex);
+	DrawFormatStringToHandle(200, 570, 0xffffff, gameMain->fontData->f_FontData[0], "preY%.2f", preprey);
 }
 
 // 跳弾回数が0未満になっていないかチェックする
@@ -138,42 +142,82 @@ bool Bullet::IsHitBlock(void) {
 	// ブロックの中心X、Y、直径サイズ
 	int blockX, blockY, blockSize;
 
+	Collision::Vector2 cross[GameMain::BLOCK_MAX];
 	for (int i = 0; i < GameMain::BLOCK_MAX; i++) {
-		if (!gameMain->block[i]->IsAlive()) continue;	// ブロックが死んでいたらcontinueで次のブロックにいく
+		cross[i].x = -10000;		// 間違ってもプレイヤーと一番近い点とならないように大きい値にしておく
+		cross[i].y = -10000;
+		cross[i].flg = false;
+	}
 
-		blockX = gameMain->block[i]->GetBlockX();		// ブロックのX
-		blockY = gameMain->block[i]->GetBlockY();		// ブロックのY
-		blockSize = gameMain->block[i]->GetBlockSize();	// ブロックの直径サイズ
+	for (int i = 0; i < GameMain::BLOCK_MAX; i++) {
+		// もしブロックの生存フラグが折れていたらそのブロックとの関係は終わり、次のブロックに会いに行く。
+		if (!gameMain->block[i]->IsAlive()) continue;
 
-		// ブロックと当たり判定
-		if (collision->IsHit((int)x, (int)y, Size, blockX, blockY, blockSize)) {
-			--ricochetCount;		// 当たっていたら、跳弾回数を減らす
-			gameMain->block[i]->DecrementBlockHP();	// ブロックのHPを減らす
-			
-			if (collision->IsHitWicth((int)preX, blockX, blockSize)) {
-				// 移動前座標が幅の中なら、向きの上下を変える
-				angle = (360 - angle);
-			}
-			else if (collision->IsHitHeight((int)preY, blockY, blockSize)) {
-				// 高さの中なら、向きの左右を変える
-				angle = (360 - angle) + 180;
-				if (angle > 360) angle -= 360;
-			}
-			else {
-				// 角なら、真逆の向きに
-				angle = angle + 180;
-				if (angle > 360) angle -= 360;
-			}
+		// ローカル変数に、ブロックの座標とサイズを入れていく
+		blockX = gameMain->block[i]->GetBlockX();
+		blockY = gameMain->block[i]->GetBlockY();
+		blockSize = gameMain->block[i]->GetBlockSize();
 
-			ChangeAngle();	// 角度をもとに進行方向変更
-			x = preX;		// 移動前の座標に戻す
-			y = preY;
-			hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
+		// コンストラクタで生成した衝突判定をするオブジェクトに引数を渡して、判定してもらう。		
+		cross[i] = collision->IsHitTargetAndBlock(preX, preY, x, y, (float)blockX, (float)blockY, (float)blockSize);
+	}
 
-			shooterHitOK = true;	// 撃つ側のプレイヤーに当たるようにする
-			return true;
+	Collision::Vector2 crossPosition = { -10000, -10000, false };	// 比較用。
+	float distance1 = -10000;
+	float distance2 = -10000;
+	int num = 0;
+
+	for (int i = 0; i < GameMain::BLOCK_MAX; i++) {		// 最初の配列の値は入れているので2番目から開始
+		if (!cross[i].flg) continue;					// 有効な値が入っていなかったらスキップ
+		distance1 = hypot(crossPosition.x - x, crossPosition.y - y);	// プレイヤーと衝突点までの距離
+		distance2 = hypot(cross[i].x - x, cross[i].y - y);
+		if (distance2 < distance1) {					// 比較したほうがプレイヤーと近かったら渡す用の構造体の値を、その値に更新
+			crossPosition.x = cross[i].x;
+			crossPosition.y = cross[i].y;
+			crossPosition.flg = true;
+			num = i;
 		}
 	}
+
+	// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
+	if (crossPosition.flg) {
+		x = crossPosition.x;	// 狙っている方向のX座標
+		y = crossPosition.y;	// 狙っている方向のY座標
+		--ricochetCount;		// 当たっていたら、跳弾回数を減らす
+		gameMain->block[num]->DecrementBlockHP();	// ブロックのHPを減らす
+
+		preprex = x - cosf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のX座標
+		preprey = y - sinf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のY座標
+
+		blockX = gameMain->block[num]->GetBlockX();
+		blockY = gameMain->block[num]->GetBlockY();
+		blockSize = gameMain->block[num]->GetBlockSize();
+
+		if (collision->IsHitWicth((int)preprex, blockX, blockSize)) {
+			// 移動前座標が幅の中なら、向きの上下を変える
+			angle = (360 - angle);
+		}
+		else if (collision->IsHitHeight((int)preprey, blockY, blockSize)) {
+			// 高さの中なら、向きの左右を変える
+			angle = (360 - angle) + 180;
+			if (angle > 360) angle -= 360;
+		}
+		else {
+			// 角なら、真逆の向きに
+			angle = angle + 180;
+			if (angle > 360) angle -= 360;
+		}
+
+		ChangeAngle();	// 角度をもとに進行方向変更
+		x = preprex;
+		y = preprey;
+		hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
+
+		shooterHitOK = true;	// 撃つ側のプレイヤーに当たるようにする
+		return true;
+	}
+
+	
 	return false;
 }
 

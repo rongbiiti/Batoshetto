@@ -53,7 +53,6 @@ public:
 		X,
 		Y
 	};
-	BUTTON Button;
 
 	// ƒ{ƒ^ƒ“‚Ì–¼‘O—ñ‹“‘Ì
 	

@@ -2,7 +2,7 @@
 
 // コンストラクタ
 FontData::FontData() {
-	CreateFontData();
+	CreateFontData();	
 }
 
 // フォントデータを作成し、配列に保存しておく関数

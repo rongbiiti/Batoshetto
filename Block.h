@@ -29,6 +29,7 @@ private:
 	int x, y;				// 座標 x,y
 	int size;				// 大きさ
 	int HP;					// ブロックのHP
+	int num;
 };
 
 #endif // !_BLOCK_H_

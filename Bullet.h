@@ -41,6 +41,7 @@ private:
 	float angle;				// 角度
 	bool hitFlg;			// ヒットしたかのフラグ。trueになった1フレームのみ当たり判定をせず、falseにして処理を中断して抜けるために使う。
 	bool shooterHitOK;		// 撃ったほうにヒットしてもいいか
+	float preprex, preprey;
 };
 
 #endif // !_BULLET_H_
