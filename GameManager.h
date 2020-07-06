@@ -19,14 +19,12 @@ public:
 		RECOCHETWAIT,
 		RESULT
 	};
-	PHASE GamePhase;
 
 	// プレイヤーの管理が配列なので、その添え字をわかりやすく指定するときに使う。
 	enum PLAYERCOLOR {
 		RED,
 		BLUE
 	};
-	PLAYERCOLOR PlayerColor;
 
 	void ShooterChange(void);						// 撃つ側・隠れる側を交代する関数。
 	int GetHideTime() { return t_HideTime; }		// 隠れる側残り時間を返す。
@@ -49,7 +47,7 @@ public:
 private:
 	GameMain* gameMain;					// GameMainオブジェクトのポインタを保存しておく変数。
 
-	const int HidePhaseTime = 300;		// 隠れる側残り時間の初期値。
+	const int HidePhaseTime = 60;		// 隠れる側残り時間の初期値。
 	const int ShotPhaseTime = 600;		// 撃つ側残り時間の初期値。
 	const int FirstShooter = RED;		// REDとBLUE、どっちが試合の最初に撃つ方か
 	const int FirstHider = BLUE;		// REDとBLUE、どっちが試合の最初に隠れる方か

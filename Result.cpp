@@ -22,8 +22,8 @@ void Result::DrawResult() {
 	}
 	
 	// Fを押すと、GameManagerのフェーズを初期化フェーズに変更し、自身のデストラクタを呼ぶ。
-	DrawFormatStringToHandle(500, 560, 0xFFFFFF, fontData->f_FontData[1], "F押して再開");
-	if (inputManager->k_Button[XINPUT_BUTTON_B] == 1) {
+	DrawFormatStringToHandle(500, 560, 0xFFFFFF, fontData->f_FontData[1], "A押して再開");
+	if (inputManager->In_Button()[InputManager::A] == 1) {
 		gameManager->SetPhaseStatus(GameManager::INIT);
 		this->~Result();
 	}

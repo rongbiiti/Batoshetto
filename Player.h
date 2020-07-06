@@ -2,8 +2,8 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
-#include "GameMain.h"
 #include "Collision.h"
+#include "GameMain.h"
 
 class GameMain;
 class Player {
@@ -25,26 +25,28 @@ public:
 	int GetPlayerNum(void) { return num; }				// プレイヤーがREDかBLUEかを返す
 
 private:
-	Collision* collision;			// 生成した衝突判定するクラスのポインタ
+	Collision* collision;	// 生成した衝突判定するクラスのポインタ
 
-	const int PlayerMoveSpeed = 3;						// プレイヤーの移動速度
+	const int PlayerMoveSpeed = 10;						// プレイヤーの移動速度
 	const int PlayerStartPositionX[2] = { 60, 1100 };	// プレイヤーの初期X座標
 	const int PlayerStartPositionY[2] = { 200, 600 };	// プレイヤーの初期Y座標
-	const int PlayerSize = 18;		// プレイヤーの直径サイズ
+	const int PlayerSize = 18;							// プレイヤーの直径サイズ
 
-	void BlockHitCheck(void);		// ブロックと当たり判定
+	void BlockHitCheck(void);				// ブロックと当たり判定
+	void TargetPointWindowHitCheck(void);	// 弾が進む方向がウィンドウを飛び出してないかチェックする
+	void CalcHitAfterAngle(int num);
 
 	GameMain* gameMain;			// コンストラクタで受け取ったGameMainのポインタを保存しておく変数
 	InputManager* inputManager;	// 入力管理クラスのポインタを入れる変数
-	int x, y;				// 座標 x,y
-	float targetx, targety;	// 照準の座標
-	int size;				// サイズ直径
-	unsigned int color;		// 色
-	int moveSpeed;			// 移動速度
-	bool isShooter;			// 撃つ方か、否か。
-	int angle;				// 角度
-	int preX, preY;			// 移動前の座標
-	int num;				// REDかBLUEか
+	int x, y;					// 座標 x,y
+	float targetx, targety, targetx2, targety2;		// 照準の座標
+	int size;					// サイズ直径
+	unsigned int color;			// 色
+	int moveSpeed;				// 移動速度
+	bool isShooter;				// 撃つ方か、否か。
+	float angle, angle2;		// 角度
+	int preX, preY;				// 移動前の座標
+	int num;					// REDかBLUEか
 };
 
 #endif // !_PLAYER_H_

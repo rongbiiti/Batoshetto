@@ -5,16 +5,17 @@
 #include "DxLib.h"
 #include "InputManager.h"
 #include "FontData.h"
-#include "Bullet.h"
-#include "GameManager.h"
-#include "Player.h"
 #include "Block.h"
+#include "Player.h"
+#include "GameManager.h"
 #include "Result.h"
+#include "Bullet.h"
 
-class Player;			// プロトタイプ宣言
-class GameManager;		// プロトタイプ宣言
-class Bullet;			// プロトタイプ宣言
-class Result;			// プロトタイプ宣言
+class Bullet;
+class Player;
+class GameManager;
+class Bullet;
+class Result;
 class GameMain {
 public:
 	GameMain();				// コンストラクタ

@@ -8,6 +8,7 @@ Block::Block(int num, FontData* font) {
 	size = BlockStartPosition[num][2];	// サイズ
 	HP = BlockStartHP;					// HP初期化
 	fontData = font;					// フォントデータのポインタ
+	this->num = num;
 }
 
 // ブロックを描画する関数
@@ -20,7 +21,7 @@ void Block::DrawBlocks(void) {
 	dy2 = y + size / 2;
 	
 	DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
-	DrawFormatStringToHandle(x - size / 3, y - size / 3, 0xFFFFFF, fontData->f_FontData[1], "%d", HP);
+	DrawFormatStringToHandle(x - size / 3 - 30, y - size / 3, 0xFFFFFF, fontData->f_FontData[1], "%d,n%d", HP, num);
 }
 
 // ブロックのHPを減らす関数。Bulletから呼ばれる。

@@ -6,7 +6,6 @@
 #include "Collision.h"
 #include "GameMain.h"
 
-class GameMain;
 class Bullet {
 public:
 	Bullet(void);				// コンストラクタ。メンバ変数の初期化をする。衝突判定をしてくれるクラスも生成する。
@@ -42,6 +41,7 @@ private:
 	float angle;				// 角度
 	bool hitFlg;			// ヒットしたかのフラグ。trueになった1フレームのみ当たり判定をせず、falseにして処理を中断して抜けるために使う。
 	bool shooterHitOK;		// 撃ったほうにヒットしてもいいか
+	float preprex, preprey;
 };
 
 #endif // !_BULLET_H_
