@@ -123,6 +123,29 @@ bool Collision::IsHitLineAndLine(float ax1, float ay1, float ax2, float ay2, flo
 	return true;
 }
 
+Collision::Vector2 Collision::GetHitLineAndLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2) {
+	Vector2 cross = { -10000, -10000, false };
+
+	float result1 = (ax2 - ax1)*(by2 - by1) - (ay2 - ay1)*(bx2 - bx1);
+	if (result1 == 0)
+		return cross; // 並行だったらfalse
+
+	float result2 = ((bx1 - ax1)*(by2 - by1) - (by1 - ay1)*(bx2 - bx1)) / result1;
+	float result3 = ((bx1 - ax1)*(ay2 - ay1) - (by1 - ay1)*(ax2 - ax1)) / result1;
+
+	if (result2 < 0.0 || result2 > 1.0)
+		return cross; // p1とp2の間にない交点
+
+	if (result3 < 0.0 || result3 > 1.0)
+		return cross; // p3とp4の間にない交点
+
+	cross.x = ax1 + result2 * (ax2 - ax1);	// ここまで処理が通ったら、構造体に値を入れていく。
+	cross.y = ay1 + result2 * (ay2 - ay1);
+	cross.flg = true;
+
+	return cross;
+}
+
 // 2点間の距離を計算して返す。
 float Collision::GetPointsDistance(float x1, float y1, float x2, float y2) {
 	float distance = hypot(x2 - x1, y2 - y1);

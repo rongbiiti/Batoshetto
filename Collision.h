@@ -27,6 +27,8 @@ public:
 	// プレイヤーの狙っている方向がブロックと衝突した最もプレイヤーに近い衝突点を返す
 	// 引数は、プレイヤーの中心X、Y、ターゲットX、Y、ブロックの中心X、Y、直径サイズ。
 	Vector2 IsHitTargetAndBlock(float px, float py, float tx, float ty, float bx, float by, float bsize);
+
+	Vector2 GetHitLineAndLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2);
 	
 private:
 	// IsHitTargetAndBlockでは、矩形と線分を一気に当たり判定している。
