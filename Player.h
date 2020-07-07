@@ -27,14 +27,21 @@ public:
 private:
 	Collision* collision;	// 生成した衝突判定するクラスのポインタ
 
-	const int PlayerMoveSpeed = 10;						// プレイヤーの移動速度
+	const int PlayerMoveSpeed = 5;						// プレイヤーの移動速度
 	const int PlayerStartPositionX[2] = { 60, 1100 };	// プレイヤーの初期X座標
 	const int PlayerStartPositionY[2] = { 200, 600 };	// プレイヤーの初期Y座標
-	const int PlayerSize = 18;							// プレイヤーの直径サイズ
+	const int PlayerSize = 80;							// プレイヤーの直径サイズ
 
-	void BlockHitCheck(void);				// ブロックと当たり判定
-	void TargetPointWindowHitCheck(void);	// 弾が進む方向がウィンドウを飛び出してないかチェックする
-	void CalcHitAfterAngle(int num);
+	float AngleCorrection(float ang);			// 角度を0～360度に収まるように調整
+	int XCoordinateCorrection(int posx, int pnum, int size);	// X座標が指定の範囲を超えていないか、プレイヤーの番号をもとに修正
+	int YCoordinateCorrection(int posy, int size);				// Y座標が指定の範囲を超えないように修正
+
+	void BlockHitCheck(void);					// ブロックと当たり判定
+	void TargetPointWindowHitCheck(void);		// 弾が進む方向がウィンドウを飛び出してないかチェックする
+	bool TrajectoryPrecalculation_ToBlock(int* blocknum);	// ブロックに対する弾道の事前計算。
+	int TrajectoryPrecalculation_ToWindow(void);	// ウィンドウに対する弾道の事前計算。
+	void CalcHitAfterAngle_ToBlock(int blocknum);	// ブロックのどの辺と衝突しているか判断して角度を変更する
+	void CalcHitAfterAngle_ToWindow(int num);		// ウィンドウのどの端と衝突しているか判断して角度を変更する
 
 	GameMain* gameMain;			// コンストラクタで受け取ったGameMainのポインタを保存しておく変数
 	InputManager* inputManager;	// 入力管理クラスのポインタを入れる変数

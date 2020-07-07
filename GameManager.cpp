@@ -43,8 +43,7 @@ void GameManager::SetPhaseStatus(int value, int hitPlayerNum) {
 
 	// リザルト画面を生成する。
 	// GameMainオブジェクトのリザルトオブジェクト記憶ポインタに、生成したリザルトのポインタを入れる
-	gameMain->result = new Result(gameMain->fontData, gameMain->inputManager, this, hitPlayerNum);
-	
+	gameMain->result = new Result(gameMain->fontData, gameMain->inputManager, this, hitPlayerNum);	
 }
 
 // 隠れる側の残り時間を管理している関数。

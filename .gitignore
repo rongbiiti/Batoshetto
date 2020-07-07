@@ -1,4 +1,5 @@
 [Dd]ebug/
+.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/2cdb30a48fb43ac1/TITLE.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/ccfb97b27721e635/STAGE.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/af16618abe5cad4/INPUTMANAGER.ipch
@@ -22,3 +23,6 @@
 .vs/Batoshetto/v15/ipch/AutoPCH/9905e60a73730c9a/PLAYER.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/50954a31b696893a/FONTDATA.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/3e21dd8928f7fde/DXMAIN.ipch
+.vs/ProjectSettings.json
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
