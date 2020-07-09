@@ -94,19 +94,19 @@ void Player::HidingPlayerControll(void) {
 	preY = y;
 	
 	// 移動処理
-	if (inputManager->GetPadInput()[hider].in_Stick_LY >= 0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LY >= 0.45f || inputManager->In_Key()[KEY_INPUT_UP] != 0) {
 		// 左スティックが上に傾けられていたら上に移動する
 		y -= moveSpeed;
 	}
-	if (inputManager->GetPadInput()[hider].in_Stick_LY <= -0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LY <= -0.45f || inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
 		// 左スティックが下に傾けられていたら下に移動する
 		y += moveSpeed;
 	}
-	if (inputManager->GetPadInput()[hider].in_Stick_LX <= -0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LX <= -0.45f || inputManager->In_Key()[KEY_INPUT_LEFT] != 0) {
 		// 左スティックが左に傾けられていたら左に移動する
 		x -= moveSpeed;
 	}
-	if (inputManager->GetPadInput()[hider].in_Stick_LX >= 0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LX >= 0.45f || inputManager->In_Key()[KEY_INPUT_RIGHT] != 0) {
 		// 左スティックが右に傾けられていたら右に移動する
 		x += moveSpeed;
 	}
