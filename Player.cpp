@@ -22,8 +22,8 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 	else {
 		angle = 0;
 	}
-	targetx = cosf(angle * DX_PI_F / 180) * 300 + x;	// 狙っているX位置を初期化
-	targety = sinf(angle * DX_PI_F / 180) * 300 + y;	// 狙っているY位置を初期化
+	targetx = cosf(angle * DX_PI_F / 180) * 10000 + x;	// 狙っているX位置を初期化
+	targety = sinf(angle * DX_PI_F / 180) * 10000 + y;	// 狙っているY位置を初期化
 	targetx2 = 0, targety2 = 0, angle2 = 0;
 	
 	this->color = color;	// 色初期化
@@ -38,23 +38,24 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 
 // 撃つ側時の操作処理
 void Player::ShooterPlayerControll(void) {	
+	int shooter = gameMain->gameManager->GetNowShooter();
 	// 角度変更
 	// コントローラーのスティック
-	if (abs(inputManager->In_Stick_LX()) + abs(inputManager->In_Stick_LY()) >= 0.97f) {
+	if (abs(inputManager->GetPadInput()[shooter].in_Stick_LX) + abs(inputManager->GetPadInput()[shooter].in_Stick_LY) >= 0.97f) {
 		// X軸とY軸の倒した量の合計が規定の値以下なら角度を固定させる
-		float rad = atan2(inputManager->In_Stick_LY(), inputManager->In_Stick_LX());
+		float rad = atan2(inputManager->GetPadInput()[shooter].in_Stick_LY, inputManager->GetPadInput()[shooter].in_Stick_LX);
 		angle = -rad * 180.0f / DX_PI_F;
 		if (angle < 0) angle += 360;
 	}
 	
 
 	// キーボードでの角度変更
-	/*if (inputManager->In_Key()[KEY_INPUT_UP] != 0) {
+	if (inputManager->In_Key()[KEY_INPUT_UP] != 0) {
 		angle += 2;
 	}
 	if (inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
 		angle -= 2;
-	}*/
+	}
 
 	AngleCorrection(angle);
 
@@ -74,7 +75,7 @@ void Player::ShooterPlayerControll(void) {
 	//TargetPointWindowHitCheck();
 
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
-	if (inputManager->In_Button()[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1) {
+	if (inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1) {
 		float rx = cosf(angle * DX_PI_F / 180) + x;		// X進行方向
 		float ry = sinf(angle * DX_PI_F / 180) + y;		// Y進行方向
 
@@ -86,24 +87,26 @@ void Player::ShooterPlayerControll(void) {
 
 // 隠れる側時の操作処理
 void Player::HidingPlayerControll(void) {
+	int hider = gameMain->gameManager->GetNowHider();
+
 	// 移動前の座標を記憶しておく
 	preX = x;
 	preY = y;
-
+	
 	// 移動処理
-	if (inputManager->In_Stick_LY() >= 0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LY >= 0.45f) {
 		// 左スティックが上に傾けられていたら上に移動する
 		y -= moveSpeed;
 	}
-	if (inputManager->In_Stick_LY() <= -0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LY <= -0.45f) {
 		// 左スティックが下に傾けられていたら下に移動する
 		y += moveSpeed;
 	}
-	if (inputManager->In_Stick_LX() <= -0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LX <= -0.45f) {
 		// 左スティックが左に傾けられていたら左に移動する
 		x -= moveSpeed;
 	}
-	if (inputManager->In_Stick_LX() >= 0.45f) {
+	if (inputManager->GetPadInput()[hider].in_Stick_LX >= 0.45f) {
 		// 左スティックが右に傾けられていたら右に移動する
 		x += moveSpeed;
 	}

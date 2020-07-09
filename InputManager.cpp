@@ -7,6 +7,15 @@ InputManager::InputManager() {
 	for (int i = 0; i < 256; i++) {
 		in_Key[i] = 0;		// 0に戻る
 	}
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 16; j++) {
+			gamePad[i].in_Button[j] = 0;
+		}
+		gamePad[i].in_Stick_LX = 0;
+		gamePad[i].in_Stick_LY = 0;
+		gamePad[i].in_Stick_RX = 0;
+		gamePad[i].in_Stick_RY = 0;
+	}
 	
 }
 
@@ -24,34 +33,37 @@ void InputManager::InputKey(void) {
 // Xboxコントローラーの入力を受け取る関数
 void InputManager::InputButton(void) {
 	// XInputコントローラーの入力情報を配列にいれる
-	GetJoypadXInputState(DX_INPUT_PAD1, &input);
+	GetJoypadXInputState(DX_INPUT_PAD1, &input[0]);
+	GetJoypadXInputState(DX_INPUT_PAD2, &input[1]);
 
-	// ボタンだけを、キーボードと同じようにチェックする。
-	for (int i = 0; i < 16; i++)
-	{
-		if (i == 10 || i == 11) continue;
-		if (input.Buttons[i]) in_Button[i]++;
-		else				  in_Button[i] = 0;
+	for (int num = 0; num < 2; num++) {
+		// ボタンだけを、キーボードと同じようにチェックする。
+		for (int i = 0; i < 16; i++)
+		{
+			if (i == 10 || i == 11) continue;
+			if (input[num].Buttons[i]) gamePad[num].in_Button[i]++;
+			else				  gamePad[num].in_Button[i] = 0;
+			// デバッグ用描画
+			//DrawFormatString(400 + i % 2 * 200, 200 + i / 2 * 16, 0xFFFFFF, "%s:%d", buttonName[i].c_str(), in_Button[i]);
+		}
+
+		gamePad[num].in_Stick_LX = (float)(input[num].ThumbLX / 32767.0f);	// スティックの傾きはshort型で保存されているので、
+		gamePad[num].in_Stick_LY = (float)(input[num].ThumbLY / 32767.0f);	// わかりやすいようにfloat型に計算している。
+		gamePad[num].in_Stick_RX = (float)(input[num].ThumbRX / 32767.0f);
+		gamePad[num].in_Stick_RY = (float)(input[num].ThumbRY / 32767.0f);
+
+		if (abs(gamePad[num].in_Stick_LX) <= 0.2f && abs(gamePad[num].in_Stick_LY) <= 0.2f) {
+			gamePad[num].in_Stick_LX = 0;
+			gamePad[num].in_Stick_LY = 0;
+		}
+		if (abs(gamePad[num].in_Stick_RX) <= 0.2f && abs(gamePad[num].in_Stick_RY) <= 0.2f) {
+			gamePad[num].in_Stick_RX = 0;
+			gamePad[num].in_Stick_RY = 0;
+		}
+
 		// デバッグ用描画
-		//DrawFormatString(400 + i % 2 * 200, 200 + i / 2 * 16, 0xFFFFFF, "%s:%d", buttonName[i].c_str(), in_Button[i]);
+		//DrawFormatString(900, 0, 0xFFFFFF, "LeftTrigger:%d RightTrigger:%d", input.LeftTrigger, input.RightTrigger);
+		//DrawFormatString(900, 16, 0xFFFFFF, "ThumbLX:%.4f ThumbLY:%.4f", in_Stick_LX, in_Stick_LY);
+		//DrawFormatString(900, 32, 0xFFFFFF, "ThumbRX:%.4f ThumbRY:%.4f", in_Stick_RX, in_Stick_RY);
 	}
-
-	in_Stick_LX = (float)(input.ThumbLX / 32767.0f);	// スティックの傾きはshort型で保存されているので、
-	in_Stick_LY = (float)(input.ThumbLY / 32767.0f);	// わかりやすいようにfloat型に計算している。
-	in_Stick_RX = (float)(input.ThumbRX / 32767.0f);
-	in_Stick_RY = (float)(input.ThumbRY / 32767.0f);
-
-	if (abs(in_Stick_LX) <= 0.2f && abs(in_Stick_LY) <= 0.2f) {
-		in_Stick_LX = 0;
-		in_Stick_LY = 0;
-	}
-	if (abs(in_Stick_RX) <= 0.2f && abs(in_Stick_RY) <= 0.2f) {
-		in_Stick_RX = 0;
-		in_Stick_RY = 0;
-	}
-
-	// デバッグ用描画
-	//DrawFormatString(900, 0, 0xFFFFFF, "LeftTrigger:%d RightTrigger:%d", input.LeftTrigger, input.RightTrigger);
-	//DrawFormatString(900, 16, 0xFFFFFF, "ThumbLX:%.4f ThumbLY:%.4f", in_Stick_LX, in_Stick_LY);
-	//DrawFormatString(900, 32, 0xFFFFFF, "ThumbRX:%.4f ThumbRY:%.4f", in_Stick_RX, in_Stick_RY);
 }
