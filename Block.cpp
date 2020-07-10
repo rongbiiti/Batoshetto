@@ -49,8 +49,7 @@ Block::Block(int num, FontData* font) {
 		break;
 	}
 	if (BlockPosition[knt][rem] == 0) {
-		x = 3000;
-		y = 3000;
+		isAlive = false;
 	}
 	size = BLOCK_SIZE;		// サイズ
 	HP = BlockStartHP;		// HP初期化
@@ -67,7 +66,7 @@ void Block::DrawBlocks(void) {
 	dy1 = y - size / 2;
 	dy2 = y + size / 2;
 	DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
-	DrawFormatStringToHandle(x - size / 3 - 30, y - size / 3, 0xFFFFFF, fontData->f_FontData[1], "%d,n%d", HP, num);
+	DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
 }
 
 // ブロックのHPを減らす関数。Bulletから呼ばれる。
