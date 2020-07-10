@@ -86,7 +86,9 @@ void GameMain::Init() {
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// “ü—Í‚ğó‚¯æ‚é
 
-	while (ProcessMessage() == 0 && (inputManager->In_Button()[InputManager::BACK] == 0) && inputManager->In_Key()[KEY_INPUT_ESCAPE] == 0) {
+	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
+									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
+									inputManager->In_Key()[KEY_INPUT_ESCAPE] == 0) {
 		FPSUpdate();	//FPSXV
 
 		SetDrawScreen(offscreen_handle);

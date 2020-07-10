@@ -1,4 +1,5 @@
 [Dd]ebug/
+.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/2cdb30a48fb43ac1/TITLE.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/ccfb97b27721e635/STAGE.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/af16618abe5cad4/INPUTMANAGER.ipch
@@ -22,11 +23,14 @@
 .vs/Batoshetto/v15/ipch/AutoPCH/9905e60a73730c9a/PLAYER.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/50954a31b696893a/FONTDATA.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/3e21dd8928f7fde/DXMAIN.ipch
-.vs/Batoshetto/v15/ipch/AutoPCH/cdc7acab5003bb34/INPUTMANAGER.ipch
-.vs/Batoshetto/v15/ipch/AutoPCH/9fea6cea893bb3b4/GAMEMAIN.ipch
-.vs/Batoshetto/v15/ipch/AutoPCH/963875936fcc0720/BLOCK.ipch
+.vs/ProjectSettings.json
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
 .vs/Batoshetto/v15/ipch/AutoPCH/761d3f7055ac0617/BULLET.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/53c047c8c7998d95/STAGE.ipch
-.vs/Batoshetto/v15/ipch/AutoPCH/18620ee30f15e3d4/GAMEMANAGER.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/e1e7fc65af7361ff/COLLISION.ipch
+.vs/Batoshetto/v15/ipch/AutoPCH/cdc7acab5003bb34/INPUTMANAGER.ipch
 .vs/Batoshetto/v15/ipch/AutoPCH/fc92212af8711c22/PLAYER.ipch
+.vs/Batoshetto/v15/ipch/AutoPCH/9fea6cea893bb3b4/GAMEMAIN.ipch
+.vs/Batoshetto/v15/ipch/AutoPCH/18620ee30f15e3d4/GAMEMANAGER.ipch
+.vs/Batoshetto/v15/ipch/AutoPCH/963875936fcc0720/BLOCK.ipch

@@ -47,7 +47,7 @@ public:
 private:
 	GameMain* gameMain;					// GameMainオブジェクトのポインタを保存しておく変数。
 
-	const int HidePhaseTime = 60;		// 隠れる側残り時間の初期値。
+	const int HidePhaseTime = 240;		// 隠れる側残り時間の初期値。
 	const int ShotPhaseTime = 600;		// 撃つ側残り時間の初期値。
 	const int FirstShooter = RED;		// REDとBLUE、どっちが試合の最初に撃つ方か
 	const int FirstHider = BLUE;		// REDとBLUE、どっちが試合の最初に隠れる方か
