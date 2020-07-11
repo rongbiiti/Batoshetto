@@ -148,6 +148,8 @@ void GameMain::Update(void) {
 
 // ƒIƒuƒWƒFƒNƒg‚Ì•`‰æŒnŠÖ”‚ðŒÄ‚Ño‚·
 void GameMain::Output(void) {
+	float x1 = 0;
+	float x2 = 0;
 	// ƒvƒŒƒCƒ„[•`‰æ
 	player[GameManager::RED]->DrawPlayer();
 	player[GameManager::BLUE]->DrawPlayer();
@@ -162,20 +164,36 @@ void GameMain::Output(void) {
 	{
 	case GameManager::HIDE:
 		// ‰B‚ê‚éƒtƒF[ƒYŽž‚Ì•¶Žš•`‰æ
-		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "‰B‚ê‚ëI");
+		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s‰B‚ê‚ëI", PlayerName[gameManager->GetNowHider()]);
+		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 0);
+		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->HidePhaseTime - gameManager->GetHideTime());
+		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->GetHideTime()) + SCREEN_WIDTH_HALF;
+		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
+		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
+
 		break;
 
 	case GameManager::SHOT:
 		// Œ‚‚Â‘¤ƒtƒF[ƒY‚Ì•¶Žš•`‰æAŒ‚‚Â‘¤‚Ì‘_‚Á‚Ä‚¢‚é•ûŒü•`‰æ
-		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "Œ‚‚ÄI");
+		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%sŒ‚‚ÄI", PlayerName[gameManager->GetNowShooter()]);
+		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 0);
+		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->ShotPhaseTime - gameManager->GetShotTime());
+		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->GetShotTime()) + SCREEN_WIDTH_HALF;
+		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 1);
+		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
+
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
+
 		break;
 
 	case GameManager::RECOCHETWAIT:
 		// ’e•`‰æŠÖ”
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
-			DrawFormatStringToHandle(420, 120, 0xFFFFFF, fontData->f_FontData[1], "’µ’eŽc‚è %d‰ñ", bullet->GetRicochetCount());
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
+			int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
+			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 		break;
 
@@ -190,7 +208,4 @@ void GameMain::Output(void) {
 // ƒfƒoƒbƒOî•ñ‚ð•`‰æ‚·‚é‚½‚ß‚ÌŠÖ”
 void GameMain::DrawDebugInfo(void) {
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "%.1fFPS", mFps);
-	DrawFormatStringToHandle(0, 20, 0xFFFFFF, fontData->f_FontData[0], "‰B‚ê‚éŽžŠÔŽc‚è%dƒtƒŒ", gameManager->GetHideTime());
-	DrawFormatStringToHandle(0, 40, 0xFFFFFF, fontData->f_FontData[0], "‘_‚¦‚éŽžŠÔŽc‚è%dƒtƒŒ", gameManager->GetShotTime());
-	
 }

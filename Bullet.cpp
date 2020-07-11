@@ -61,8 +61,6 @@ void Bullet::DrawBullet(void) {
 	int dx = (int)x;
 	int dy = (int)y;
 	DrawCircle(dx, dy, Size, color);
-	DrawFormatStringToHandle(200, 550, 0xffffff, gameMain->fontData->f_FontData[0], "preX%.2f", preprex);
-	DrawFormatStringToHandle(200, 570, 0xffffff, gameMain->fontData->f_FontData[0], "preY%.2f", preprey);
 }
 
 // 跳弾回数が0未満になっていないかチェックする
