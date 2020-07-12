@@ -10,12 +10,15 @@
 #include "GameManager.h"
 #include "Result.h"
 #include "Bullet.h"
+#include "PauseScreen.h"
 
 class Bullet;
 class Player;
 class GameManager;
 class Bullet;
 class Result;
+class InputManager;
+class PauseScreen;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
 class GameMain {
 public:
@@ -39,6 +42,8 @@ public:
 	Result* result;					// 生成したリザルト画面管理クラスのポインタ
 
 private:
+	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
+
 	bool FPSUpdate(void);		// FPSを固定するための関数
 	void UpdateWait(void);		// FPSを固定するための関数
 
@@ -46,6 +51,8 @@ private:
 	
 	void Update(void);			// オブジェクトの処理を進めて値を更新する
 	void Output(void);			// オブジェクトの描画系関数を呼び出す
+
+	bool IsPushPauseButton(void);	// ポーズ画面を開閉するボタンが押されたかチェック
 
 	void DrawDebugInfo(void);	// デバッグ情報を描画するための関数
 
@@ -59,6 +66,8 @@ private:
 	static const int FPS = 60;	//設定したFPS
 
 	int offscreen_handle;		// 描画画面を大きくするのに使う変数
+
+	bool pauseFlg;				// ポーズ画面のフラグ
 
 };
 #endif // !_GAMEMAIN_H_

@@ -11,6 +11,7 @@ GameMain::GameMain(void) {
 	mStartTime = 0;		//測定開始時刻
 	mCount = 0;			//カウンタ
 	mFps = 0;
+	pauseFlg = false;
 }
 
 // FPSを固定するための関数
@@ -88,7 +89,7 @@ void GameMain::GameLoop(void) {
 
 	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
 									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
-									inputManager->In_Key()[KEY_INPUT_ESCAPE] == 0) {
+									inputManager->In_Key()[KEY_INPUT_F12] == 0) {
 		FPSUpdate();	//FPS更新
 
 		SetDrawScreen(offscreen_handle);
@@ -109,6 +110,22 @@ void GameMain::GameLoop(void) {
 
 // オブジェクトの処理を進めて値を更新する
 void GameMain::Update(void) {
+	if (IsPushPauseButton()) {
+		if (pauseFlg) {
+			pauseScreen->~PauseScreen();
+		}
+		else {
+			pauseScreen = new PauseScreen(fontData, inputManager, gameManager);
+		}
+		pauseFlg = !pauseFlg;
+		return;
+	}
+
+	if (pauseFlg) {
+		pauseScreen->PauseScreenControll();
+		return;
+	}
+
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::INIT:
@@ -150,6 +167,12 @@ void GameMain::Update(void) {
 void GameMain::Output(void) {
 	float x1 = 0;
 	float x2 = 0;
+
+	if (pauseFlg) {
+		pauseScreen->DrawPauseScreen();
+		return;
+	}
+
 	// プレイヤー描画
 	player[GameManager::RED]->DrawPlayer();
 	player[GameManager::BLUE]->DrawPlayer();
@@ -208,4 +231,14 @@ void GameMain::Output(void) {
 // デバッグ情報を描画するための関数
 void GameMain::DrawDebugInfo(void) {
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "%.1fFPS", mFps);
+}
+
+// ポーズ画面を開閉するボタンが押されたかチェック
+bool GameMain::IsPushPauseButton() {
+	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::START] == 1 ||
+		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::START] == 1 ||
+		inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+		return true;
+	}
+	return false;
 }
