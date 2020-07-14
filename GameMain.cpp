@@ -117,7 +117,7 @@ void GameMain::Update(void) {
 			pauseScreen->~PauseScreen();
 		}
 		else {
-			pauseScreen = new PauseScreen(fontData, inputManager, gameManager);
+			pauseScreen = new PauseScreen(fontData, inputManager, this);
 		}
 		pauseFlg = !pauseFlg;
 		return;
@@ -170,26 +170,19 @@ void GameMain::Output(void) {
 	float x1 = 0;
 	float x2 = 0;
 	int nowhider = gameManager->GetNowHider();
-	int nowshooter = gameManager->GetNowShooter();
-
-	if (pauseFlg) {
-		pauseScreen->DrawPauseScreen();
-		return;
-	}
-
-	// プレイヤー描画
-	player[GameManager::RED]->DrawPlayer();
-	player[GameManager::BLUE]->DrawPlayer();
-	
-	// ブロック描画
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i]->DrawBlocks();
-	}
-	DrawDebugInfo();	// デバッグ情報描画
+	int nowshooter = gameManager->GetNowShooter();	
 
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::HIDE:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		
 		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
@@ -204,6 +197,14 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::SHOT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
 		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 0);
@@ -217,6 +218,14 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		// 弾描画関数
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
@@ -233,6 +242,12 @@ void GameMain::Output(void) {
 		return;
 		break;
 	}
+
+	if (pauseFlg) {
+		pauseScreen->DrawPauseScreen();
+	}
+
+	DrawDebugInfo();	// デバッグ情報描画
 }
 
 // デバッグ情報を描画するための関数
