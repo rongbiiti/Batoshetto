@@ -11,6 +11,7 @@
 #include "Result.h"
 #include "Bullet.h"
 #include "PauseScreen.h"
+#include  "UI.h"
 
 class Bullet;
 class Player;
@@ -19,6 +20,7 @@ class Bullet;
 class Result;
 class InputManager;
 class PauseScreen;
+class UI;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
 class GameMain {
 public:
@@ -43,6 +45,7 @@ public:
 
 private:
 	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
+	UI* ui;
 
 	bool FPSUpdate(void);		// FPSを固定するための関数
 	void UpdateWait(void);		// FPSを固定するための関数

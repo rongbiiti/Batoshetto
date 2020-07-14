@@ -60,6 +60,8 @@ int GameMain::FirstInit(void) {
 	player[GameManager::RED] = new Player(GameManager::RED, 0xE71122, true, this);		// プレイヤーREDを生成。ポインタを保存しておく。
 	player[GameManager::BLUE] = new Player(GameManager::BLUE, 0x1122E7, false, this);	// プレイヤーBLUEを生成。ポインタを保存しておく。
 
+	ui = new UI(this);
+
 	return 1;
 }
 
@@ -167,6 +169,8 @@ void GameMain::Update(void) {
 void GameMain::Output(void) {
 	float x1 = 0;
 	float x2 = 0;
+	int nowhider = gameManager->GetNowHider();
+	int nowshooter = gameManager->GetNowShooter();
 
 	if (pauseFlg) {
 		pauseScreen->DrawPauseScreen();
@@ -186,6 +190,7 @@ void GameMain::Output(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::HIDE:
+		
 		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
 		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 0);
@@ -193,6 +198,8 @@ void GameMain::Output(void) {
 		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->GetHideTime()) + SCREEN_WIDTH_HALF;
 		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
 		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
+
+		ui->DrawPlayerGuage(player[nowhider]->GetPlayerX(), player[nowhider]->GetPlayerY(), float(gameManager->HidePhaseTime), float(gameManager->GetHideTime()), nowhider);
 
 		break;
 
