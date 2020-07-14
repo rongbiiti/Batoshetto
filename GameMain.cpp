@@ -224,6 +224,7 @@ void GameMain::Output(void) {
 
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 
+		ui->DrawPlayerGuage(player[nowshooter]->GetPlayerX(), player[nowshooter]->GetPlayerY(), float(gameManager->ShotPhaseTime), float(gameManager->GetShotTime()), nowshooter);
 		break;
 
 	case GameManager::RECOCHETWAIT:
