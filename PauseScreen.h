@@ -5,13 +5,13 @@
 #include "DxLib.h"
 #include "FontData.h"
 #include "InputManager.h"
-#include "GameManager.h"
+#include "GameMain.h"
 #include <string>
 
-class GameManager;
+class GameMain;
 class PauseScreen {
 public:
-	PauseScreen(FontData* font, InputManager* input, GameManager* gameManager);				// コンストラクタ
+	PauseScreen(FontData* font, InputManager* input, GameMain* main);				// コンストラクタ
 	~PauseScreen();				// デストラクタ
 
 
@@ -22,7 +22,7 @@ public:
 private:
 	FontData* fontData;				// 生成したフォントデータクラスのポインタ
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
-	GameManager* gameManager;		// ゲーム進行管理クラスのポインタ
+	GameMain* gameMain;		// ゲーム進行管理クラスのポインタ
 
 	void Return_to_Game();		// ポーズ画面を抜けて試合を再開する
 	void OpenOptionScreen();	// オプション画面を開く

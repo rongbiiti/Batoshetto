@@ -112,10 +112,11 @@ void GameMain::GameLoop(void) {
 void GameMain::Update(void) {
 	if (IsPushPauseButton()) {
 		if (pauseFlg) {
-			pauseScreen->~PauseScreen();
+
 		}
 		else {
-			pauseScreen = new PauseScreen(fontData, inputManager, gameManager);
+			if(pauseScreen == NULL)
+			pauseScreen = new PauseScreen(fontData, inputManager, this);
 		}
 		pauseFlg = !pauseFlg;
 		return;
@@ -124,6 +125,9 @@ void GameMain::Update(void) {
 	if (pauseFlg) {
 		pauseScreen->PauseScreenControll();
 		return;
+	}
+	else {
+		
 	}
 
 	switch (gameManager->GetPhaseStatus())
@@ -188,21 +192,36 @@ void GameMain::Output(void) {
 	case GameManager::HIDE:
 		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
+
+		// バーの外枠
 		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 0);
+
+		// x1がバー左側、x2が右側
 		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->HidePhaseTime - gameManager->GetHideTime());
 		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->GetHideTime()) + SCREEN_WIDTH_HALF;
-		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
-		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 
+		// バーの中身
+		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
+
+		// バーの真ん中の線
+		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 		break;
 
 	case GameManager::SHOT:
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+
+		// バーの外枠
 		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 0);
+
+		// x1がバー左側、x2が右側
 		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->ShotPhaseTime - gameManager->GetShotTime());
 		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->GetShotTime()) + SCREEN_WIDTH_HALF;
+
+		// バーの中身
 		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 1);
+
+		// バーの真ん中の線
 		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
