@@ -75,7 +75,7 @@ void Player::ShooterPlayerControll(void) {
 	//TargetPointWindowHitCheck();
 
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
-	if (inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1) {
+	if (inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1) {
 		float rx = cosf(angle * DX_PI_F / 180) + x;		// X進行方向
 		float ry = sinf(angle * DX_PI_F / 180) + y;		// Y進行方向
 

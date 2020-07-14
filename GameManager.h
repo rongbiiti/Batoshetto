@@ -13,6 +13,7 @@ public:
 	// GameMainでゲームの処理進行を管理しているswitch文をわかりやすくするために使っている列挙体。
 	// GameMain以外でも使っているところがある。
 	enum PHASE {
+		TITLE,
 		INIT,
 		HIDE,
 		SHOT,
@@ -25,6 +26,11 @@ public:
 		RED,
 		BLUE
 	};
+
+	const static int HidePhaseTime = 240;		// 隠れる側残り時間の初期値。
+	const static int ShotPhaseTime = 600;		// 撃つ側残り時間の初期値。
+	const static int FirstShooter = RED;		// REDとBLUE、どっちが試合の最初に撃つ方か
+	const static int FirstHider = BLUE;		// REDとBLUE、どっちが試合の最初に隠れる方か
 
 	void ShooterChange(void);						// 撃つ側・隠れる側を交代する関数。
 	int GetHideTime() { return t_HideTime; }		// 隠れる側残り時間を返す。
@@ -46,11 +52,6 @@ public:
 	
 private:
 	GameMain* gameMain;					// GameMainオブジェクトのポインタを保存しておく変数。
-
-	const int HidePhaseTime = 240;		// 隠れる側残り時間の初期値。
-	const int ShotPhaseTime = 600;		// 撃つ側残り時間の初期値。
-	const int FirstShooter = RED;		// REDとBLUE、どっちが試合の最初に撃つ方か
-	const int FirstHider = BLUE;		// REDとBLUE、どっちが試合の最初に隠れる方か
 
 	int t_HideTime;		// 隠れる側の残り時間
 	int t_ShotTime;		// 撃つ側の残り時間

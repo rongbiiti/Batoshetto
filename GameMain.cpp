@@ -11,6 +11,7 @@ GameMain::GameMain(void) {
 	mStartTime = 0;		//測定開始時刻
 	mCount = 0;			//カウンタ
 	mFps = 0;
+	pauseFlg = false;
 }
 
 // FPSを固定するための関数
@@ -59,6 +60,8 @@ int GameMain::FirstInit(void) {
 	player[GameManager::RED] = new Player(GameManager::RED, 0xE71122, true, this);		// プレイヤーREDを生成。ポインタを保存しておく。
 	player[GameManager::BLUE] = new Player(GameManager::BLUE, 0x1122E7, false, this);	// プレイヤーBLUEを生成。ポインタを保存しておく。
 
+	ui = new UI(this);
+
 	return 1;
 }
 
@@ -88,7 +91,7 @@ void GameMain::GameLoop(void) {
 
 	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
 									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
-									inputManager->In_Key()[KEY_INPUT_ESCAPE] == 0) {
+									inputManager->In_Key()[KEY_INPUT_F12] == 0) {
 		FPSUpdate();	//FPS更新
 
 		SetDrawScreen(offscreen_handle);
@@ -109,6 +112,22 @@ void GameMain::GameLoop(void) {
 
 // オブジェクトの処理を進めて値を更新する
 void GameMain::Update(void) {
+	if (IsPushPauseButton()) {
+		if (pauseFlg) {
+			pauseScreen->~PauseScreen();
+		}
+		else {
+			pauseScreen = new PauseScreen(fontData, inputManager, this);
+		}
+		pauseFlg = !pauseFlg;
+		return;
+	}
+
+	if (pauseFlg) {
+		pauseScreen->PauseScreenControll();
+		return;
+	}
+
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::INIT:
@@ -148,34 +167,72 @@ void GameMain::Update(void) {
 
 // オブジェクトの描画系関数を呼び出す
 void GameMain::Output(void) {
-	// プレイヤー描画
-	player[GameManager::RED]->DrawPlayer();
-	player[GameManager::BLUE]->DrawPlayer();
-	
-	// ブロック描画
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i]->DrawBlocks();
-	}
-	DrawDebugInfo();	// デバッグ情報描画
+	float x1 = 0;
+	float x2 = 0;
+	int nowhider = gameManager->GetNowHider();
+	int nowshooter = gameManager->GetNowShooter();	
 
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::HIDE:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
+		
 		// 隠れるフェーズ時の文字描画
-		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "隠れろ！");
+		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
+		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 0);
+		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->HidePhaseTime - gameManager->GetHideTime());
+		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->GetHideTime()) + SCREEN_WIDTH_HALF;
+		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
+		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
+
+		ui->DrawPlayerGuage(player[nowhider]->GetPlayerX(), player[nowhider]->GetPlayerY(), float(gameManager->HidePhaseTime), float(gameManager->GetHideTime()), nowhider);
+
 		break;
 
 	case GameManager::SHOT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
-		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "撃て！");
+		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 0);
+		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->ShotPhaseTime - gameManager->GetShotTime());
+		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->GetShotTime()) + SCREEN_WIDTH_HALF;
+		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 1);
+		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
+
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
+
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		// 弾描画関数
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
-			DrawFormatStringToHandle(420, 120, 0xFFFFFF, fontData->f_FontData[1], "跳弾残り %d回", bullet->GetRicochetCount());
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
+			int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
+			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 		break;
 
@@ -185,12 +242,25 @@ void GameMain::Output(void) {
 		return;
 		break;
 	}
+
+	if (pauseFlg) {
+		pauseScreen->DrawPauseScreen();
+	}
+
+	DrawDebugInfo();	// デバッグ情報描画
 }
 
 // デバッグ情報を描画するための関数
 void GameMain::DrawDebugInfo(void) {
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "%.1fFPS", mFps);
-	DrawFormatStringToHandle(0, 20, 0xFFFFFF, fontData->f_FontData[0], "隠れる時間残り%dフレ", gameManager->GetHideTime());
-	DrawFormatStringToHandle(0, 40, 0xFFFFFF, fontData->f_FontData[0], "狙える時間残り%dフレ", gameManager->GetShotTime());
-	
+}
+
+// ポーズ画面を開閉するボタンが押されたかチェック
+bool GameMain::IsPushPauseButton() {
+	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::START] == 1 ||
+		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::START] == 1 ||
+		inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+		return true;
+	}
+	return false;
 }
