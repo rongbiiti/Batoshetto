@@ -167,6 +167,7 @@
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +182,7 @@
     <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

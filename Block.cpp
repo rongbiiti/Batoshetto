@@ -60,6 +60,11 @@ Block::Block(int num, FontData* font) {
 // ブロックを描画する関数
 void Block::DrawBlocks(void) {
 	if (!isAlive) return;		// ブロックが死んでいたら処理を抜ける
+	//グリッド線描画
+	for (int i = 0; i < GameMain::SCREEN_WIDTH / BLOCK_SIZE; i++) {
+		DrawLine(BLOCK_SIZE * i, 0, BLOCK_SIZE * i, GameMain::SCREEN_HEIGHT, 0xffffff);
+		DrawLine(0, BLOCK_SIZE * i, GameMain::SCREEN_WIDTH, BLOCK_SIZE * i, 0xffffff);
+	}
 	int dx1, dx2, dy1, dy2;		// 描画用のローカル変数
 	dx1 = x - size / 2;
 	dx2 = x + size / 2;
