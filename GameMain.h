@@ -24,7 +24,7 @@ public:
 
 	const static int SCREEN_WIDTH = 1280;	// 計算に使う幅
 	const static int SCREEN_HEIGHT = 720;	// 計算に使う高さ
-	const static int BLOCK_MAX = 54;		// ステージ上に配置するブロックの最大数
+	const static int BLOCK_MAX = 81;		// ステージ上に配置するブロックの最大数
 	int SCREEN_WIDTH_HALF;					// 計算に使う画面の横幅の半分の数値
 	int SCREEN_HEIGHT_HALF;					// 計算に使う画面の高さの半分の数値
 
