@@ -13,6 +13,7 @@ public:
 	// GameMainでゲームの処理進行を管理しているswitch文をわかりやすくするために使っている列挙体。
 	// GameMain以外でも使っているところがある。
 	enum PHASE {
+		TITLE,
 		INIT,
 		HIDE,
 		SHOT,

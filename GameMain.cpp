@@ -126,9 +126,6 @@ void GameMain::Update(void) {
 		pauseScreen->PauseScreenControll();
 		return;
 	}
-	else {
-		
-	}
 
 	switch (gameManager->GetPhaseStatus())
 	{
@@ -172,24 +169,18 @@ void GameMain::Output(void) {
 	float x1 = 0;
 	float x2 = 0;
 
-	if (pauseFlg) {
-		pauseScreen->DrawPauseScreen();
-		return;
-	}
-
-	// プレイヤー描画
-	player[GameManager::RED]->DrawPlayer();
-	player[GameManager::BLUE]->DrawPlayer();
-	
-	// ブロック描画
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i]->DrawBlocks();
-	}
-	DrawDebugInfo();	// デバッグ情報描画
-
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::HIDE:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
+
 		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
 
@@ -208,6 +199,14 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::SHOT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
 
@@ -229,6 +228,14 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
 		// 弾描画関数
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
@@ -245,6 +252,12 @@ void GameMain::Output(void) {
 		return;
 		break;
 	}
+
+	if (pauseFlg) {
+		pauseScreen->DrawPauseScreen();
+	}
+
+	DrawDebugInfo();	// デバッグ情報描画
 }
 
 // デバッグ情報を描画するための関数

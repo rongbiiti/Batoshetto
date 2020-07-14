@@ -93,7 +93,9 @@ void PauseScreen::PauseScreenControll() {
 
 // ポーズ画面描画
 void PauseScreen::DrawPauseScreen() {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;

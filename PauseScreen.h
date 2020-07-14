@@ -14,7 +14,6 @@ public:
 	PauseScreen(FontData* font, InputManager* input, GameMain* main);				// コンストラクタ
 	~PauseScreen();				// デストラクタ
 
-
 	void PauseScreenControll();	// ポーズ画面処理
 	
 	void DrawPauseScreen();		// ポーズ画面描画
