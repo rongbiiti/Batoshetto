@@ -6,7 +6,7 @@ GameManager::GameManager(GameMain* main) {
 	// 初期化して、フェーズを隠れる側フェーズに移行する
 	t_HideTime = HidePhaseTime;
 	t_ShotTime = ShotPhaseTime;
-	PhaseStatus = HIDE;
+	PhaseStatus = TITLE;
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
 	gameMain = main;
