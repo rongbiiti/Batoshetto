@@ -33,6 +33,8 @@ public:
 	int SCREEN_WIDTH_HALF;					// 計算に使う画面の横幅の半分の数値
 	int SCREEN_HEIGHT_HALF;					// 計算に使う画面の高さの半分の数値
 
+	void SetPauseFlg(bool value) { pauseFlg = value; }
+
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
 	FontData* fontData;				// 生成したフォントデータ管理クラスのポインタ
 	Player* player[2];				// 生成したプレイヤークラスのポインタ

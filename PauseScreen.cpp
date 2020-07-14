@@ -1,10 +1,11 @@
 #include "PauseScreen.h"
 
 // コンストラクタ
-PauseScreen::PauseScreen(FontData* font, InputManager* input, GameManager* gameManager) {
+PauseScreen::PauseScreen(FontData* font, InputManager* input, GameMain* main) {
 	// 引数で受け取ったポインタをローカル変数にコピー
 	fontData = font;
 	inputManager = input;
+	gameMain = main;
 
 	// カーソル位置初期化
 	selectNum[0] = 0;
@@ -38,8 +39,15 @@ void PauseScreen::PauseScreenControll() {
 
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::B] == 1) {
 			// ゲームパッド1のBボタン入力。
-			if (++selectNum[i] > SELECT_NUM_MAX) {
-				selectNum[i] = 0;
+			switch (selectNum[i])
+			{
+			case 0:
+				gameMain->SetPauseFlg(false);
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
 			}
 		}
 	}
@@ -70,16 +78,24 @@ void PauseScreen::PauseScreenControll() {
 
 	if (inputManager->In_Key()[KEY_INPUT_F] == 1) {
 		// ゲームパッド1のBボタン入力。
-		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
-		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
-			selectNum[GameManager::BLUE] = 0;
+		switch (selectNum[GameManager::BLUE])
+		{
+		case 0:
+			gameMain->SetPauseFlg(false);
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
 		}
 	}
 }
 
 // ポーズ画面描画
 void PauseScreen::DrawPauseScreen() {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
