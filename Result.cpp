@@ -22,8 +22,11 @@ void Result::DrawResult() {
 	}
 	
 	// Fを押すと、GameManagerのフェーズを初期化フェーズに変更し、自身のデストラクタを呼ぶ。
-	DrawFormatStringToHandle(500, 560, 0xFFFFFF, fontData->f_FontData[1], "A押して再開");
-	if (inputManager->In_Button()[InputManager::A] == 1) {
+	int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "B押して再開（キーボードはF）");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, 560, 0xFFFFFF, fontData->f_FontData[1], "B押して再開（キーボードはF）");
+	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::B] == 1 ||
+		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::B] == 1 || 
+		inputManager->In_Key()[KEY_INPUT_F] == 1) {
 		gameManager->SetPhaseStatus(GameManager::INIT);
 		this->~Result();
 	}

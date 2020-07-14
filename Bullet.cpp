@@ -61,8 +61,6 @@ void Bullet::DrawBullet(void) {
 	int dx = (int)x;
 	int dy = (int)y;
 	DrawCircle(dx, dy, Size, color);
-	DrawFormatStringToHandle(200, 550, 0xffffff, gameMain->fontData->f_FontData[0], "preX%.2f", preprex);
-	DrawFormatStringToHandle(200, 570, 0xffffff, gameMain->fontData->f_FontData[0], "preY%.2f", preprey);
 }
 
 // 跳弾回数が0未満になっていないかチェックする
@@ -181,10 +179,17 @@ bool Bullet::IsHitBlock(void) {
 
 	// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
 	if (crossPosition.flg) {
+		
+		shooterHitOK = true;	// 撃つ側のプレイヤーに当たるようにする
+		gameMain->block[num]->DecrementBlockHP();	// ブロックのHPを減らす
+		if (!gameMain->block[num]->IsAlive()) {
+			return true;
+		}
 		x = crossPosition.x;	// 狙っている方向のX座標
 		y = crossPosition.y;	// 狙っている方向のY座標
 		--ricochetCount;		// 当たっていたら、跳弾回数を減らす
-		gameMain->block[num]->DecrementBlockHP();	// ブロックのHPを減らす
+		hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
+
 
 		preprex = x - cosf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のX座標
 		preprey = y - sinf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のY座標
@@ -211,9 +216,7 @@ bool Bullet::IsHitBlock(void) {
 		ChangeAngle();	// 角度をもとに進行方向変更
 		x = preprex;
 		y = preprey;
-		hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
-
-		shooterHitOK = true;	// 撃つ側のプレイヤーに当たるようにする
+		
 		return true;
 	}
 
