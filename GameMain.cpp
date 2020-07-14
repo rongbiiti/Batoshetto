@@ -109,6 +109,10 @@ void GameMain::GameLoop(void) {
 void GameMain::Update(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
+	case GameManager::TITLE:
+		// タイトル画面
+		return;
+		break;
 	case GameManager::INIT:
 		// 初期化フェーズ
 		Init();
@@ -146,30 +150,52 @@ void GameMain::Update(void) {
 
 // オブジェクトの描画系関数を呼び出す
 void GameMain::Output(void) {
-	// プレイヤー描画
-	player[GameManager::RED]->DrawPlayer();
-	player[GameManager::BLUE]->DrawPlayer();
 	
-	// ブロック描画
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i]->DrawBlocks();
-	}
-	DrawDebugInfo();	// デバッグ情報描画
 
 	switch (gameManager->GetPhaseStatus())
 	{
+	case GameManager::TITLE:
+		title->DrawTitle();
+		break;
 	case GameManager::HIDE:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
+		DrawDebugInfo();	// デバッグ情報描画
 		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "隠れろ！");
 		break;
 
 	case GameManager::SHOT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
+		DrawDebugInfo();	// デバッグ情報描画
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "撃て！");
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
+		DrawDebugInfo();	// デバッグ情報描画
 		// 弾描画関数
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
@@ -178,6 +204,15 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::RESULT:
+		// プレイヤー描画
+		player[GameManager::RED]->DrawPlayer();
+		player[GameManager::BLUE]->DrawPlayer();
+
+		// ブロック描画
+		for (int i = 0; i < BLOCK_MAX; i++) {
+			block[i]->DrawBlocks();
+		}
+		DrawDebugInfo();	// デバッグ情報描画
 		// リザルト画面描画
 		result->DrawResult();
 		return;

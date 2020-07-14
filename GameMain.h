@@ -10,12 +10,14 @@
 #include "GameManager.h"
 #include "Result.h"
 #include "Bullet.h"
+#include "Title.h"
 
 class Bullet;
 class Player;
 class GameManager;
 class Bullet;
 class Result;
+class Title;
 class GameMain {
 public:
 	GameMain();				// コンストラクタ
@@ -35,6 +37,7 @@ public:
 	GameManager* gameManager;		// 生成したゲーム進行管理クラスのポインタ
 	Block* block[BLOCK_MAX];		// 生成したブロッククラスのポインタ
 	Result* result;					// 生成したリザルト画面管理クラスのポインタ
+	Title* title;					// 生成したタイトル画面のクラスポインタ
 
 private:
 	bool FPSUpdate(void);		// FPSを固定するための関数
