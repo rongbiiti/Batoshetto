@@ -129,6 +129,9 @@ void GameMain::Update(void) {
 
 	switch (gameManager->GetPhaseStatus())
 	{
+	case GameManager::TITLE:
+		return;
+		break;
 	case GameManager::INIT:
 		// 初期化フェーズ
 		Init();
@@ -171,6 +174,11 @@ void GameMain::Output(void) {
 
 	switch (gameManager->GetPhaseStatus())
 	{
+	case GameManager::TITLE:
+		title->DrawTitle();
+
+		return;
+		break;
 	case GameManager::HIDE:
 		// プレイヤー描画
 		player[GameManager::RED]->DrawPlayer();
