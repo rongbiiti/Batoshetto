@@ -50,6 +50,7 @@ int GameMain::FirstInit(void) {
 	fontData = new FontData;				// フォントデータ管理クラスを生成。ポインタを保存しておく。
 
 	gameManager = new GameManager(this);	// ゲーム進行管理クラスを生成。ポインタを保存しておく。
+	title = new Title(fontData, inputManager, gameManager);
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData);	// ブロックオブジェクトを生成。ポインタを保存しておく。
