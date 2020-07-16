@@ -78,7 +78,7 @@ void PauseScreen::PauseScreenControll() {
 		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_F] == 1) {
+	if (inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
 		// ゲームパッド1のBボタン入力。
 		switch (selectNum[GameManager::BLUE])
 		{

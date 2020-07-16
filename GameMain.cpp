@@ -92,7 +92,7 @@ void GameMain::GameLoop(void) {
 
 	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
 									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
-									inputManager->In_Key()[KEY_INPUT_F12] == 0) {
+									inputManager->In_Key()[KEY_INPUT_F11] == 0) {
 		FPSUpdate();	//FPSXV
 
 		SetDrawScreen(offscreen_handle);
@@ -195,11 +195,6 @@ void GameMain::Output(void) {
 		
 		// ‰B‚ê‚éƒtƒF[ƒYŽž‚Ì•¶Žš•`‰æ
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s‰B‚ê‚ëI", PlayerName[gameManager->GetNowHider()]);
-		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 0);
-		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->HidePhaseTime - gameManager->GetHideTime());
-		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->GetHideTime()) + SCREEN_WIDTH_HALF;
-		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
-		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 
 		ui->DrawPlayerGuage(player[nowhider]->GetPlayerX(), player[nowhider]->GetPlayerY(), float(gameManager->HidePhaseTime), float(gameManager->GetHideTime()), nowhider);
 
@@ -216,11 +211,6 @@ void GameMain::Output(void) {
 		}
 		// Œ‚‚Â‘¤ƒtƒF[ƒY‚Ì•¶Žš•`‰æAŒ‚‚Â‘¤‚Ì‘_‚Á‚Ä‚¢‚é•ûŒü•`‰æ
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%sŒ‚‚ÄI", PlayerName[gameManager->GetNowShooter()]);
-		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 0);
-		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->ShotPhaseTime - gameManager->GetShotTime());
-		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->GetShotTime()) + SCREEN_WIDTH_HALF;
-		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 1);
-		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 
