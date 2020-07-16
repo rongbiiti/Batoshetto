@@ -52,7 +52,7 @@ int GameMain::FirstInit(void) {
 	gameManager = new GameManager(this);	// ゲーム進行管理クラスを生成。ポインタを保存しておく。
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i] = new Block(i, fontData);	// ブロックオブジェクトを生成。ポインタを保存しておく。
+		block[i] = new Block(i, fontData,this);	// ブロックオブジェクトを生成。ポインタを保存しておく。
 	}
 
 	bullet = new Bullet();					// 弾オブジェクトを生成。ポインタを保存しておく。
@@ -72,7 +72,7 @@ void GameMain::Init() {
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i]->~Block();
-		block[i] = new Block(i, fontData);
+		block[i] = new Block(i, fontData,this);
 	}
 
 	bullet->~Bullet();

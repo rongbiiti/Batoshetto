@@ -2,13 +2,19 @@
 #include "GameMain.h"
 
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。
-Block::Block(int num, FontData* font) {
-	isAlive = true;			// 生存フラグオン
+Block::Block(int num, FontData* font ,GameMain* main) {
+
 	int knt,rem;
-	knt =  num / BLOCK_ONE_MAX;
-	rem =  num % BLOCK_ONE_MAX;
-	//x = BlockStartPosition[knt][0] + num % GameMain::BLOCK_MAX * BLOCK_SIZE;		// 番号をもとにX座標初期位置を決める
-	//y = BlockStartPosition[knt][1] + num % GameMain::BLOCK_MAX * BLOCK_SIZE;		// Y座標初期位置
+	isAlive = true;			// 生存フラグオン
+	gamemain = main;		// ゲームメインのポインタ
+	size = BLOCK_SIZE;		// サイズ
+	HP = BlockStartHP;		// HP初期化
+	fontData = font;		// フォントデータのポインタ
+
+	knt =  num / BLOCK_ONE_MAX;		// ブロックの初期位置を商で求める
+	rem =  num % BLOCK_ONE_MAX;		// ３×３ブロックの何番目かを余りで求める
+
+	// ３×３ブロックの番号を元に座標を指定
 	switch (rem)
 	{
 	case 0:
@@ -48,12 +54,35 @@ Block::Block(int num, FontData* font) {
 		y = BlockStartPosition[knt][1] + 2 * BLOCK_SIZE;
 		break;
 	}
-	if (BlockPosition[knt][rem] == 0) {
-		isAlive = false;
+
+	// 余りが０だった場合３×３ブロックの始まりなので乱数で２種類のうちどちらのブロックを使うか決める
+	if (rem == 0) {
+		//点対称にするために真ん中以降のブロックは点対称になっているブロックで取得した乱数を代入する
+		if (knt < 5) {
+			rnd = GetRand(1);
+		}
+		else {
+			rnd = gamemain->block[((BLOCK_ONE_MAX - 1) - knt) * BLOCK_ONE_MAX]->rnd;
+		}
 	}
-	size = BLOCK_SIZE;		// サイズ
-	HP = BlockStartHP;		// HP初期化
-	fontData = font;		// フォントデータのポインタ
+	else {
+		//ブロックが左上じゃない場合は一個前のブロックで取得した乱数を代入
+		rnd = gamemain->block[num - 1]->rnd;
+	}
+	//取得した乱数を元に２種類あるブロックを選別
+	switch (rnd)
+	{
+	case 0:
+		if (BlockPosition[knt][rem] == 0) {
+			isAlive = false;
+		}
+		break;
+	case 1:
+		if (BlockPosition2[knt][rem] == 0) {
+			isAlive = false;
+		}
+		break;
+	}
 	this->num = num;
 }
 
@@ -70,7 +99,15 @@ void Block::DrawBlocks(void) {
 	dx2 = x + size / 2;
 	dy1 = y - size / 2;
 	dy2 = y + size / 2;
-	DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
+	if (HP == 3) {
+		DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
+	}
+	else if (HP == 2) {
+		DrawBox(dx1, dy1, dx2, dy2, 0xFFFF00, 1);
+	}
+	else if (HP == 1) {
+		DrawBox(dx1, dy1, dx2, dy2, 0xFF0000, 1);
+	}
 	DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
 }
 

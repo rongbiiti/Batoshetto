@@ -21,6 +21,7 @@ class Result;
 class InputManager;
 class PauseScreen;
 class UI;
+class Block;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
 class GameMain {
 public:
