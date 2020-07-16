@@ -47,6 +47,21 @@ void Player::ShooterPlayerControll(void) {
 		angle = -rad * 180.0f / DX_PI_F;
 		if (angle < 0) angle += 360;
 	}
+
+	// コントローラーの十字キーでも角度操作を受付。
+	// Aボタンを押していると、速度がアップする。
+	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_UP] != 0) {
+		angle += 1;
+		if (inputManager->GetPadInput()[shooter].in_Button[InputManager::A] != 0) {
+			angle += 2;
+		}
+	}
+	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_DOWN] != 0) {
+		angle -= 1;
+		if (inputManager->GetPadInput()[shooter].in_Button[InputManager::A] != 0) {
+			angle -= 2;
+		}
+	}
 	
 
 	// キーボードでの角度変更

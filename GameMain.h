@@ -11,6 +11,7 @@
 #include "Result.h"
 #include "Bullet.h"
 #include "PauseScreen.h"
+#include "Title.h"
 #include  "UI.h"
 
 class Bullet;
@@ -20,6 +21,7 @@ class Bullet;
 class Result;
 class InputManager;
 class PauseScreen;
+class Title;
 class UI;
 class Block;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
@@ -45,6 +47,7 @@ public:
 	GameManager* gameManager;		// 生成したゲーム進行管理クラスのポインタ
 	Block* block[BLOCK_MAX];		// 生成したブロッククラスのポインタ
 	Result* result;					// 生成したリザルト画面管理クラスのポインタ
+	Title* title;
 
 private:
 	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ

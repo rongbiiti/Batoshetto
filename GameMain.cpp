@@ -50,6 +50,7 @@ int GameMain::FirstInit(void) {
 	fontData = new FontData;				// フォントデータ管理クラスを生成。ポインタを保存しておく。
 
 	gameManager = new GameManager(this);	// ゲーム進行管理クラスを生成。ポインタを保存しておく。
+	title = new Title(fontData, inputManager, gameManager);
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData,this);	// ブロックオブジェクトを生成。ポインタを保存しておく。
@@ -91,7 +92,7 @@ void GameMain::GameLoop(void) {
 
 	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
 									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
-									inputManager->In_Key()[KEY_INPUT_F12] == 0) {
+									inputManager->In_Key()[KEY_INPUT_F11] == 0) {
 		FPSUpdate();	//FPS更新
 
 		SetDrawScreen(offscreen_handle);
@@ -130,6 +131,10 @@ void GameMain::Update(void) {
 
 	switch (gameManager->GetPhaseStatus())
 	{
+	case GameManager::TITLE:
+		title->TitleControll();
+		return;
+		break;
 	case GameManager::INIT:
 		// 初期化フェーズ
 		Init();
@@ -174,6 +179,11 @@ void GameMain::Output(void) {
 
 	switch (gameManager->GetPhaseStatus())
 	{
+	case GameManager::TITLE:
+		title->DrawTitle();
+
+		return;
+		break;
 	case GameManager::HIDE:
 		// プレイヤー描画
 		player[GameManager::RED]->DrawPlayer();
@@ -186,11 +196,6 @@ void GameMain::Output(void) {
 		
 		// 隠れるフェーズ時の文字描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
-		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 0);
-		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->HidePhaseTime - gameManager->GetHideTime());
-		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->HidePhaseTime)) * (gameManager->GetHideTime()) + SCREEN_WIDTH_HALF;
-		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], 1);
-		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 
 		ui->DrawPlayerGuage(player[nowhider]->GetPlayerX(), player[nowhider]->GetPlayerY(), float(gameManager->HidePhaseTime), float(gameManager->GetHideTime()), nowhider);
 
@@ -207,14 +212,10 @@ void GameMain::Output(void) {
 		}
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
 		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
-		DrawBox(0, 683, SCREEN_WIDTH - 1, SCREEN_HEIGHT, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 0);
-		x1 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->ShotPhaseTime - gameManager->GetShotTime());
-		x2 = (float(SCREEN_WIDTH_HALF) / float(gameManager->ShotPhaseTime)) * (gameManager->GetShotTime()) + SCREEN_WIDTH_HALF;
-		DrawBox(x1, 684, x2, SCREEN_HEIGHT - 2, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], 1);
-		DrawLine(SCREEN_WIDTH_HALF, 684, SCREEN_WIDTH_HALF, SCREEN_HEIGHT - 3, 0xffffff, 2);
 
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 
+		ui->DrawPlayerGuage(player[nowshooter]->GetPlayerX(), player[nowshooter]->GetPlayerY(), float(gameManager->ShotPhaseTime), float(gameManager->GetShotTime()), nowshooter);
 		break;
 
 	case GameManager::RECOCHETWAIT:

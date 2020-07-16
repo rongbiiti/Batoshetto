@@ -21,4 +21,6 @@ void UI::DrawPlayerGuage(int x, int y, float maxtime, float nowtime, int playern
 // ‰æ‘œ“Ç‚İ‚İ
 void UI::LoadImages() {
 	if (!(i_PlayerGuage[0] = LoadGraph("Image/Gauge.png"))) return;
+	if (!(i_PlayerGuage[1] = LoadGraph("Image/Gauge2.png"))) return;
+	
 }
