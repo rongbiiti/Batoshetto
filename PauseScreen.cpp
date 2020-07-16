@@ -47,6 +47,8 @@ void PauseScreen::PauseScreenControll() {
 			case 1:
 				break;
 			case 2:
+				gameMain->SetPauseFlg(false);
+				gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
 				break;
 			}
 		}
@@ -86,6 +88,8 @@ void PauseScreen::PauseScreenControll() {
 		case 1:
 			break;
 		case 2:
+			gameMain->SetPauseFlg(false);
+			gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
 			break;
 		}
 	}
