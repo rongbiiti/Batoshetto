@@ -10,6 +10,47 @@ Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	selectNum[1] = 0;
 }
 
+void Title::TitleControll() {
+	for (int i = 0; i < 2; i++) {
+		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
+			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+			// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
+			if (--selectNum[i] < 0) {
+				selectNum[i] = SELECT_NUM_MAX;
+			}
+			if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
+				inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] -= 4;
+			}
+		}
+
+		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] >= 18) {
+			// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+			// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
+			if (++selectNum[i] > SELECT_NUM_MAX) {
+				selectNum[i] = 0;
+			}
+			if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] >= 18) {
+				inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] -= 4;
+			}
+		}
+
+		if (inputManager->GetPadInput()[i].in_Button[InputManager::B] == 1) {
+			// ゲームパッド1のBボタン入力。
+			switch (selectNum[i])
+			{
+			case 0:
+				gameManager->SetPhaseStatus(GameManager::HIDE);
+				this->~Title();
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			}
+		}
+	}
+}
+
 void Title::DrawTitle() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
 	
@@ -28,6 +69,12 @@ void Title::DrawTitle() {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
 	}
+	/*if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::B] == 1 ||
+		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::B] == 1 ||
+		inputManager->In_Key()[KEY_INPUT_F] == 1) {
+		gameManager->SetPhaseStatus(GameManager::INIT);
+		this->~Title();
+	}*/
 }
 
 Title::~Title() {

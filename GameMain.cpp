@@ -132,6 +132,7 @@ void GameMain::Update(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::TITLE:
+		title->TitleControll();
 		return;
 		break;
 	case GameManager::INIT:

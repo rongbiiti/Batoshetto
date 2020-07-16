@@ -14,6 +14,7 @@ class Title {
 public:
 	Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG);
 	~Title();
+	void TitleControll();
 	void DrawTitle();
 private:
 	FontData* fontData;				// 生成した入力管理クラスのポインタ
