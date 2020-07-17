@@ -71,6 +71,9 @@ void GameMain::Init() {
 	gameManager->~GameManager();
 	gameManager = new GameManager(this);
 
+	title->~Title();
+	title = new Title(fontData, inputManager, gameManager);
+
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i]->~Block();
 		block[i] = new Block(i, fontData,this);
@@ -132,6 +135,9 @@ void GameMain::Update(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::TITLE:
+		if (title == nullptr) {
+			title = new Title(fontData, inputManager, gameManager);
+		}
 		title->TitleControll();
 		return;
 		break;

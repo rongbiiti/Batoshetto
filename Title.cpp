@@ -39,7 +39,7 @@ void Title::TitleControll() {
 			switch (selectNum[i])
 			{
 			case 0:
-				gameManager->SetPhaseStatus(GameManager::HIDE);
+				gameManager->SetPhaseStatus(GameManager::INIT);
 				this->~Title();
 				break;
 			case 1:
@@ -56,8 +56,8 @@ void Title::DrawTitle() {
 	
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Paus");
-	DrawFormatStringToHandle(x - fontwidth -45, GameMain::SCREEN_HEIGHT / 4 - fontwidth, 0xeeff14, fontData->f_FontData[1], "バトシェット");
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "バトシェット");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "バトシェット");
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
