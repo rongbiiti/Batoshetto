@@ -14,12 +14,22 @@ public:
 	// ゲーム進行管理オブジェクトのポインタ、ヒットしたプレイヤーがREDかBLUEかを受け取る。
 	Result(FontData* font, InputManager* input, GameManager* gameMNG, int hitplayernum);
 	~Result();					// デストラクタ
+	void ResultControll(void);	// 処理
 	void DrawResult(void);		// 描画
 private:
 	FontData* fontData;			// フォントデータ管理オブジェクトのポインタ
 	InputManager* inputManager;	// 入力管理オブジェクトのポインタ
 	GameManager* gameManager;	// ゲーム進行管理オブジェクトのポインタ
 	int hitPlayerNumber;		// ヒットしたプレイヤーがREDかBLUEかの引数を保存しておく変数。
+
+	void Return_to_Game();		// ポーズ画面を抜けて試合を再開する
+	void Return_to_Title();		// 試合を中断してタイトル画面へ戻る
+
+	const static int SELECT_NUM_MAX = 1;
+	const std::string MenuName[SELECT_NUM_MAX + 1] = { "ReMatch",
+													   "Return to Title"
+	};
+	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
 };
 
 #endif // !_RESULT_H_

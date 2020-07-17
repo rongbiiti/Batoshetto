@@ -164,6 +164,7 @@ void GameMain::Update(void) {
 
 	case GameManager::RESULT:
 		// ƒŠƒUƒ‹ƒg‰æ–Ê
+		result->ResultControll();
 		return;
 		break;
 	}

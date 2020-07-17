@@ -42,6 +42,7 @@ private:
 	int TrajectoryPrecalculation_ToWindow(void);	// ウィンドウに対する弾道の事前計算。
 	void CalcHitAfterAngle_ToBlock(int blocknum);	// ブロックのどの辺と衝突しているか判断して角度を変更する
 	void CalcHitAfterAngle_ToWindow(int num);		// ウィンドウのどの端と衝突しているか判断して角度を変更する
+	void ChangeDirectionalKeyAng(void);				// 方向キーで角度変更操作したとき、現在の角度によって角度を足すか引くかを変える
 
 	GameMain* gameMain;			// コンストラクタで受け取ったGameMainのポインタを保存しておく変数
 	InputManager* inputManager;	// 入力管理クラスのポインタを入れる変数
@@ -54,6 +55,7 @@ private:
 	float angle, angle2;		// 角度
 	int preX, preY;				// 移動前の座標
 	int num;					// REDかBLUEか
+	float directionalKeyAng;	// 方向キーで角度操作するときの角度変化量
 };
 
 #endif // !_PLAYER_H_

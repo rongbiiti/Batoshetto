@@ -48,31 +48,44 @@ void Player::ShooterPlayerControll(void) {
 		if (angle < 0) angle += 360;
 	}
 
+	// 方向キーを押した瞬間の角度を参照し、角度増分量をプラスかマイナスか判断する
+	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_DOWN] == 1) {
+		ChangeDirectionalKeyAng();
+	}
+	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] == 1) {
+		ChangeDirectionalKeyAng();
+	}
+
 	// コントローラーの十字キーでも角度操作を受付。
 	// Aボタンを押していると、速度がアップする。
 	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_UP] != 0) {
-		angle += 1;
+		angle += directionalKeyAng;
 		if (inputManager->GetPadInput()[shooter].in_Button[InputManager::A] != 0) {
-			angle += 2;
+			angle += directionalKeyAng * 2;
 		}
 	}
 	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_DOWN] != 0) {
-		angle -= 1;
+		angle -= directionalKeyAng;
 		if (inputManager->GetPadInput()[shooter].in_Button[InputManager::A] != 0) {
-			angle -= 2;
+			angle -= directionalKeyAng * 2;
 		}
 	}
-	
 
 	// キーボードでの角度変更
 	if (inputManager->In_Key()[KEY_INPUT_UP] != 0) {
-		angle += 2;
+		angle += directionalKeyAng;
+		if (inputManager->In_Key()[KEY_INPUT_LSHIFT] != 0) {
+			angle += directionalKeyAng * 2;
+		}
 	}
 	if (inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
-		angle -= 2;
+		angle -= directionalKeyAng;
+		if (inputManager->In_Key()[KEY_INPUT_LSHIFT] != 0) {
+			angle -= directionalKeyAng * 2;
+		}
 	}
 
-	AngleCorrection(angle);
+	angle = AngleCorrection(angle);
 
 	targetx = cosf(angle * DX_PI_F / 180) * 10000 + x;	// 狙っている方向のX座標
 	targety = sinf(angle * DX_PI_F / 180) * 10000 + y;	// 狙っている方向のY座標
@@ -89,8 +102,15 @@ void Player::ShooterPlayerControll(void) {
 
 	//TargetPointWindowHitCheck();
 
+	// PASSして隠れる側フェーズに
+	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
+		gameMain->gameManager->ToHidePhase();
+		return;
+	}
+
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
-	if (inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1) {
+	// または、制限時間になったら勝手に発射する
+	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
 		float rx = cosf(angle * DX_PI_F / 180) + x;		// X進行方向
 		float ry = sinf(angle * DX_PI_F / 180) + y;		// Y進行方向
 
@@ -131,6 +151,11 @@ void Player::HidingPlayerControll(void) {
 
 	// ブロックたちと当たり判定する。
 	BlockHitCheck();
+
+	// PASSして撃つ側フェーズに
+	if (inputManager->GetPadInput()[hider].in_Button[InputManager::X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
+		gameMain->gameManager->ToShotPhase();
+	}
 }
 
 // 描画用
@@ -392,6 +417,15 @@ int Player::YCoordinateCorrection(int posy, int size) {
 		return halfsize;
 	}
 	return posy;
+}
+
+void Player::ChangeDirectionalKeyAng(void) {
+	if (270 < angle || angle < 90) {
+		directionalKeyAng = -1;
+	}
+	else if (90 <= angle && angle <= 270) {
+		directionalKeyAng = 1;
+	}
 }
 
 Player::~Player() {

@@ -42,13 +42,12 @@ void PauseScreen::PauseScreenControll() {
 			switch (selectNum[i])
 			{
 			case 0:
-				gameMain->SetPauseFlg(false);
+				Return_to_Game();
 				break;
 			case 1:
 				break;
 			case 2:
-				gameMain->SetPauseFlg(false);
-				gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
+				Return_to_Title();
 				break;
 			}
 		}
@@ -83,13 +82,12 @@ void PauseScreen::PauseScreenControll() {
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
-			gameMain->SetPauseFlg(false);
+			Return_to_Game();
 			break;
 		case 1:
 			break;
 		case 2:
-			gameMain->SetPauseFlg(false);
-			gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
+			Return_to_Title();
 			break;
 		}
 	}
@@ -121,18 +119,19 @@ void PauseScreen::DrawPauseScreen() {
 }
 
 // ポーズ画面を抜けて試合を再開する
-void Return_to_Game() {
-
+void PauseScreen::Return_to_Game() {
+	gameMain->SetPauseFlg(false);
 }
 
 // オプション画面を開く
-void OpenOptionScreen() {
+void PauseScreen::OpenOptionScreen() {
 
 }
 
 // 試合を中断してタイトル画面へ戻る
-void Return_to_Title() {
-
+void PauseScreen::Return_to_Title() {
+	gameMain->SetPauseFlg(false);
+	gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
 }
 
 // デストラクタ
