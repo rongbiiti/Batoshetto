@@ -77,6 +77,7 @@ private:
 	int offscreen_handle;		// 描画画面を大きくするのに使う変数
 
 	bool pauseFlg;				// ポーズ画面のフラグ
+	int pausePushPLNum;			// ポーズボタンを押したプレイヤーの番号 0=RED 1=BLUE 2=キーボードからの入力
 
 };
 #endif // !_GAMEMAIN_H_

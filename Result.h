@@ -26,10 +26,14 @@ private:
 	void Return_to_Title();		// 試合を中断してタイトル画面へ戻る
 
 	const static int SELECT_NUM_MAX = 1;
+	const static int SCENE_TRANSITION_WAITING_TIME = 60;	// シーン遷移するときのちょっとした待ち時間
 	const std::string MenuName[SELECT_NUM_MAX + 1] = { "ReMatch",
 													   "Return to Title"
 	};
-	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
+
+	int waitTime;
+	int selectNum[SELECT_NUM_MAX + 1];	// 選択中のボタン番号
+	bool dicideNumFlg[2];				// 番号を決定したかのフラグ
 };
 
 #endif // !_RESULT_H_

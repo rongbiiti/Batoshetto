@@ -87,8 +87,8 @@ void Player::ShooterPlayerControll(void) {
 
 	angle = AngleCorrection(angle);
 
-	targetx = cosf(angle * DX_PI_F / 180) * 10000 + x;	// 狙っている方向のX座標
-	targety = sinf(angle * DX_PI_F / 180) * 10000 + y;	// 狙っている方向のY座標
+	targetx = cosf(angle * DX_PI_F / 180.0f) * 10000 + x;	// 狙っている方向のX座標
+	targety = sinf(angle * DX_PI_F / 180.0f) * 10000 + y;	// 狙っている方向のY座標
 	
 	int blocknum = 0;
 	// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
@@ -111,8 +111,8 @@ void Player::ShooterPlayerControll(void) {
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
 	// または、制限時間になったら勝手に発射する
 	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
-		float rx = cosf(angle * DX_PI_F / 180) + x;		// X進行方向
-		float ry = sinf(angle * DX_PI_F / 180) + y;		// Y進行方向
+		float rx = cosf(angle * DX_PI_F / 180.0f) + x;		// X進行方向
+		float ry = sinf(angle * DX_PI_F / 180.0f) + y;		// Y進行方向
 
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
 		gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
@@ -237,30 +237,30 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	blockY = gameMain->block[blocknum]->GetBlockY();
 	blockSize = gameMain->block[blocknum]->GetBlockSize();
 
-	float prex = targetx - cosf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のY座標
 
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (collision->IsHitWicth(prex, blockX, blockSize)) {
 		// 移動前座標が幅の中なら、向きの上下を変える
-		angle2 = (360 - angle);
+		angle2 = (360.0f - angle);
 	}
 	// ターゲットの移動前Y座標が高さの中にいたら、X座標のみを戻して、Y座標は変化させる
 	else if (collision->IsHitHeight(prey, blockY, blockSize)) {
 		// 高さの中なら、向きの左右を変える
-		angle2 = (360 - angle) + 180;
-		if (angle2 > 360) angle2 -= 360;
+		angle2 = (360.0f - angle) + 180.0f;
+		if (angle2 > 360.0f) angle2 -= 360.0f;
 	}
 	// ブロックの角っこだったら、XYどちらも戻す。
 	else {
 		// 角なら、真逆の向きに
-		angle2 = angle + 180;
-		if (angle2 > 360) angle2 -= 360;
+		angle2 = angle + 180.0f;
+		if (angle2 > 360.0f) angle2 -= 360.0f;
 	}
 
-	float rad = (angle2 / 360) * DX_PI_F * 2;	// ラジアンに変換する
-	targetx2 = cosf(rad) * 300 + targetx;	// 狙っている方向のX座標
-	targety2 = sinf(rad) * 300 + targety;	// 狙っている方向のY座標
+	float rad = (angle2 / 360.0f) * DX_PI_F * 2;	// ラジアンに変換する
+	targetx2 = cosf(rad) * 300.0f + targetx;	// 狙っている方向のX座標
+	targety2 = sinf(rad) * 300.0f + targety;	// 狙っている方向のY座標
 }
 
 // 弾が進む方向がウィンドウを飛び出してないかチェックする
@@ -308,18 +308,18 @@ bool Player::TrajectoryPrecalculation_ToBlock(int* blocknum) {
 
 // ウィンドウのどの端と衝突しているか判断して角度を変更する
 void Player::CalcHitAfterAngle_ToWindow(int num) {
-	float prex = targetx - cosf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180) * 5;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のY座標
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (num % 2 == 0) {
 		// 移動前座標が幅の中なら、向きの上下を変える
-		angle2 = (360 - angle);
+		angle2 = (360.0f - angle);
 	}
 	// ターゲットの移動前Y座標が高さの中にいたら、X座標のみを戻して、Y座標は変化させる
 	else {
 		// 高さの中なら、向きの左右を変える
-		angle2 = (360 - angle) + 180;
-		if (angle2 > 360) angle2 -= 360;
+		angle2 = (360.0f - angle) + 180.0f;
+		if (angle2 > 360.0f) angle2 -= 360.0f;
 	}
 	float rad = (angle2 / 360) * DX_PI_F * 2;	// ラジアンに変換する
 	targetx2 = cosf(rad) * 300 + targetx;	// 狙っている方向のX座標
@@ -366,11 +366,11 @@ int Player::TrajectoryPrecalculation_ToWindow(void) {
 // 角度を0～360度に収まるように調整
 float Player::AngleCorrection(float ang) {
 	// 角度が0～360の範囲になるようにしている。
-	if (360 < ang) {
+	if (360.0f < ang) {
 		return 0;
 	}
 	else if (ang < 0) {
-		return 360;
+		return 360.0f;
 	}
 	return ang;
 }
@@ -420,10 +420,10 @@ int Player::YCoordinateCorrection(int posy, int size) {
 }
 
 void Player::ChangeDirectionalKeyAng(void) {
-	if (270 < angle || angle < 90) {
+	if (270.0f < angle || angle < 90.0f) {
 		directionalKeyAng = -1;
 	}
-	else if (90 <= angle && angle <= 270) {
+	else if (90.0f <= angle && angle <= 270.0f) {
 		directionalKeyAng = 1;
 	}
 }

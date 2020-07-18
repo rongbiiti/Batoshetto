@@ -15,7 +15,6 @@ void UI::UIControll() {
 void UI::DrawPlayerGuage(int x, int y, float maxtime, float nowtime, int playernum) {
 	double percent = (maxtime - nowtime) / maxtime * 100;
 	DrawCircleGauge(x, y, percent, i_PlayerGuage[playernum]);
-	DrawFormatString(600, 600, 0xFFFFFF, "%.3f", percent);
 }
 
 // ‰æ‘œ“Ç‚İ‚İ

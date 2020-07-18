@@ -7,10 +7,14 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	inputManager = input;
 	gameManager = gameMNG;
 	this->hitPlayerNumber = hitplayernum;
+	waitTime = 0;
 }
 
 void Result::ResultControll(void) {
 	for (int i = 0; i < 2; i++) {
+		
+		if (dicideNumFlg[i]) continue;
+
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
 			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 			// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
@@ -35,7 +39,58 @@ void Result::ResultControll(void) {
 
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::B] == 1) {
 			// ゲームパッド1のBボタン入力。
-			switch (selectNum[i])
+			dicideNumFlg[i] = true;
+			
+		}
+	}
+
+
+	// キーボードからの入力。2プレイヤーのカーソルを操作する。
+	if (!dicideNumFlg[GameManager::BLUE] && inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
+		if (--selectNum[GameManager::BLUE] < 0) {
+			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
+		}
+		if (inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+			inputManager->In_Key()[KEY_INPUT_UP] -= 4;
+		}
+	}
+
+	if (!dicideNumFlg[GameManager::BLUE] && inputManager->In_Key()[KEY_INPUT_DOWN] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
+		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
+			selectNum[GameManager::BLUE] = 0;
+		}
+		if (inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+			inputManager->In_Key()[KEY_INPUT_DOWN] -= 4;
+		}
+	}
+
+	if (!dicideNumFlg[GameManager::BLUE] && inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
+		// ゲームパッド1のBボタン入力。
+		dicideNumFlg[GameManager::BLUE] = true;
+		return;
+	}
+
+	// どちらも項目を決定していたら、シーン遷移をする
+	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
+
+		// もしもお互いの項目番号が違ったら、選び直させる。
+		if (selectNum[GameManager::RED] != selectNum[GameManager::BLUE]) {
+			for (int i = 0; i < 2; i++) {
+				selectNum[i] = 0;
+				dicideNumFlg[i] = false;
+			}
+			return;
+		}
+		else {
+
+			// 少し待ってから遷移する
+			if (!(SCENE_TRANSITION_WAITING_TIME < ++waitTime))  return;
+			waitTime = 0;
+			switch (selectNum[GameManager::RED])
 			{
 			case 0:
 				Return_to_Game();
@@ -47,48 +102,6 @@ void Result::ResultControll(void) {
 		}
 	}
 
-
-	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
-		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
-		if (--selectNum[GameManager::BLUE] < 0) {
-			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
-		}
-		if (inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_UP] -= 4;
-		}
-	}
-
-	if (inputManager->In_Key()[KEY_INPUT_DOWN] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
-		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
-		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
-			selectNum[GameManager::BLUE] = 0;
-		}
-		if (inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_DOWN] -= 4;
-		}
-	}
-
-	if (inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
-		// ゲームパッド1のBボタン入力。
-		switch (selectNum[GameManager::BLUE])
-		{
-		case 0:
-			Return_to_Game();
-			break;
-		case 1:
-			Return_to_Title();
-			break;
-		}
-	}
-
-	// Fを押すと、GameManagerのフェーズを初期化フェーズに変更し、自身のデストラクタを呼ぶ。
-	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::B] == 1 ||
-		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::B] == 1 ||
-		inputManager->In_Key()[KEY_INPUT_F] == 1) {
-	}
 }
 
 // 描画用
@@ -112,21 +125,29 @@ void Result::DrawResult() {
 		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
 	}
 
+	for (int i = 0; i < 2; i++) {
+
+		// 項目を決定していたら、長い四角を表示する
+		if (dicideNumFlg[i]) {
+			if (i == GameManager::RED) {
+				DrawBox(0, starty + y * selectNum[i] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[i] + 15, COLOR_VALUE_PLAYER[i], 1);
+			}
+			else {
+				DrawBox(GameMain::SCREEN_WIDTH, starty + y * selectNum[i] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[i] + 15, COLOR_VALUE_PLAYER[i], 1);
+			}
+		}
+		else {
+			// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
+			DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
+		}
+
+	}
+
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
-
-	for (int i = 0; i < 2; i++) {
-		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
-	}
-
-	
-		
-	//fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[0], "B押して再開（キーボードはF）");
-	//DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, 560, 0xFFFFFF, fontData->f_FontData[0], "B押して再開（キーボードはF）");
 }
 
 // ポーズ画面を抜けて試合を再開する
