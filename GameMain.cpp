@@ -12,6 +12,7 @@ GameMain::GameMain(void) {
 	mCount = 0;			//カウンタ
 	mFps = 0;
 	pauseFlg = false;
+	pausePushPLNum = 0;
 }
 
 // FPSを固定するための関数
@@ -71,6 +72,9 @@ void GameMain::Init() {
 	gameManager->~GameManager();
 	gameManager = new GameManager(this);
 
+	title->~Title();
+	title = new Title(fontData, inputManager, gameManager);
+
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i]->~Block();
 		block[i] = new Block(i, fontData,this);
@@ -118,7 +122,7 @@ void GameMain::Update(void) {
 			pauseScreen->~PauseScreen();
 		}
 		else {
-			pauseScreen = new PauseScreen(fontData, inputManager, this);
+			pauseScreen = new PauseScreen(fontData, inputManager, this, pausePushPLNum);
 		}
 		pauseFlg = !pauseFlg;
 		return;
@@ -132,6 +136,9 @@ void GameMain::Update(void) {
 	switch (gameManager->GetPhaseStatus())
 	{
 	case GameManager::TITLE:
+		if (title == nullptr) {
+			title = new Title(fontData, inputManager, gameManager);
+		}
 		title->TitleControll();
 		return;
 		break;
@@ -164,6 +171,7 @@ void GameMain::Update(void) {
 
 	case GameManager::RESULT:
 		// リザルト画面
+		result->ResultControll();
 		return;
 		break;
 	}
@@ -230,7 +238,7 @@ void GameMain::Output(void) {
 		// 弾描画関数
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 			int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
 			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -258,9 +266,28 @@ void GameMain::DrawDebugInfo(void) {
 
 // ポーズ画面を開閉するボタンが押されたかチェック
 bool GameMain::IsPushPauseButton() {
-	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::START] == 1 ||
-		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::START] == 1 ||
-		inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::START] == 1) {
+		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
+		if (pauseFlg && pausePushPLNum != GameManager::RED) {
+			return false;
+		}
+		pausePushPLNum = GameManager::RED;
+		return true;
+	}
+	if (inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::START] == 1) {
+		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
+		if (pauseFlg && pausePushPLNum != GameManager::BLUE) {
+			return false;
+		}
+		pausePushPLNum = GameManager::BLUE;
+		return true;
+	}
+	if (inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
+		if (pauseFlg && pausePushPLNum != GameManager::BLUE + 1) {
+			return false;
+		}
+		pausePushPLNum = GameManager::BLUE + 1;
 		return true;
 	}
 	return false;

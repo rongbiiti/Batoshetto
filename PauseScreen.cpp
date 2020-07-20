@@ -1,11 +1,12 @@
 #include "PauseScreen.h"
 
 // コンストラクタ
-PauseScreen::PauseScreen(FontData* font, InputManager* input, GameMain* main) {
+PauseScreen::PauseScreen(FontData* font, InputManager* input, GameMain* main, int pushPLnum) {
 	// 引数で受け取ったポインタをローカル変数にコピー
 	fontData = font;
 	inputManager = input;
 	gameMain = main;
+	pausePushPLNum = pushPLnum;
 
 	// カーソル位置初期化
 	selectNum[0] = 0;
@@ -15,6 +16,8 @@ PauseScreen::PauseScreen(FontData* font, InputManager* input, GameMain* main) {
 // ポーズ画面処理
 void PauseScreen::PauseScreenControll() {
 	for (int i = 0; i < 2; i++) {
+		if (pausePushPLNum == GameManager::BLUE + 1) break;	// ポーズボタンを押したのがキーボードのキーからなら、コントローラーの操作を受け付けない。
+		if (pausePushPLNum != i) continue;					// ポーズボタンを押したプレイヤーでない場合、処理をスキップ
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
 			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 			// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
@@ -42,17 +45,20 @@ void PauseScreen::PauseScreenControll() {
 			switch (selectNum[i])
 			{
 			case 0:
-				gameMain->SetPauseFlg(false);
+				Return_to_Game();
 				break;
 			case 1:
 				break;
 			case 2:
-				gameMain->SetPauseFlg(false);
-				gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
+				Return_to_Title();
 				break;
 			}
+			return;
 		}
 	}
+
+
+	if (pausePushPLNum != GameManager::BLUE + 1) return;	// ポーズボタンを押したのがコントローラーだったら、キーボードの処理を受け付けないでreturn
 
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
@@ -83,13 +89,12 @@ void PauseScreen::PauseScreenControll() {
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
-			gameMain->SetPauseFlg(false);
+			Return_to_Game();
 			break;
 		case 1:
 			break;
 		case 2:
-			gameMain->SetPauseFlg(false);
-			gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
+			Return_to_Title();
 			break;
 		}
 	}
@@ -101,7 +106,7 @@ void PauseScreen::DrawPauseScreen() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	// Pauseの文字描画
@@ -115,24 +120,28 @@ void PauseScreen::DrawPauseScreen() {
 	}
 	
 	for (int i = 0; i < 2; i++) {
+		if (pausePushPLNum == GameManager::BLUE + 1 && i == GameManager::RED) continue;	// ポーズボタンを押したのがキーボードのキーからなら、コントローラーの操作を受け付けない。
+		if (pausePushPLNum - 1 != i && i == GameManager::BLUE) continue;					// ポーズボタンを押したプレイヤーでない場合、処理をスキップ
+
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
 	}
 }
 
 // ポーズ画面を抜けて試合を再開する
-void Return_to_Game() {
-
+void PauseScreen::Return_to_Game() {
+	gameMain->SetPauseFlg(false);
 }
 
 // オプション画面を開く
-void OpenOptionScreen() {
+void PauseScreen::OpenOptionScreen() {
 
 }
 
 // 試合を中断してタイトル画面へ戻る
-void Return_to_Title() {
-
+void PauseScreen::Return_to_Title() {
+	gameMain->SetPauseFlg(false);
+	gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
 }
 
 // デストラクタ

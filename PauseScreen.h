@@ -11,7 +11,7 @@
 class GameMain;
 class PauseScreen {
 public:
-	PauseScreen(FontData* font, InputManager* input, GameMain* main);				// コンストラクタ
+	PauseScreen(FontData* font, InputManager* input, GameMain* main, int pushPLnum);				// コンストラクタ
 	~PauseScreen();				// デストラクタ
 
 	void PauseScreenControll();	// ポーズ画面処理
@@ -34,6 +34,7 @@ private:
 	};
 
 	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
+	int pausePushPLNum;			// ポーズボタンを押したプレイヤーの番号 0=RED 1=BLUE 2=キーボードからの入力
 
 };
 
