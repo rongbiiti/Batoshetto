@@ -15,45 +15,19 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	rem =  num % BLOCK_ONE_MAX;		// ３×３ブロックの何番目かを余りで求める
 
 	// ３×３ブロックの番号を元に座標を指定
-	switch (rem)
-	{
-	case 0:
+	if (rem == 0) {
 		x = BlockStartPosition[knt][0];
 		y = BlockStartPosition[knt][1];
-		break;
-	case 1:
-		x = BlockStartPosition[knt][0] + 1 * BLOCK_SIZE;
-		y = BlockStartPosition[knt][1];
-		break;
-	case 2:
-		x = BlockStartPosition[knt][0] + 2 * BLOCK_SIZE;
-		y = BlockStartPosition[knt][1];
-		break;
-	case 3:
-		x = BlockStartPosition[knt][0];
-		y = BlockStartPosition[knt][1] + 1 * BLOCK_SIZE;
-		break;
-	case 4:
-		x = BlockStartPosition[knt][0] + 1 * BLOCK_SIZE;
-		y = BlockStartPosition[knt][1] + 1 * BLOCK_SIZE;
-		break;
-	case 5:
-		x = BlockStartPosition[knt][0] + 2 * BLOCK_SIZE;
-		y = BlockStartPosition[knt][1] + 1 * BLOCK_SIZE;
-		break;
-	case 6:
-		x = BlockStartPosition[knt][0];
-		y = BlockStartPosition[knt][1] + 2 * BLOCK_SIZE;
-		break;
-	case 7:
-		x = BlockStartPosition[knt][0] + 1 * BLOCK_SIZE;
-		y = BlockStartPosition[knt][1] + 2 * BLOCK_SIZE;
-		break;
-	case 8:
-		x = BlockStartPosition[knt][0] + 2 * BLOCK_SIZE;
-		y = BlockStartPosition[knt][1] + 2 * BLOCK_SIZE;
-		break;
 	}
+	else if (rem < 3 && rem > 0) {
+		x = gamemain->block[num - 1]->x + BLOCK_SIZE;
+		y = gamemain->block[num - 1]->y;
+	}
+	else if (rem < 9 && rem >= 3) {
+		x = gamemain->block[num - 3]->x;
+		y = gamemain->block[num - 3]->y + BLOCK_SIZE;
+	}
+
 
 	// 余りが０だった場合３×３ブロックの始まりなので乱数で２種類のうちどちらのブロックを使うか決める
 	if (rem == 0) {
