@@ -121,7 +121,7 @@ void PauseScreen::DrawPauseScreen() {
 	
 	for (int i = 0; i < 2; i++) {
 		if (pausePushPLNum == GameManager::BLUE + 1 && i == GameManager::RED) continue;	// ポーズボタンを押したのがキーボードのキーからなら、コントローラーの操作を受け付けない。
-		if (pausePushPLNum - 1 != i && i == GameManager::BLUE) continue;					// ポーズボタンを押したプレイヤーでない場合、処理をスキップ
+		if (pausePushPLNum - 1 != i && i == GameManager::BLUE) continue;				// ポーズボタンを押したプレイヤーでない場合、処理をスキップ
 
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);

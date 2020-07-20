@@ -6,10 +6,18 @@ GameManager::GameManager(GameMain* main) {
 	// 初期化して、フェーズを隠れる側フェーズに移行する
 	t_HideTime = HidePhaseTime;
 	t_ShotTime = ShotPhaseTime;
-	PhaseStatus = HIDE;
+	PhaseStatus = TITLE;
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
 	gameMain = main;
+}
+
+// 時間系の変数初期化
+void GameManager::Init() {
+	t_HideTime = HidePhaseTime;
+	t_ShotTime = ShotPhaseTime;
+	NowShooter = FirstShooter;
+	NowHider = FirstHider;
 }
 
 // 撃つ側・隠れる側を交代する関数。

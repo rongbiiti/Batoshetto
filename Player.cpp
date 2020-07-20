@@ -237,8 +237,8 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	blockY = gameMain->block[blocknum]->GetBlockY();
 	blockSize = gameMain->block[blocknum]->GetBlockSize();
 
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のY座標
 
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (collision->IsHitWicth(prex, blockX, blockSize)) {
@@ -308,8 +308,8 @@ bool Player::TrajectoryPrecalculation_ToBlock(int* blocknum) {
 
 // ウィンドウのどの端と衝突しているか判断して角度を変更する
 void Player::CalcHitAfterAngle_ToWindow(int num) {
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のY座標
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (num % 2 == 0) {
 		// 移動前座標が幅の中なら、向きの上下を変える

@@ -191,8 +191,8 @@ bool Bullet::IsHitBlock(void) {
 		hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 
-		preprex = x - cosf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のX座標
-		preprey = y - sinf(angle * DX_PI_F / 180.0f) * 5;	// 狙っている方向のY座標
+		preprex = x - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
+		preprey = y - sinf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のY座標
 
 		blockX = gameMain->block[num]->GetBlockX();
 		blockY = gameMain->block[num]->GetBlockY();
