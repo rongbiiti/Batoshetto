@@ -13,6 +13,7 @@
 #include "PauseScreen.h"
 #include "Title.h"
 #include  "UI.h"
+#include "DifficultySelectScene.h"
 
 class Bullet;
 class Player;
@@ -24,12 +25,15 @@ class PauseScreen;
 class Title;
 class UI;
 class Block;
+class DifficultySelectScene;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
 class GameMain {
 public:
 	GameMain();				// コンストラクタ
 	int FirstInit(void);	// ゲームループに入る前にする初期化処理
 	void GameLoop(void);	// ゲームループ
+
+	void Init(void);			// ゲームリプレイ時などにクラスを生成しなおす
 
 	const static int SCREEN_WIDTH = 1280;	// 計算に使う幅
 	const static int SCREEN_HEIGHT = 720;	// 計算に使う高さ
@@ -48,6 +52,7 @@ public:
 	Block* block[BLOCK_MAX];		// 生成したブロッククラスのポインタ
 	Result* result;					// 生成したリザルト画面管理クラスのポインタ
 	Title* title;
+	DifficultySelectScene* diffiSelectScene;
 
 private:
 	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
@@ -55,8 +60,6 @@ private:
 
 	bool FPSUpdate(void);		// FPSを固定するための関数
 	void UpdateWait(void);		// FPSを固定するための関数
-
-	void Init(void);			// ゲームリプレイ時などにクラスを生成しなおす
 	
 	void Update(void);			// オブジェクトの処理を進めて値を更新する
 	void Output(void);			// オブジェクトの描画系関数を呼び出す

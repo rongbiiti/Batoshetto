@@ -39,7 +39,10 @@ void Title::TitleControll() {
 			switch (selectNum[i])
 			{
 			case 0:
-				gameManager->SetPhaseStatus(GameManager::INIT);
+				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+			
+				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+				
 				this->~Title();
 				break;
 			case 1:
@@ -56,6 +59,7 @@ void Title::DrawTitle() {
 	
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
+
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "バトシェット");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "バトシェット");
 

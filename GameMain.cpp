@@ -53,14 +53,14 @@ int GameMain::FirstInit(void) {
 	gameManager = new GameManager(this);	// ゲーム進行管理クラスを生成。ポインタを保存しておく。
 	title = new Title(fontData, inputManager, gameManager);
 
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i] = new Block(i, fontData,this);	// ブロックオブジェクトを生成。ポインタを保存しておく。
-	}
+	//for (int i = 0; i < BLOCK_MAX; i++) {
+	//	block[i] = new Block(i, fontData,this);	// ブロックオブジェクトを生成。ポインタを保存しておく。
+	//}
 
-	bullet = new Bullet();					// 弾オブジェクトを生成。ポインタを保存しておく。
+	//bullet = new Bullet();					// 弾オブジェクトを生成。ポインタを保存しておく。
 
-	player[GameManager::RED] = new Player(GameManager::RED, 0xE71122, true, this);		// プレイヤーREDを生成。ポインタを保存しておく。
-	player[GameManager::BLUE] = new Player(GameManager::BLUE, 0x1122E7, false, this);	// プレイヤーBLUEを生成。ポインタを保存しておく。
+	//player[GameManager::RED] = new Player(GameManager::RED, 0xE71122, true, this);		// プレイヤーREDを生成。ポインタを保存しておく。
+	//player[GameManager::BLUE] = new Player(GameManager::BLUE, 0x1122E7, false, this);	// プレイヤーBLUEを生成。ポインタを保存しておく。
 
 	ui = new UI(this);
 
@@ -69,11 +69,7 @@ int GameMain::FirstInit(void) {
 
 // ゲームリプレイ時などにクラスを生成しなおす
 void GameMain::Init() {
-	gameManager->~GameManager();
-	gameManager = new GameManager(this);
-
-	title->~Title();
-	title = new Title(fontData, inputManager, gameManager);
+	gameManager->Init();
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i]->~Block();
@@ -140,6 +136,12 @@ void GameMain::Update(void) {
 			title = new Title(fontData, inputManager, gameManager);
 		}
 		title->TitleControll();
+		
+		return;
+		break;
+	case GameManager::DIFFICULTYSELECT:
+		diffiSelectScene->DifficultySelectControll();
+
 		return;
 		break;
 	case GameManager::INIT:
@@ -190,6 +192,10 @@ void GameMain::Output(void) {
 	case GameManager::TITLE:
 		title->DrawTitle();
 
+		return;
+		break;
+	case GameManager::DIFFICULTYSELECT:
+		diffiSelectScene->DrawDifficultySelectScene();
 		return;
 		break;
 	case GameManager::HIDE:
