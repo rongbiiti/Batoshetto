@@ -20,12 +20,12 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 		y = BlockStartPosition[knt][1];
 	}
 	else if (rem < 3 && rem > 0) {
-		x = gamemain->block[num - 1]->x + BLOCK_SIZE;
-		y = gamemain->block[num - 1]->y;
+		x = gamemain->block[num - 1]->GetBlockX() + BLOCK_SIZE;
+		y = gamemain->block[num - 1]->GetBlockY();
 	}
 	else if (rem < 9 && rem >= 3) {
-		x = gamemain->block[num - 3]->x;
-		y = gamemain->block[num - 3]->y + BLOCK_SIZE;
+		x = gamemain->block[num - 3]->GetBlockX();
+		y = gamemain->block[num - 3]->GetBlockY() + BLOCK_SIZE;
 	}
 
 
