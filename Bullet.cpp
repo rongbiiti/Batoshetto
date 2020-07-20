@@ -47,10 +47,13 @@ void Bullet::BulletControll(void) {
 
 	// ブロックと連続で当たり判定しないように、前のフレームでブロックと当たっていたら
 	// 今回のフレームはブロックと当たり判定しないで抜ける
-	if (hitFlg) {
+	/*if (hitFlg) {
 		hitFlg = false;
 		return;
-	}
+	}*/
+
+	// もし跳弾回数が0未満なら処理を抜ける
+	if (RemainingRicochetTimesCheck()) return;
 
 	if (IsHitBlock()) return;		// ブロックと当たり判定
 
@@ -58,6 +61,9 @@ void Bullet::BulletControll(void) {
 
 // 描画
 void Bullet::DrawBullet(void) {
+	// もし跳弾回数が0未満なら処理を抜ける
+	if (RemainingRicochetTimesCheck()) return;
+
 	int dx = (int)x;
 	int dy = (int)y;
 	DrawCircle(dx, dy, Size, color);
@@ -137,6 +143,9 @@ bool Bullet::IsHitPlayer(void) {
 
 // ブロックと当たり判定
 bool Bullet::IsHitBlock(void) {
+	// もし跳弾回数が0未満なら処理を抜ける
+	if (RemainingRicochetTimesCheck()) return false;
+
 	// ブロックの中心X、Y、直径サイズ
 	int blockX, blockY, blockSize;
 
@@ -188,7 +197,7 @@ bool Bullet::IsHitBlock(void) {
 		x = crossPosition.x;	// 狙っている方向のX座標
 		y = crossPosition.y;	// 狙っている方向のY座標
 		--ricochetCount;		// 当たっていたら、跳弾回数を減らす
-		hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
+		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 
 		preprex = x - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
