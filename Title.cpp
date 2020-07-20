@@ -52,6 +52,47 @@ void Title::TitleControll() {
 			}
 		}
 	}
+
+	// キーボードからの入力。2プレイヤーのカーソルを操作する。
+	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
+		if (--selectNum[GameManager::BLUE] < 0) {
+			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
+		}
+		if (inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+			inputManager->In_Key()[KEY_INPUT_UP] -= 4;
+		}
+	}
+
+	if (inputManager->In_Key()[KEY_INPUT_DOWN] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
+		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
+			selectNum[GameManager::BLUE] = 0;
+		}
+		if (inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+			inputManager->In_Key()[KEY_INPUT_DOWN] -= 4;
+		}
+	}
+
+	if (inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
+		// ゲームパッド1のBボタン入力。
+		switch (selectNum[GameManager::BLUE])
+		{
+		case 0:
+			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+
+			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+
+			this->~Title();
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		}
+	}
 }
 
 void Title::DrawTitle() {
