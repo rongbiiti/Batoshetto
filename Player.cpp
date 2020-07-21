@@ -111,11 +111,8 @@ void Player::ShooterPlayerControll(void) {
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
 	// または、制限時間になったら勝手に発射する
 	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
-		float rx = cosf(angle * DX_PI_F / 180.0f) + x;		// X進行方向
-		float ry = sinf(angle * DX_PI_F / 180.0f) + y;		// Y進行方向
-
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
-		gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
+		CreateBullet();
 		gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 	}
 }
@@ -426,6 +423,13 @@ void Player::ChangeDirectionalKeyAng(void) {
 	else if (90.0f <= angle && angle <= 270.0f) {
 		directionalKeyAng = 1;
 	}
+}
+
+// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
+void Player::CreateBullet(void) {
+	float rx = cosf(angle * DX_PI_F / 180.0f) + x;		// X進行方向
+	float ry = sinf(angle * DX_PI_F / 180.0f) + y;		// Y進行方向
+	gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
 }
 
 Player::~Player() {

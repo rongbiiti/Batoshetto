@@ -4,6 +4,7 @@ Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	fontData = font;
 	inputManager = inputMNG;
 	gameManager = gameMNG;
+	gameMain = gameManager->gameMain;
 
 	// カーソル位置初期化
 	selectNum[0] = 0;
@@ -82,9 +83,7 @@ void Title::TitleControll() {
 		{
 		case 0:
 			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
-			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
-
+			gameMain->CreateDifficultySelectSceneObj();
 			this->~Title();
 			break;
 		case 1:

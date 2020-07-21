@@ -9,6 +9,7 @@ class GameMain;	// クラスのプロトタイプ宣言
 class UI {
 public:
 	UI(GameMain* main);	// コンストラクタ
+	~UI();	// デストラクタ
 
 	void UIControll();	// パラメータを変更処理
 
