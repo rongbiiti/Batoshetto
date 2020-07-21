@@ -80,7 +80,6 @@ void GameMain::Init() {
 	player[GameManager::RED]->~Player();
 	player[GameManager::BLUE]->~Player();
 	CreatePlayerObj();
-
 }
 
 // ƒQ[ƒ€ƒ‹[ƒv

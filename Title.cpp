@@ -51,6 +51,7 @@ void Title::TitleControll() {
 			case 2:
 				break;
 			}
+			return;
 		}
 	}
 
