@@ -329,6 +329,7 @@ void GameMain::CreateResultObj(int hitPNum) {
 
 void GameMain::CreateTitleObj() {
 	title = new Title(fontData, inputManager, gameManager);
+	ui->~UI();
 }
 
 void GameMain::CreateDifficultySelectSceneObj() {

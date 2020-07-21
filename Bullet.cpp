@@ -55,6 +55,8 @@ void Bullet::BulletControll(void) {
 	// ‚à‚µ’µ’e‰ñ”‚ª0–¢–‚È‚çˆ—‚ğ”²‚¯‚é
 	if (RemainingRicochetTimesCheck()) return;
 
+	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::PAD_RIGHT] != 0)return;
+
 	if (IsHitBlock()) return;		// ƒuƒƒbƒN‚Æ“–‚½‚è”»’è
 
 }
