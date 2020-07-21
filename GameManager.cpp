@@ -6,10 +6,18 @@ GameManager::GameManager(GameMain* main) {
 	// 初期化して、フェーズを隠れる側フェーズに移行する
 	t_HideTime = HidePhaseTime;
 	t_ShotTime = ShotPhaseTime;
-	PhaseStatus = HIDE;
+	PhaseStatus = TITLE;
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
 	gameMain = main;
+}
+
+// 時間系の変数初期化
+void GameManager::Init() {
+	t_HideTime = HidePhaseTime;
+	t_ShotTime = ShotPhaseTime;
+	NowShooter = FirstShooter;
+	NowHider = FirstHider;
 }
 
 // 撃つ側・隠れる側を交代する関数。
@@ -43,7 +51,7 @@ void GameManager::SetPhaseStatus(int value, int hitPlayerNum) {
 
 	// リザルト画面を生成する。
 	// GameMainオブジェクトのリザルトオブジェクト記憶ポインタに、生成したリザルトのポインタを入れる
-	gameMain->result = new Result(gameMain->fontData, gameMain->inputManager, this, hitPlayerNum);	
+	gameMain->CreateResultObj(hitPlayerNum);
 }
 
 // 隠れる側の残り時間を管理している関数。

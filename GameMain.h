@@ -13,6 +13,7 @@
 #include "PauseScreen.h"
 #include "Title.h"
 #include  "UI.h"
+#include "DifficultySelectScene.h"
 
 class Bullet;
 class Player;
@@ -24,12 +25,15 @@ class PauseScreen;
 class Title;
 class UI;
 class Block;
+class DifficultySelectScene;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
 class GameMain {
 public:
 	GameMain();				// コンストラクタ
 	int FirstInit(void);	// ゲームループに入る前にする初期化処理
 	void GameLoop(void);	// ゲームループ
+
+	void Init(void);			// ゲームリプレイ時などにクラスを生成しなおす
 
 	const static int SCREEN_WIDTH = 1280;	// 計算に使う幅
 	const static int SCREEN_HEIGHT = 720;	// 計算に使う高さ
@@ -38,7 +42,19 @@ public:
 	int SCREEN_WIDTH_HALF;					// 計算に使う画面の横幅の半分の数値
 	int SCREEN_HEIGHT_HALF;					// 計算に使う画面の高さの半分の数値
 
-	void SetPauseFlg(bool value) { pauseFlg = value; }
+	void SetPauseFlg(bool value) { pauseFlg = value; }	// ポーズ画面を開いているかのフラグを切り替え
+
+	void CreateInputManagerObj();				// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateFontDataObj();					// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreatePlayerObj();						// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateBulletObj();						// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateGameManagerObj();				// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateBlockObj();						// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateResultObj(int hitPNum);			// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateTitleObj();						// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateDifficultySelectSceneObj();		// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreatePauseScreenObj();				// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateUIObj();						// 入力管理クラスを生成し、ポインタを保存しておく
 
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
 	FontData* fontData;				// 生成したフォントデータ管理クラスのポインタ
@@ -47,16 +63,14 @@ public:
 	GameManager* gameManager;		// 生成したゲーム進行管理クラスのポインタ
 	Block* block[BLOCK_MAX];		// 生成したブロッククラスのポインタ
 	Result* result;					// 生成したリザルト画面管理クラスのポインタ
-	Title* title;
+	Title* title;					// 生成したタイトル画面管理クラスのポインタ
+	DifficultySelectScene* diffiSelectScene;	// 生成した難易度選択画面のポインタ
+	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
+	UI* ui;							// 生成したUI管理クラスのポインタ
 
 private:
-	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
-	UI* ui;
-
 	bool FPSUpdate(void);		// FPSを固定するための関数
 	void UpdateWait(void);		// FPSを固定するための関数
-
-	void Init(void);			// ゲームリプレイ時などにクラスを生成しなおす
 	
 	void Update(void);			// オブジェクトの処理を進めて値を更新する
 	void Output(void);			// オブジェクトの描画系関数を呼び出す

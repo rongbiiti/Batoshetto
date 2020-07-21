@@ -21,7 +21,7 @@ public:
 private:
 	Collision* collision;					// コンストラクタで生成した衝突判定をするオブジェクトを保存しておく変数
 	GameMain* gameMain;						// 弾発射時にPlayerから受け取ったGameMainクラスのポインタを保存しておく変数
-	const int BulletMoveSpeed = 20;			// 弾の速度
+	const float BulletMoveSpeed = 18.0f;			// 弾の速度
 	const int BulletRicochetCount = 5;		// 弾の跳弾回数の初期値
 	const int Size = 4;						// 弾の大きさ（直径）
 	const unsigned int color = 0xFFFFFF;	// 弾の色
@@ -37,7 +37,7 @@ private:
 	float moveX, moveY;		// 移動 x,y
 	float preX, preY;		// 移動前の座標
 	int ricochetCount;		// 残り跳弾回数
-	int movespeedx, movespeedy;			// 移動速度
+	float movespeedx, movespeedy;			// 移動速度
 	float angle;				// 角度
 	bool hitFlg;			// ヒットしたかのフラグ。trueになった1フレームのみ当たり判定をせず、falseにして処理を中断して抜けるために使う。
 	bool shooterHitOK;		// 撃ったほうにヒットしてもいいか

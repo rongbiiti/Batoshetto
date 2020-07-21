@@ -1,12 +1,10 @@
-#include "Result.h"
+#include "DifficultySelectScene.h"
 
-// フォントデータ管理オブジェクトのポインタ、入力管理オブジェクトのポインタ、
-// ゲーム進行管理オブジェクトのポインタ、ヒットしたプレイヤーがREDかBLUEかを受け取る。
-Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hitplayernum) {
-	fontData = font;
+// コンストラクタ
+DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font, GameManager* gameMNG) {
 	inputManager = input;
-	gameManager = gameMNG;
-	this->hitPlayerNumber = hitplayernum;
+	fontData = font;
+	gameMangaer = gameMNG;
 	waitTime = 0;
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		selectNum[i] = 0;
@@ -17,9 +15,10 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	}
 }
 
-void Result::ResultControll(void) {
+// 難易度選択画面の処理
+void DifficultySelectScene::DifficultySelectControll() {
 	for (int i = 0; i < 2; i++) {
-		
+
 		if (dicideNumFlg[i]) continue;
 
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
@@ -47,7 +46,7 @@ void Result::ResultControll(void) {
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::B] == 1) {
 			// ゲームパッド1のBボタン入力。
 			dicideNumFlg[i] = true;
-			
+
 		}
 	}
 
@@ -97,40 +96,26 @@ void Result::ResultControll(void) {
 			// 少し待ってから遷移する
 			if (!(SCENE_TRANSITION_WAITING_TIME < ++waitTime))  return;
 			waitTime = 0;
-			switch (selectNum[GameManager::RED])
-			{
-			case 0:
-				Return_to_Game();
-				break;
-			case 1:
-				Return_to_Title();
-				break;
-			}
+			SetDifficulty();
+			gameMangaer->gameMain->Init();
+			this->~DifficultySelectScene();
 		}
 	}
-
 }
 
-// 描画用
-void Result::DrawResult() {
+// 難易度選択画面の描画処理
+void DifficultySelectScene::DrawDifficultySelectScene() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
-	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "GAME SET !!");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "GAME SET !!");
+	// DIFFICULTYSELECTの文字描画
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
 
-	// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
-	if (hitPlayerNumber == gameManager->GetNowShooter()) {
-		// 同じだった場合、自滅だったことを表示する。
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅！ｗ", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅！ｗ", PlayerName[gameManager->GetNowShooter()]);
-	}
-	else {
-		// 違った場合、撃つ側の勝利と表示する
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
-	}
+	// 難易度を選んでくださいの文字描画
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "難易度を選んでください");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "難易度を選んでください");
+	
 
 	for (int i = 0; i < 2; i++) {
 
@@ -157,19 +142,13 @@ void Result::DrawResult() {
 	}
 }
 
-// ポーズ画面を抜けて試合を再開する
-void Result::Return_to_Game() {
-	gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-	gameManager->gameMain->CreateDifficultySelectSceneObj();
-	this->~Result();
+// 難易度をGameManagerの変数にセットしてシーンを遷移
+void DifficultySelectScene::SetDifficulty() {
+	gameMangaer->SetDifficulty(selectNum[GameManager::RED]);
+	gameMangaer->SetPhaseStatus(GameManager::HIDE);
 }
 
-// 試合を中断してタイトル画面へ戻る
-void Result::Return_to_Title() {
-	gameManager->SetPhaseStatus(GameManager::TITLE);
-	gameManager->gameMain->CreateTitleObj();
-	this->~Result();
-}
+// デストラクタ
+DifficultySelectScene::~DifficultySelectScene() {
 
-Result::~Result() {
 }

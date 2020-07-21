@@ -47,47 +47,39 @@ int GameMain::FirstInit(void) {
 	offscreen_handle = MakeScreen(DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
 	SetDrawScreen(offscreen_handle);
 
-	inputManager = new InputManager;		// 入力管理クラスを生成。ポインタを保存しておく。
-	fontData = new FontData;				// フォントデータ管理クラスを生成。ポインタを保存しておく。
+	// 入力管理クラスを生成
+	CreateInputManagerObj();
 
-	gameManager = new GameManager(this);	// ゲーム進行管理クラスを生成。ポインタを保存しておく。
-	title = new Title(fontData, inputManager, gameManager);
+	// フォントデータ管理クラスを生成
+	CreateFontDataObj();
 
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i] = new Block(i, fontData,this);	// ブロックオブジェクトを生成。ポインタを保存しておく。
-	}
+	// ゲーム進行管理クラスを生成
+	CreateGameManagerObj();
 
-	bullet = new Bullet();					// 弾オブジェクトを生成。ポインタを保存しておく。
-
-	player[GameManager::RED] = new Player(GameManager::RED, 0xE71122, true, this);		// プレイヤーREDを生成。ポインタを保存しておく。
-	player[GameManager::BLUE] = new Player(GameManager::BLUE, 0x1122E7, false, this);	// プレイヤーBLUEを生成。ポインタを保存しておく。
-
-	ui = new UI(this);
+	// タイトル画面クラスを生成
+	CreateTitleObj();
 
 	return 1;
 }
 
 // ゲームリプレイ時などにクラスを生成しなおす
 void GameMain::Init() {
-	gameManager->~GameManager();
-	gameManager = new GameManager(this);
+	gameManager->Init();
 
-	title->~Title();
-	title = new Title(fontData, inputManager, gameManager);
+	ui->~UI();
+	CreateUIObj();
 
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i]->~Block();
-		block[i] = new Block(i, fontData,this);
 	}
+	CreateBlockObj();
 
 	bullet->~Bullet();
-	bullet = new Bullet();
+	CreateBulletObj();
 
 	player[GameManager::RED]->~Player();
-	player[GameManager::RED] = new Player(0, 0xE71122, true, this);
-
 	player[GameManager::BLUE]->~Player();
-	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
+	CreatePlayerObj();
 }
 
 // ゲームループ
@@ -122,7 +114,7 @@ void GameMain::Update(void) {
 			pauseScreen->~PauseScreen();
 		}
 		else {
-			pauseScreen = new PauseScreen(fontData, inputManager, this, pausePushPLNum);
+			CreatePauseScreenObj();
 		}
 		pauseFlg = !pauseFlg;
 		return;
@@ -137,9 +129,15 @@ void GameMain::Update(void) {
 	{
 	case GameManager::TITLE:
 		if (title == nullptr) {
-			title = new Title(fontData, inputManager, gameManager);
+			CreateTitleObj();
 		}
 		title->TitleControll();
+		
+		return;
+		break;
+	case GameManager::DIFFICULTYSELECT:
+		diffiSelectScene->DifficultySelectControll();
+
 		return;
 		break;
 	case GameManager::INIT:
@@ -190,6 +188,10 @@ void GameMain::Output(void) {
 	case GameManager::TITLE:
 		title->DrawTitle();
 
+		return;
+		break;
+	case GameManager::DIFFICULTYSELECT:
+		diffiSelectScene->DrawDifficultySelectScene();
 		return;
 		break;
 	case GameManager::HIDE:
@@ -291,4 +293,52 @@ bool GameMain::IsPushPauseButton() {
 		return true;
 	}
 	return false;
+}
+
+void GameMain::CreateInputManagerObj() {
+	// 入力管理クラスを生成。ポインタを保存しておく。
+	inputManager = new InputManager;
+}
+
+void GameMain::CreateFontDataObj() {
+	fontData = new FontData();
+}
+
+void GameMain::CreatePlayerObj() {
+	player[GameManager::RED] = new Player(0, 0xE71122, true, this);
+	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
+}
+
+void GameMain::CreateBulletObj() {
+	bullet = new Bullet();
+}
+
+void GameMain::CreateGameManagerObj() {
+	gameManager = new GameManager(this);
+}
+
+void GameMain::CreateBlockObj() {
+	for (int i = 0; i < BLOCK_MAX; i++) {
+		block[i] = new Block(i, fontData, this);
+	}
+}
+
+void GameMain::CreateResultObj(int hitPNum) {
+	result = new Result(fontData, inputManager, gameManager, hitPNum);
+}
+
+void GameMain::CreateTitleObj() {
+	title = new Title(fontData, inputManager, gameManager);
+}
+
+void GameMain::CreateDifficultySelectSceneObj() {
+	diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+}
+
+void GameMain::CreatePauseScreenObj() {
+	pauseScreen = new PauseScreen(fontData, inputManager, this, pausePushPLNum);
+}
+
+void GameMain::CreateUIObj() {
+	ui = new UI(this);
 }

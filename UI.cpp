@@ -23,3 +23,7 @@ void UI::LoadImages() {
 	if (!(i_PlayerGuage[1] = LoadGraph("Image/Gauge2.png"))) return;
 	
 }
+
+UI::~UI() {
+
+}
