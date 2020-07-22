@@ -195,9 +195,20 @@ void Player::BlockHitCheck(void) {
 			}
 			// ブロックの角っこだったら、XYどちらも戻す。
 			else {
-				y = preY;
-				x = preX;
-			}
+				// 角に当たった場合、左右のブロックの幅の中にいないかもう一度確かめる
+				if ((collision->IsHitWicth(preX, gameMain->block[i - 1]->GetBlockX(), gameMain->block[i - 1]->GetBlockSize()) && gameMain->block[i - 1]->IsAlive()) ||
+					(collision->IsHitWicth(preX, gameMain->block[i + 1]->GetBlockX(), gameMain->block[i + 1]->GetBlockSize()) && gameMain->block[i + 1]->IsAlive())) {
+					y = preY;
+				}
+				// 上下のブロックの高さの中にいないかもう一度確かめる
+				else if ((collision->IsHitWicth(preY, gameMain->block[i - 3]->GetBlockY(), gameMain->block[i - 3]->GetBlockSize() && gameMain->block[i - 3]->IsAlive()) ||
+					(collision->IsHitWicth(preY, gameMain->block[i + 3]->GetBlockY(), gameMain->block[i + 3]->GetBlockSize()) && gameMain->block[i + 3]->IsAlive()))) {
+					x = preX;
+				}
+				else {
+					y = preY;
+					x = preX;
+				}			}
 			// そして処理を抜ける
 			return;
 		}
@@ -250,9 +261,25 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	}
 	// ブロックの角っこだったら、XYどちらも戻す。
 	else {
-		// 角なら、真逆の向きに
-		angle2 = angle + 180.0f;
-		if (angle2 > 360.0f) angle2 -= 360.0f;
+		// 角に当たった場合、左右のブロックの幅の中にいないかもう一度確かめる
+		if ((collision->IsHitWicth(prex, gameMain->block[blocknum - 1]->GetBlockX(), gameMain->block[blocknum - 1]->GetBlockSize()) && gameMain->block[blocknum - 1]->IsAlive()) ||
+			(collision->IsHitWicth(prex, gameMain->block[blocknum + 1]->GetBlockX(), gameMain->block[blocknum + 1]->GetBlockSize()) && gameMain->block[blocknum + 1]->IsAlive())) {
+			// 移動前座標が幅の中なら、向きの上下を変える
+			angle2 = (360.0f - angle);
+		}
+		// 上下のブロックの高さの中にいないかもう一度確かめる
+		else if ((collision->IsHitWicth(prey, gameMain->block[blocknum - 3]->GetBlockY(), gameMain->block[blocknum - 3]->GetBlockSize() && gameMain->block[blocknum - 3]->IsAlive()) ||
+			(collision->IsHitWicth(prey, gameMain->block[blocknum + 3]->GetBlockY(), gameMain->block[blocknum + 3]->GetBlockSize()) && gameMain->block[blocknum + 3]->IsAlive()))) {
+			// 高さの中なら、向きの左右を変える
+			angle2 = (360.0f - angle) + 180.0f;
+			if (angle2 > 360.0f) angle2 -= 360.0f;
+		}
+		else {
+			// 角なら、真逆の向きに
+			angle2 = angle + 180.0f;
+			if (angle2 > 360.0f) angle2 -= 360.0f;
+		}
+		
 	}
 
 	float rad = (angle2 / 360.0f) * DX_PI_F * 2;	// ラジアンに変換する

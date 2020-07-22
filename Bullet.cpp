@@ -55,6 +55,8 @@ void Bullet::BulletControll(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
 	if (RemainingRicochetTimesCheck()) return;
 
+	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::PAD_RIGHT] != 0)return;
+
 	if (IsHitBlock()) return;		// ブロックと当たり判定
 
 }
@@ -200,8 +202,8 @@ bool Bullet::IsHitBlock(void) {
 		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 
-		preprex = x - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
-		preprey = y - sinf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のY座標
+		preprex = x - cosf(angle * DX_PI_F / 180.0f) * (BulletMoveSpeed / 2);	// 狙っている方向のX座標
+		preprey = y - sinf(angle * DX_PI_F / 180.0f) * (BulletMoveSpeed / 2);	// 狙っている方向のY座標
 
 		blockX = gameMain->block[num]->GetBlockX();
 		blockY = gameMain->block[num]->GetBlockY();
@@ -217,9 +219,24 @@ bool Bullet::IsHitBlock(void) {
 			if (angle > 360) angle -= 360;
 		}
 		else {
-			// 角なら、真逆の向きに
-			angle = angle + 180;
-			if (angle > 360) angle -= 360;
+			// 角に当たった場合、左右のブロックの幅の中にいないかもう一度確かめる
+			if ((collision->IsHitWicth((int)preprex, gameMain->block[num - 1]->GetBlockX(), gameMain->block[num - 1]->GetBlockSize()) && gameMain->block[num - 1]->IsAlive()) ||
+				(collision->IsHitWicth((int)preprex, gameMain->block[num + 1]->GetBlockX(), gameMain->block[num + 1]->GetBlockSize()) && gameMain->block[num + 1]->IsAlive())) {
+				// 移動前座標が幅の中なら、向きの上下を変える
+				angle = (360 - angle);
+			}
+			// 上下のブロックの高さの中にいないかもう一度確かめる
+			else if ((collision->IsHitWicth((int)preprey, gameMain->block[num - 3]->GetBlockY(), gameMain->block[num - 3]->GetBlockSize() && gameMain->block[num - 3]->IsAlive()) ||
+					 (collision->IsHitWicth((int)preprey, gameMain->block[num + 3]->GetBlockY(), gameMain->block[num + 3]->GetBlockSize()) && gameMain->block[num + 3]->IsAlive()))) {
+				// 高さの中なら、向きの左右を変える
+				angle = (360 - angle) + 180;
+				if (angle > 360) angle -= 360;
+			}
+			else {
+				// 角なら、真逆の向きに
+				angle = angle + 180;
+				if (angle > 360) angle -= 360;
+			}			
 		}
 
 		ChangeAngle();	// 角度をもとに進行方向変更
