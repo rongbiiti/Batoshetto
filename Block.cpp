@@ -5,19 +5,30 @@
 Block::Block(int num, FontData* font ,GameMain* main) {
 
 	int knt,rem;
+	int gamemode;
 	isAlive = true;			// 生存フラグオン
 	gamemain = main;		// ゲームメインのポインタ
 	size = BLOCK_SIZE;		// サイズ
 	HP = BlockStartHP;		// HP初期化
 	fontData = font;		// フォントデータのポインタ
+	gamemode = main->gameManager->GetDifficulty();
 
 	knt =  num / BLOCK_ONE_MAX;		// ブロックの初期位置を商で求める
 	rem =  num % BLOCK_ONE_MAX;		// ３×３ブロックの何番目かを余りで求める
 
 	// ３×３ブロックの番号を元に座標を指定
 	if (rem == 0) {
-		x = BlockStartPosition[knt][0];
-		y = BlockStartPosition[knt][1];
+		switch (gamemode)
+		{
+		case 1:
+			x = BlockStartPosition2[knt][0];
+			y = BlockStartPosition2[knt][1];
+			break;
+		case 2:
+			x = BlockStartPosition[knt][0];
+			y = BlockStartPosition[knt][1];
+			break;
+		}
 	}
 	else if (rem < 3 && rem > 0) {
 		x = gamemain->block[num - 1]->GetBlockX() + BLOCK_SIZE;
@@ -43,20 +54,42 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 		//ブロックが左上じゃない場合は一個前のブロックで取得した乱数を代入
 		rnd = gamemain->block[num - 1]->rnd;
 	}
+
 	//取得した乱数を元に２種類あるブロックを選別
 	switch (rnd)
 	{
 	case 0:
-		if (BlockPosition[knt][rem] == 0) {
-			isAlive = false;
+		if (gamemode == 2) {
+			if (BlockPosition2[knt][rem] == 0) {
+				isAlive = false;
+			}
+		}
+		else if (gamemode == 1) {
+			if (BlockPosition_Casual[knt][rem] == 0) {
+				isAlive = false;
+			}
 		}
 		break;
 	case 1:
-		if (BlockPosition2[knt][rem] == 0) {
-			isAlive = false;
+		if (gamemode == 2) {
+			if (BlockPosition2[knt][rem] == 0) {
+				isAlive = false;
+			}
+		}
+		else if (gamemode == 1) {
+			if (BlockPosition_Casual[knt][rem] == 0) {
+				isAlive = false;
+			}
 		}
 		break;
 	}
+
+	if (gamemode == 1) {
+		if (num > 44) {
+			isAlive = false;
+		}
+	}
+
 	this->num = num;
 }
 

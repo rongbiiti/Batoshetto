@@ -144,7 +144,17 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 
 // 難易度をGameManagerの変数にセットしてシーンを遷移
 void DifficultySelectScene::SetDifficulty() {
-	gameMangaer->SetDifficulty(selectNum[GameManager::RED]);
+
+	switch (selectNum[GameManager::RED])
+	{
+	case 0:
+		gameMangaer->SetDifficulty(GameManager::CASUAL);
+		break;
+	case 1:
+		gameMangaer->SetDifficulty(GameManager::EXPERT);
+		break;
+	}
+
 	gameMangaer->SetPhaseStatus(GameManager::HIDE);
 }
 
