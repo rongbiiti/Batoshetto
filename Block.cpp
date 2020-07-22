@@ -60,7 +60,7 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	{
 	case 0:
 		if (gamemode == 2) {
-			if (BlockPosition2[knt][rem] == 0) {
+			if (BlockPosition[knt][rem] == 0) {
 				isAlive = false;
 			}
 		}
