@@ -92,6 +92,7 @@ void Player::ShooterPlayerControll(void) {
 	// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
 	if (TrajectoryPrecalculation_ToBlock(&blocknum)) {
 		CalcHitAfterAngle_ToBlock(blocknum);
+		blocknumber = blocknum;
 	}
 	else {	// 有効な値がなかったとき、つまりブロックと当たらず画面端を狙っている場合の処理。
 		blocknum = TrajectoryPrecalculation_ToWindow();
@@ -163,6 +164,7 @@ void Player::DrawTargetAngle(void) {
 	DrawLine(x, y, (int)targetx, (int)targety, color, 3);
 	DrawLine((int)targetx, (int)targety, (int)targetx2, (int)targety2, color, 3);
 	DrawCircle((int)targetx, (int)targety, 4, 0xFFFFFF);
+	DrawFormatString(0, 100, 0xFFFFFF, "%d", blocknumber);
 }
 
 // ブロックと当たり判定
@@ -199,8 +201,8 @@ void Player::BlockHitCheck(void) {
 					y = preY;
 				}
 				// 上下のブロックの高さの中にいないかもう一度確かめる
-				else if ((collision->IsHitHeight(preY, gameMain->block[i - 3]->GetBlockY(), gameMain->block[i - 3]->GetBlockSize() && gameMain->block[i - 3]->IsAlive()) ||
-					(collision->IsHitHeight(preY, gameMain->block[i + 3]->GetBlockY(), gameMain->block[i + 3]->GetBlockSize()) && gameMain->block[i + 3]->IsAlive()))) {
+				else if ((collision->IsHitHeight(preY, gameMain->block[i - 3]->GetBlockY(), gameMain->block[i - 3]->GetBlockSize()) && gameMain->block[i - 3]->IsAlive()) ||
+						 (collision->IsHitHeight(preY, gameMain->block[i + 3]->GetBlockY(), gameMain->block[i + 3]->GetBlockSize()) && gameMain->block[i + 3]->IsAlive())) {
 					x = preX;
 				}
 				else {
@@ -235,15 +237,15 @@ void Player::TargetPointWindowHitCheck(void) {
 // ブロックのどの辺と衝突しているか判断して角度を変更する
 void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	// ブロックのX、Y、直径サイズのローカル変数
-	int blockX, blockY, blockSize;
+	int blockX, blockY, blockSize;	
 
 	// ローカル変数に、ブロックの座標とサイズを入れていく
 	blockX = gameMain->block[blocknum]->GetBlockX();
 	blockY = gameMain->block[blocknum]->GetBlockY();
 	blockSize = gameMain->block[blocknum]->GetBlockSize();
 
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X() / 2;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y() / 2;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X() / 2.8f;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y() / 2.8f;	// 狙っている方向のY座標
 
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (collision->IsHitWicth((int)prex, blockX, blockSize)) {
@@ -265,8 +267,8 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 			angle2 = (360.0f - angle);
 		}
 		// 上下のブロックの高さの中にいないかもう一度確かめる
-		else if ((collision->IsHitWicth((int)prey, gameMain->block[blocknum - 3]->GetBlockY(), gameMain->block[blocknum - 3]->GetBlockSize() && gameMain->block[blocknum - 3]->IsAlive()) ||
-			(collision->IsHitWicth((int)prey, gameMain->block[blocknum + 3]->GetBlockY(), gameMain->block[blocknum + 3]->GetBlockSize()) && gameMain->block[blocknum + 3]->IsAlive()))) {
+		else if ((collision->IsHitHeight((int)prey, gameMain->block[blocknum - 3]->GetBlockY(), gameMain->block[blocknum - 3]->GetBlockSize()) && gameMain->block[blocknum - 3]->IsAlive()) ||
+				 (collision->IsHitHeight((int)prey, gameMain->block[blocknum + 3]->GetBlockY(), gameMain->block[blocknum + 3]->GetBlockSize()) && gameMain->block[blocknum + 3]->IsAlive())) {
 			// 高さの中なら、向きの左右を変える
 			angle2 = (360.0f - angle) + 180.0f;
 			if (angle2 > 360.0f) angle2 -= 360.0f;
@@ -329,8 +331,8 @@ bool Player::TrajectoryPrecalculation_ToBlock(int* blocknum) {
 
 // ウィンドウのどの端と衝突しているか判断して角度を変更する
 void Player::CalcHitAfterAngle_ToWindow(int num) {
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X() / 2.5f;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y() / 2.5f;	// 狙っている方向のY座標
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (num % 2 == 0) {
 		// 移動前座標が幅の中なら、向きの上下を変える

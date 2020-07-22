@@ -57,6 +57,7 @@ private:
 	int preX, preY;				// 移動前の座標
 	int num;					// REDかBLUEか
 	float directionalKeyAng;	// 方向キーで角度操作するときの角度変化量
+	int blocknumber;
 };
 
 #endif // !_PLAYER_H_
