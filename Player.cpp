@@ -1,6 +1,4 @@
 #include "Player.h"
-#include "GameManager.h"
-#include "GameMain.h"
 #include <math.h>
 
 // コンストラクタ。REDかBLUEか、色、撃つ側か否か、GameMainオブジェクトのポインタを引数で受け取る。
@@ -111,11 +109,8 @@ void Player::ShooterPlayerControll(void) {
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
 	// または、制限時間になったら勝手に発射する
 	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
-		float rx = cosf(angle * DX_PI_F / 180.0f) + x;		// X進行方向
-		float ry = sinf(angle * DX_PI_F / 180.0f) + y;		// Y進行方向
-
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
-		gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
+		CreateBullet();
 		gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 	}
 }
@@ -198,11 +193,21 @@ void Player::BlockHitCheck(void) {
 			}
 			// ブロックの角っこだったら、XYどちらも戻す。
 			else {
-				y = preY;
-				x = preX;
+				// 角に当たった場合、左右のブロックの幅の中にいないかもう一度確かめる
+				if ((collision->IsHitWicth(preX, gameMain->block[i - 1]->GetBlockX(), gameMain->block[i - 1]->GetBlockSize()) && gameMain->block[i - 1]->IsAlive()) ||
+					(collision->IsHitWicth(preX, gameMain->block[i + 1]->GetBlockX(), gameMain->block[i + 1]->GetBlockSize()) && gameMain->block[i + 1]->IsAlive())) {
+					y = preY;
+				}
+				// 上下のブロックの高さの中にいないかもう一度確かめる
+				else if ((collision->IsHitHeight(preY, gameMain->block[i - 3]->GetBlockY(), gameMain->block[i - 3]->GetBlockSize() && gameMain->block[i - 3]->IsAlive()) ||
+					(collision->IsHitHeight(preY, gameMain->block[i + 3]->GetBlockY(), gameMain->block[i + 3]->GetBlockSize()) && gameMain->block[i + 3]->IsAlive()))) {
+					x = preX;
+				}
+				else {
+					y = preY;
+					x = preX;
+				}			
 			}
-			// そして処理を抜ける
-			return;
 		}
 	}
 }
@@ -237,25 +242,41 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	blockY = gameMain->block[blocknum]->GetBlockY();
 	blockSize = gameMain->block[blocknum]->GetBlockSize();
 
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * 6;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X() / 2;	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y() / 2;	// 狙っている方向のY座標
 
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
-	if (collision->IsHitWicth(prex, blockX, blockSize)) {
+	if (collision->IsHitWicth((int)prex, blockX, blockSize)) {
 		// 移動前座標が幅の中なら、向きの上下を変える
 		angle2 = (360.0f - angle);
 	}
 	// ターゲットの移動前Y座標が高さの中にいたら、X座標のみを戻して、Y座標は変化させる
-	else if (collision->IsHitHeight(prey, blockY, blockSize)) {
+	else if (collision->IsHitHeight((int)prey, blockY, blockSize)) {
 		// 高さの中なら、向きの左右を変える
 		angle2 = (360.0f - angle) + 180.0f;
 		if (angle2 > 360.0f) angle2 -= 360.0f;
 	}
 	// ブロックの角っこだったら、XYどちらも戻す。
 	else {
-		// 角なら、真逆の向きに
-		angle2 = angle + 180.0f;
-		if (angle2 > 360.0f) angle2 -= 360.0f;
+		// 角に当たった場合、左右のブロックの幅の中にいないかもう一度確かめる
+		if ((collision->IsHitWicth((int)prex, gameMain->block[blocknum - 1]->GetBlockX(), gameMain->block[blocknum - 1]->GetBlockSize()) && gameMain->block[blocknum - 1]->IsAlive()) ||
+			(collision->IsHitWicth((int)prex, gameMain->block[blocknum + 1]->GetBlockX(), gameMain->block[blocknum + 1]->GetBlockSize()) && gameMain->block[blocknum + 1]->IsAlive())) {
+			// 移動前座標が幅の中なら、向きの上下を変える
+			angle2 = (360.0f - angle);
+		}
+		// 上下のブロックの高さの中にいないかもう一度確かめる
+		else if ((collision->IsHitWicth((int)prey, gameMain->block[blocknum - 3]->GetBlockY(), gameMain->block[blocknum - 3]->GetBlockSize() && gameMain->block[blocknum - 3]->IsAlive()) ||
+			(collision->IsHitWicth((int)prey, gameMain->block[blocknum + 3]->GetBlockY(), gameMain->block[blocknum + 3]->GetBlockSize()) && gameMain->block[blocknum + 3]->IsAlive()))) {
+			// 高さの中なら、向きの左右を変える
+			angle2 = (360.0f - angle) + 180.0f;
+			if (angle2 > 360.0f) angle2 -= 360.0f;
+		}
+		else {
+			// 角なら、真逆の向きに
+			angle2 = angle + 180.0f;
+			if (angle2 > 360.0f) angle2 -= 360.0f;
+		}
+		
 	}
 
 	float rad = (angle2 / 360.0f) * DX_PI_F * 2;	// ラジアンに変換する
@@ -426,6 +447,13 @@ void Player::ChangeDirectionalKeyAng(void) {
 	else if (90.0f <= angle && angle <= 270.0f) {
 		directionalKeyAng = 1;
 	}
+}
+
+// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
+void Player::CreateBullet(void) {
+	float rx = cosf(angle * DX_PI_F / 180.0f) + x;		// X進行方向
+	float ry = sinf(angle * DX_PI_F / 180.0f) + y;		// Y進行方向
+	gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
 }
 
 Player::~Player() {

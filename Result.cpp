@@ -160,14 +160,14 @@ void Result::DrawResult() {
 // ポーズ画面を抜けて試合を再開する
 void Result::Return_to_Game() {
 	gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-	gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+	gameManager->gameMain->CreateDifficultySelectSceneObj();
 	this->~Result();
 }
 
 // 試合を中断してタイトル画面へ戻る
 void Result::Return_to_Title() {
 	gameManager->SetPhaseStatus(GameManager::TITLE);
-	gameManager->gameMain->title = new Title(fontData, inputManager, gameManager);
+	gameManager->gameMain->CreateTitleObj();
 	this->~Result();
 }
 

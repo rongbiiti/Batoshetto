@@ -36,6 +36,7 @@ private:
 	int XCoordinateCorrection(int posx, int pnum, int size);	// X座標が指定の範囲を超えていないか、プレイヤーの番号をもとに修正
 	int YCoordinateCorrection(int posy, int size);				// Y座標が指定の範囲を超えないように修正
 
+	void CreateBullet(void);					// 弾を生成する
 	void BlockHitCheck(void);					// ブロックと当たり判定
 	void TargetPointWindowHitCheck(void);		// 弾が進む方向がウィンドウを飛び出してないかチェックする
 	bool TrajectoryPrecalculation_ToBlock(int* blocknum);	// ブロックに対する弾道の事前計算。
