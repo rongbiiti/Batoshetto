@@ -22,6 +22,8 @@ void Bullet::BulletInit(bool alive, float rx, float ry, float ang, GameMain* mai
 	isAlive = alive;					// 弾の存在フラグ
 	x = rx;								// 弾のX座標
 	y = ry;								// 弾のY座標
+	preX = x;							// 移動前座標を初期化
+	preY = y;
 	ricochetCount = BulletRicochetCount;// 弾の残り跳弾回数リセット
 	angle = ang;						// 弾の進行方向の角度
 	ChangeAngle();						// angleをもとに、移動量をリセットする
@@ -68,6 +70,8 @@ void Bullet::DrawBullet(void) {
 
 	int dx = (int)x;
 	int dy = (int)y;
+
+	DrawLine(dx, dy, preX, preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
 	DrawCircle(dx, dy, Size, color);
 }
 
@@ -98,8 +102,8 @@ bool Bullet::IsScreenOutside(void) {
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;
 		y = preY;
-		x += moveX;
-		y += moveY;
+		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2);	// 狙っている方向のX座標
+		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2);	// 狙っている方向のY座標
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
 		RemainingRicochetTimesCheck();	// 跳弾回数0未満なら隠れる側フェーズに移行
 		return true;
@@ -111,8 +115,8 @@ bool Bullet::IsScreenOutside(void) {
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;					
 		y = preY;
-		x += moveX;
-		y += moveY;
+		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2);	// 狙っている方向のX座標
+		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2);	// 狙っている方向のY座標
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
 		RemainingRicochetTimesCheck();	// 跳弾回数0未満なら隠れる側フェーズに移行
 		return true;					
@@ -146,7 +150,7 @@ bool Bullet::IsHitPlayer(void) {
 // ブロックと当たり判定
 bool Bullet::IsHitBlock(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
-	if (RemainingRicochetTimesCheck()) return false;
+	if (RemainingRicochetTimesCheck()) return true;
 
 	// ブロックの中心X、Y、直径サイズ
 	int blockX, blockY, blockSize;
@@ -202,8 +206,8 @@ bool Bullet::IsHitBlock(void) {
 		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 
-		preprex = x - cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2);	// 狙っている方向のX座標
-		preprey = y - sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2);	// 狙っている方向のY座標
+		preprex = x - cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2.5f);	// 狙っている方向のX座標
+		preprey = y - sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2.5f);	// 狙っている方向のY座標
 
 		blockX = gameMain->block[num]->GetBlockX();
 		blockY = gameMain->block[num]->GetBlockY();
@@ -226,8 +230,8 @@ bool Bullet::IsHitBlock(void) {
 				angle = (360 - angle);
 			}
 			// 上下のブロックの高さの中にいないかもう一度確かめる
-			else if ((collision->IsHitWicth((int)preprey, gameMain->block[num - 3]->GetBlockY(), gameMain->block[num - 3]->GetBlockSize() && gameMain->block[num - 3]->IsAlive()) ||
-					 (collision->IsHitWicth((int)preprey, gameMain->block[num + 3]->GetBlockY(), gameMain->block[num + 3]->GetBlockSize()) && gameMain->block[num + 3]->IsAlive()))) {
+			else if ((collision->IsHitHeight((int)preprey, gameMain->block[num - 3]->GetBlockY(), gameMain->block[num - 3]->GetBlockSize()) && gameMain->block[num - 3]->IsAlive()) ||
+					 (collision->IsHitHeight((int)preprey, gameMain->block[num + 3]->GetBlockY(), gameMain->block[num + 3]->GetBlockSize()) && gameMain->block[num + 3]->IsAlive())) {
 				// 高さの中なら、向きの左右を変える
 				angle = (360 - angle) + 180;
 				if (angle > 360) angle -= 360;
@@ -242,9 +246,9 @@ bool Bullet::IsHitBlock(void) {
 		ChangeAngle();	// 角度をもとに進行方向変更
 		x = preprex;
 		y = preprey;
-		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2);	// 狙っている方向のX座標
-		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2);	// 狙っている方向のY座標
-		
+		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2.5f);	// 狙っている方向のX座標
+		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2.5f);	// 狙っている方向のY座標
+		RemainingRicochetTimesCheck();
 		return true;
 	}
 
