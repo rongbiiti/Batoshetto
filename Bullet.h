@@ -40,11 +40,11 @@ private:
 	float moveX, moveY;		// 移動 x,y
 	float preX, preY;		// 移動前の座標
 	int ricochetCount;		// 残り跳弾回数
-	float movespeedx, movespeedy;			// 移動速度
+	float movespeedX, movespeedY;			// 移動速度
 	float angle;				// 角度
 	bool hitFlg;			// ヒットしたかのフラグ。trueになった1フレームのみ当たり判定をせず、falseにして処理を中断して抜けるために使う。
 	bool shooterHitOK;		// 撃ったほうにヒットしてもいいか
-	float preprex, preprey;
+	float lastHitPointX, lastHitPointY;	// 最後にブロックなどと衝突した座標
 };
 
 #endif // !_BULLET_H_
