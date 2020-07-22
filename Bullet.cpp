@@ -10,7 +10,7 @@ Bullet::Bullet(void)
 	preX = 0, preY = 0;
 	moveX = 0, moveY = 0;		// 移動 x,y
 	ricochetCount = 0;		// 残り跳弾回数
-	movespeedx = BulletMoveSpeed, movespeedy = BulletMoveSpeed;			// 移動速度
+	movespeedx = BulletMoveSpeed_X, movespeedy = BulletMoveSpeed_Y;			// 移動速度
 	angle = 0;				// 角度
 	hitFlg = false;
 	collision = new Collision;	// 衝突判定してくれるオブジェクトを生成し、ポインタを保存しておく
@@ -202,8 +202,8 @@ bool Bullet::IsHitBlock(void) {
 		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 
-		preprex = x - cosf(angle * DX_PI_F / 180.0f) * (BulletMoveSpeed / 2);	// 狙っている方向のX座標
-		preprey = y - sinf(angle * DX_PI_F / 180.0f) * (BulletMoveSpeed / 2);	// 狙っている方向のY座標
+		preprex = x - cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2);	// 狙っている方向のX座標
+		preprey = y - sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2);	// 狙っている方向のY座標
 
 		blockX = gameMain->block[num]->GetBlockX();
 		blockY = gameMain->block[num]->GetBlockY();
@@ -242,6 +242,8 @@ bool Bullet::IsHitBlock(void) {
 		ChangeAngle();	// 角度をもとに進行方向変更
 		x = preprex;
 		y = preprey;
+		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedx / 2);	// 狙っている方向のX座標
+		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedy / 2);	// 狙っている方向のY座標
 		
 		return true;
 	}

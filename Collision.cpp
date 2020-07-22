@@ -148,7 +148,7 @@ Collision::Vector2 Collision::GetHitLineAndLine(float ax1, float ay1, float ax2,
 
 // 2“_ŠÔ‚Ì‹——£‚ğŒvZ‚µ‚Ä•Ô‚·B
 float Collision::GetPointsDistance(float x1, float y1, float x2, float y2) {
-	float distance = hypot(x2 - x1, y2 - y1);
+	float distance = hypotf(x2 - x1, y2 - y1);
 
 	return distance;
 }

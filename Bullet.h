@@ -17,11 +17,14 @@ public:
 
 	bool IsAlive() { return isAlive; }						// 弾が存在しているかを返す
 	int GetRicochetCount() { return ricochetCount; }		// 弾の残り跳弾回数を返す
+	float GetBulletSPD_X() { return BulletMoveSpeed_X; }	// 弾のX方向の移動速度を返す
+	float GetBulletSPD_Y() { return BulletMoveSpeed_Y; }	// 弾のY方向の移動速度を返す
 
 private:
 	Collision* collision;					// コンストラクタで生成した衝突判定をするオブジェクトを保存しておく変数
 	GameMain* gameMain;						// 弾発射時にPlayerから受け取ったGameMainクラスのポインタを保存しておく変数
-	const float BulletMoveSpeed = 18.0f;			// 弾の速度
+	const float BulletMoveSpeed_X = 18.0f;			// 弾の速度_X
+	const float BulletMoveSpeed_Y = 18.0f;			// 弾の速度_Y
 	const int BulletRicochetCount = 5;		// 弾の跳弾回数の初期値
 	const int Size = 4;						// 弾の大きさ（直径）
 	const unsigned int color = 0xFFFFFF;	// 弾の色
