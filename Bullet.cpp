@@ -15,6 +15,10 @@ Bullet::Bullet(void)
 	hitFlg = false;
 	collision = new Collision;	// 衝突判定してくれるオブジェクトを生成し、ポインタを保存しておく
 	gameMain = NULL;
+	isPlayerHit = false;
+	waitingTimeAfterPlayerHit = 0;
+	HitPlayerNum = 0;
+	LoadSounds();
 }
 
 // 初期化用関数
@@ -29,10 +33,17 @@ void Bullet::BulletInit(bool alive, float rx, float ry, float ang, GameMain* mai
 	ChangeAngle();						// angleをもとに、移動量をリセットする
 	gameMain = main;					// GameMainのポインタ
 	shooterHitOK = false;				// 撃った瞬間に撃つ側に当たり判定しないようにする
+	isPlayerHit = false;
+	waitingTimeAfterPlayerHit = 0;
+	HitPlayerNum = 0;
+	PlaySoundMem(s_Fire, DX_PLAYTYPE_BACK);
 }
 
 // 弾が実際に動くときの処理
 void Bullet::BulletControll(void) {
+	if (isPlayerHit && ResultTransitionWaiting()) {
+		gameMain->gameManager->SetPhaseStatus(GameManager::RESULT, gameMain->player[HitPlayerNum]->GetPlayerNum());
+	}
 	// もし跳弾回数が0未満なら処理を抜ける
 	if (RemainingRicochetTimesCheck()) return;
 
@@ -45,7 +56,7 @@ void Bullet::BulletControll(void) {
 	y += moveY;
 
 	if (IsScreenOutside()) return;	// 画面外にいってないかチェック
-	if (IsHitPlayer()) return;		// プレイヤーと当たり判定
+	if (IsHitPlayer() && !isPlayerHit) return;		// プレイヤーと当たり判定
 
 	// ブロックと連続で当たり判定しないように、前のフレームでブロックと当たっていたら
 	// 今回のフレームはブロックと当たり判定しないで抜ける
@@ -60,7 +71,6 @@ void Bullet::BulletControll(void) {
 	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::PAD_RIGHT] != 0)return;
 
 	if (IsHitBlock()) return;		// ブロックと当たり判定
-
 }
 
 // 描画
@@ -78,9 +88,11 @@ void Bullet::DrawBullet(void) {
 // 跳弾回数が0未満になっていないかチェックする
 bool Bullet::RemainingRicochetTimesCheck(void) {
 	if (ricochetCount < 0) {
-		// もし0未満なら生存フラグをfalseにして隠れる側フェーズに移行する
 		isAlive = false;
-		gameMain->gameManager->ToHidePhase();
+		// もし0未満なら生存フラグをfalseにして隠れる側フェーズに移行する
+		if (!isPlayerHit) { 
+			gameMain->gameManager->ToHidePhase(); 			
+		}
 		return true;
 	}
 	return false;
@@ -97,6 +109,7 @@ void Bullet::ChangeAngle(void) {
 bool Bullet::IsScreenOutside(void) {
 	if (x >= GameMain::SCREEN_WIDTH || x <= 0) {
 		--ricochetCount;				// 跳弾回数減らす
+		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle) + 180;	// 向きの上下を反転させる
 		if (angle > 360) angle -= 360;	// 360度におさまるようにする
 		ChangeAngle();					// 角度をもとに進行方向変更
@@ -111,6 +124,7 @@ bool Bullet::IsScreenOutside(void) {
 
 	if (y >= GameMain::SCREEN_HEIGHT || y <= 0) {
 		--ricochetCount;				// 跳弾回数減らす
+		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle);			// 向きの左右を反転させる
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;					
@@ -127,6 +141,7 @@ bool Bullet::IsScreenOutside(void) {
 
 // プレイヤーと当たり判定
 bool Bullet::IsHitPlayer(void) {
+	if (isPlayerHit) return false;
 	// プレイヤーのX、Y、直径サイズ
 	int playerX, playerY, playerSize;
 
@@ -139,7 +154,11 @@ bool Bullet::IsHitPlayer(void) {
 
 		// プレイヤーと当たり判定し、当たっていたらリザルト画面に飛ぶようにGameManagerにお願いし、プレイヤーの色を渡す
 		if (collision->IsHit((int)x, (int)y, Size, playerX, playerY, playerSize)) {
-			gameMain->gameManager->SetPhaseStatus(GameManager::RESULT, gameMain->player[i]->GetPlayerNum());
+			HitPlayerNum = i;
+			isPlayerHit = true;
+			PlaySoundMem(s_PlayerHit, DX_PLAYTYPE_BACK);
+			PlaySoundMem(s_Blood, DX_PLAYTYPE_BACK);
+			ricochetCount = -1;
 			return true;
 		}
 	}
@@ -198,11 +217,13 @@ bool Bullet::IsHitBlock(void) {
 		shooterHitOK = true;	// 撃つ側のプレイヤーに当たるようにする
 		gameMain->block[num]->DecrementBlockHP();	// ブロックのHPを減らす
 		if (!gameMain->block[num]->IsAlive()) {
+			PlaySoundMem(s_BlockBreak, DX_PLAYTYPE_BACK);
 			return true;
 		}
 		x = crossPosition.x;	// 狙っている方向のX座標
 		y = crossPosition.y;	// 狙っている方向のY座標
 		--ricochetCount;		// 当たっていたら、跳弾回数を減らす
+		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 
@@ -256,6 +277,33 @@ bool Bullet::IsHitBlock(void) {
 	return false;
 }
 
+bool Bullet::ResultTransitionWaiting(void) {
+	if (++waitingTimeAfterPlayerHit <= 240) {
+		return false;
+	}
+	return true;
+}
+
 Bullet::~Bullet() {
 	
+}
+
+// 音データ読み込み
+void Bullet::LoadSounds(void) {
+	if ((s_Fire = LoadSoundMem("sounds/Fire.mp3")) == -1) return;
+	if ((s_Ricochet = LoadSoundMem("sounds/Ricochet.mp3")) == -1) return;
+	if ((s_BlockBreak = LoadSoundMem("sounds/BlockBreak.mp3")) == -1) return;
+	if ((s_PlayerHit = LoadSoundMem("sounds/PlayerHit.mp3")) == -1) return;
+	if ((s_Blood = LoadSoundMem("sounds/Blood_Sibuki.mp3")) == -1) return;
+}
+
+// 音量変更
+void Bullet::ChangeVolume(float persent) {
+	int volume = 255.0f * persent;
+
+	ChangeVolumeSoundMem(s_Fire, volume);
+	ChangeVolumeSoundMem(s_Ricochet, volume);
+	ChangeVolumeSoundMem(s_BlockBreak, volume);
+	ChangeVolumeSoundMem(s_PlayerHit, volume);
+	ChangeVolumeSoundMem(s_Blood, volume);
 }

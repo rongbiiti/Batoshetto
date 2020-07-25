@@ -26,7 +26,7 @@ class Title;
 class UI;
 class Block;
 class DifficultySelectScene;
-const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xE71122 , 0x1122E7 };
+const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xdc143c , 0x4169e1 };
 class GameMain {
 public:
 	GameMain();				// コンストラクタ
@@ -75,6 +75,7 @@ private:
 	void Update(void);			// オブジェクトの処理を進めて値を更新する
 	void Output(void);			// オブジェクトの描画系関数を呼び出す
 
+	bool PauseProcess(void);	// ポーズ画面に関する処理がまとまっている
 	bool IsPushPauseButton(void);	// ポーズ画面を開閉するボタンが押されたかチェック
 
 	void DrawDebugInfo(void);	// デバッグ情報を描画するための関数

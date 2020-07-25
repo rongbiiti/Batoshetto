@@ -41,10 +41,10 @@ void GameMain::UpdateWait(void) {
 
 int GameMain::FirstInit(void) {
 	SetMainWindowText("バトシェット");	// ウィンドウの名前設定
-	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32);	// ウィンドウの計算用大きさ設定
+	SetGraphMode(DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, 32);	// ウィンドウの計算用大きさ設定
 	ChangeWindowMode(TRUE);				// ウィンドウモードで起動
 	if (DxLib_Init() == -1) return -1;	// DxLibの初期化処理が上手くいかなかったら強制終了
-	offscreen_handle = MakeScreen(DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
+	offscreen_handle = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
 	SetDrawScreen(offscreen_handle);
 
 	// 入力管理クラスを生成
@@ -109,21 +109,6 @@ void GameMain::GameLoop(void) {
 
 // オブジェクトの処理を進めて値を更新する
 void GameMain::Update(void) {
-	if (IsPushPauseButton()) {
-		if (pauseFlg) {
-			pauseScreen->~PauseScreen();
-		}
-		else {
-			CreatePauseScreenObj();
-		}
-		pauseFlg = !pauseFlg;
-		return;
-	}
-
-	if (pauseFlg) {
-		pauseScreen->PauseScreenControll();
-		return;
-	}
 
 	switch (gameManager->GetPhaseStatus())
 	{
@@ -149,6 +134,8 @@ void GameMain::Update(void) {
 
 	case GameManager::HIDE:
 		// 隠れる側フェーズ
+		if (!ui->TransitionAnimationWaiting()) return;
+		if (PauseProcess()) return;
 		gameManager->HideTimerControll();
 		player[gameManager->GetNowHider()]->HidingPlayerControll();
 		return;
@@ -156,6 +143,8 @@ void GameMain::Update(void) {
 
 	case GameManager::SHOT:
 		// 撃つ側フェーズ
+		if (!ui->TransitionAnimationWaiting()) return;
+		if (PauseProcess()) return;
 		gameManager->ShotTimerControll();
 		player[gameManager->GetNowShooter()]->ShooterPlayerControll();
 		return;
@@ -206,8 +195,10 @@ void GameMain::Output(void) {
 		}
 		
 		// 隠れるフェーズ時の文字描画
-		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s隠れろ！", PlayerName[gameManager->GetNowHider()]);
+		//DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
+		ui->DrawTransitionAnimation();
 
+		
 		ui->DrawPlayerGuage(player[nowhider]->GetPlayerX(), player[nowhider]->GetPlayerY(), float(gameManager->HidePhaseTime), float(gameManager->GetHideTime()), nowhider);
 
 		break;
@@ -223,8 +214,10 @@ void GameMain::Output(void) {
 			block[i]->DrawBlocks();
 		}
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
-		DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+		//DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+		ui->DrawTransitionAnimation();
 
+		if (ui->GetTransitionFlg()) return;
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 
 		ui->DrawPlayerGuage(player[nowshooter]->GetPlayerX(), player[nowshooter]->GetPlayerY(), float(gameManager->ShotPhaseTime), float(gameManager->GetShotTime()), nowshooter);
@@ -244,7 +237,7 @@ void GameMain::Output(void) {
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-			int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
+			int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[2], "%d", bullet->GetRicochetCount());
 			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
@@ -293,6 +286,25 @@ bool GameMain::IsPushPauseButton() {
 			return false;
 		}
 		pausePushPLNum = GameManager::BLUE + 1;
+		return true;
+	}
+	return false;
+}
+
+bool GameMain::PauseProcess(void) {
+	if (IsPushPauseButton()) {
+		if (pauseFlg) {
+			pauseScreen->~PauseScreen();
+		}
+		else {
+			CreatePauseScreenObj();
+		}
+		pauseFlg = !pauseFlg;
+		return true;
+	}
+
+	if (pauseFlg) {
+		pauseScreen->PauseScreenControll();
 		return true;
 	}
 	return false;

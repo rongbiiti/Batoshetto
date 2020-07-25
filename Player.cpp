@@ -164,7 +164,6 @@ void Player::DrawTargetAngle(void) {
 	DrawLine(x, y, (int)targetx, (int)targety, color, 3);
 	DrawLine((int)targetx, (int)targety, (int)targetx2, (int)targety2, color, 3);
 	DrawCircle((int)targetx, (int)targety, 4, 0xFFFFFF);
-	DrawFormatString(0, 100, 0xFFFFFF, "%d", blocknumber);
 }
 
 // ƒuƒƒbƒN‚Æ“–‚½‚è”»’è

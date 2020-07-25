@@ -6,7 +6,7 @@
 
 class FontData {
 public:
-	int f_FontData[2];			// フォントデータを保存しておく配列
+	int f_FontData[3];			// フォントデータを保存しておく配列
 	FontData();					// コンストラクタ
 private:
 	void CreateFontData(void);	// フォントデータを作成し、配列に保存する関数

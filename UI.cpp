@@ -3,12 +3,47 @@
 // コンストラクタ
 UI::UI(GameMain* main) {
 	gameMain = main;
+	gameManager = gameMain->gameManager;
+	fontData = gameMain->fontData;
 	LoadImages();
+	TransitionParameterReset();
 }
 
 // パラメータを変更処理
 void UI::UIControll() {
 
+}
+
+// 隠れる・撃つの切替時のアニメーション
+// 処理が終わっていたらtrue、まだならfalseが返る
+bool UI::TransitionAnimationWaiting() {
+	if (++animationWaitingTime <= 45) {
+		transitionX += 500 / 45;
+		return false;
+	}
+	if (animationWaitingTime <= 90) {
+		
+		return false;
+	}
+
+	transitionFlg = false;
+	return true;
+}
+
+void UI::DrawTransitionAnimation() {
+	if (gameManager->GetPhaseStatus() == GameManager::HIDE) {
+		DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
+	}
+	else {
+		DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+	}
+}
+
+void UI::TransitionParameterReset() {
+	animationWaitingTime = 0;
+	transitionX = 0;
+	transitionY = 120;
+	transitionFlg = true;
 }
 
 // プレイヤーの残り時間をゲージで描画する関数

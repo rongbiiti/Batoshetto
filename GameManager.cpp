@@ -81,12 +81,14 @@ void GameManager::ToHidePhase(void) {
 	SetHideTime();
 	SetPhaseStatus(HIDE);
 	ShooterChange();
+	gameMain->ui->TransitionParameterReset();
 }
 
 // 撃つ側のフェーズに移行する処理がまとめてある。
 void GameManager::ToShotPhase(void) {
 	SetShotTime();
 	SetPhaseStatus(SHOT);
+	gameMain->ui->TransitionParameterReset();
 }
 
 GameManager::~GameManager() {

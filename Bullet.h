@@ -20,6 +20,8 @@ public:
 	float GetBulletSPD_X() { return BulletMoveSpeed_X; }	// 弾のX方向の移動速度を返す
 	float GetBulletSPD_Y() { return BulletMoveSpeed_Y; }	// 弾のY方向の移動速度を返す
 
+	void ChangeVolume(float persent);	// 音量変更
+
 private:
 	Collision* collision;					// コンストラクタで生成した衝突判定をするオブジェクトを保存しておく変数
 	GameMain* gameMain;						// 弾発射時にPlayerから受け取ったGameMainクラスのポインタを保存しておく変数
@@ -34,6 +36,7 @@ private:
 	bool IsHitPlayer(void);					// プレイヤーと当たっているかチェックする
 	bool IsHitBlock(void);					// ブロックと当たっているかチェックする
 	void ChangeAngle(void);					// 弾の進行方向を変更させる関数
+	bool ResultTransitionWaiting(void);		// リザルト画面に飛ぶ前に少し待つ
 
 	bool isAlive;			// 弾が生きているか
 	float x, y;				// 座標 x,y
@@ -45,6 +48,17 @@ private:
 	bool hitFlg;			// ヒットしたかのフラグ。trueになった1フレームのみ当たり判定をせず、falseにして処理を中断して抜けるために使う。
 	bool shooterHitOK;		// 撃ったほうにヒットしてもいいか
 	float lastHitPointX, lastHitPointY;	// 最後にブロックなどと衝突した座標
+	bool isPlayerHit;		// trueだとヒットした
+	int waitingTimeAfterPlayerHit;	// プレイヤーヒット後の余韻時間
+	int HitPlayerNum;		// ヒットしたプレイヤーの番号
+
+	void LoadSounds(void);	// 音データ読み込み
+
+	int s_Fire;	// 発射音
+	int s_Ricochet;	// 跳弾音
+	int s_BlockBreak;	// ブロック破壊音
+	int s_PlayerHit;	// プレイヤーにヒットした音
+	int s_Blood;		// 血が出る音
 };
 
 #endif // !_BULLET_H_
