@@ -19,7 +19,8 @@ public:
 		HIDE,
 		SHOT,
 		RECOCHETWAIT,
-		RESULT
+		RESULT,
+		OPTION
 	};
 
 	// プレイヤーの管理が配列なので、その添え字をわかりやすく指定するときに使う。

@@ -301,9 +301,9 @@ void Bullet::LoadSounds(void) {
 void Bullet::ChangeVolume(float persent) {
 	int volume = 255.0f * persent;
 
-	ChangeVolumeSoundMem(s_Fire, volume);
-	ChangeVolumeSoundMem(s_Ricochet, volume);
-	ChangeVolumeSoundMem(s_BlockBreak, volume);
-	ChangeVolumeSoundMem(s_PlayerHit, volume);
-	ChangeVolumeSoundMem(s_Blood, volume);
+	ChangeVolumeSoundMem(volume, s_Fire);
+	ChangeVolumeSoundMem(volume, s_Ricochet);
+	ChangeVolumeSoundMem(volume, s_BlockBreak);
+	ChangeVolumeSoundMem(volume, s_PlayerHit);
+	ChangeVolumeSoundMem(volume, s_Blood);
 }
