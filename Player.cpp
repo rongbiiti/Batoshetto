@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "DxLib.h"
 #include <math.h>
 
 // コンストラクタ。REDかBLUEか、色、撃つ側か否か、GameMainオブジェクトのポインタを引数で受け取る。
@@ -32,6 +33,8 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 	inputManager = main->inputManager;	// 入力管理オブジェクトのポインタを入れる。
 
 	collision = new Collision;	// 衝突判定管理オブジェクトを生成する
+
+	LoadImages();	//画像読み込み
 }
 
 // 撃つ側時の操作処理
@@ -156,7 +159,8 @@ void Player::HidingPlayerControll(void) {
 
 // 描画用
 void Player::DrawPlayer(void) {
-	DrawCircle(x, y, size / 2, color);
+	//DrawCircle(x, y, size / 2, color);
+	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[0], TRUE);
 }
 
 // 撃つ側時に狙っている方向に線を引いて描画する
@@ -455,6 +459,13 @@ void Player::CreateBullet(void) {
 	float rx = cosf(angle * DX_PI_F / 180.0f) + x;		// X進行方向
 	float ry = sinf(angle * DX_PI_F / 180.0f) + y;		// Y進行方向
 	gameMain->bullet->BulletInit(true, rx, ry, (float)angle, gameMain);
+}
+
+// 画像読み込み
+void Player::LoadImages() {
+	if (!(i_Playerimage[0] = LoadGraph("Image/PlayerDefalut01.png"))) return;
+	if (!(i_Playerimage[1] = LoadGraph("Image/PlayerDefalut01.png"))) return;
+
 }
 
 Player::~Player() {

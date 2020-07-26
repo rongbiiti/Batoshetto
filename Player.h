@@ -4,6 +4,7 @@
 
 #include "Collision.h"
 #include "GameMain.h"
+#include "DxLib.h"
 
 class GameMain;
 class Player {
@@ -58,6 +59,8 @@ private:
 	int num;					// REDかBLUEか
 	float directionalKeyAng;	// 方向キーで角度操作するときの角度変化量
 	int blocknumber;
+	void LoadImages();	// 画像読み込み
+	int i_Playerimage[2];	// ゲージの画像
 };
 
 #endif // !_PLAYER_H_
