@@ -468,6 +468,12 @@ void Player::LoadImages() {
 
 }
 
+// ‰æ‘œƒf[ƒ^ƒƒ‚ƒŠ‚©‚çÁ‹
+void Player::DeleteImages() {
+	DeleteGraph(i_Playerimage[0]);
+	DeleteGraph(i_Playerimage[1]);
+}
+
 Player::~Player() {
-	
+	//DeleteImages();
 }

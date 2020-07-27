@@ -157,10 +157,11 @@ void Result::DrawResult() {
 	}
 }
 
-// ポーズ画面を抜けて試合を再開する
+// 画面を抜けて難易度選択画面へ
 void Result::Return_to_Game() {
 	gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 	gameManager->gameMain->CreateDifficultySelectSceneObj();
+	gameManager->gameMain->MainObjDelete();
 	this->~Result();
 }
 
@@ -168,6 +169,7 @@ void Result::Return_to_Game() {
 void Result::Return_to_Title() {
 	gameManager->SetPhaseStatus(GameManager::TITLE);
 	gameManager->gameMain->CreateTitleObj();
+	gameManager->gameMain->MainObjDelete();
 	this->~Result();
 }
 

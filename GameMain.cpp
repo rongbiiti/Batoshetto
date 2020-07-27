@@ -64,22 +64,25 @@ int GameMain::FirstInit(void) {
 
 // ゲームリプレイ時などにクラスを生成しなおす
 void GameMain::Init() {
-	gameManager->Init();
-
-	ui->~UI();
+	gameManager->Init();	
 	CreateUIObj();
-
-	for (int i = 0; i < BLOCK_MAX; i++) {
-		block[i]->~Block();
-	}
 	CreateBlockObj();
-
-	bullet->~Bullet();
-	CreateBulletObj();
-
-	player[GameManager::RED]->~Player();
-	player[GameManager::BLUE]->~Player();
+	CreateBulletObj();	
 	CreatePlayerObj();
+}
+
+void GameMain::MainObjDelete() {	
+	ui->DeleteImages();
+	if (ui != nullptr) ui->~UI();
+	for (int i = 0; i < BLOCK_MAX; i++) {
+		if (block[i] != nullptr) block[i]->~Block();
+	}
+	DeleteBlockImages();
+	if (bullet != nullptr) bullet->~Bullet();
+	player[GameManager::RED]->DeleteImages();
+	player[GameManager::BLUE]->DeleteImages();
+	if (player[GameManager::RED] != nullptr) player[GameManager::RED]->~Player();
+	if (player[GameManager::BLUE] != nullptr) player[GameManager::BLUE]->~Player();
 }
 
 // ゲームループ
@@ -316,6 +319,18 @@ bool GameMain::PauseProcess(void) {
 	return false;
 }
 
+void GameMain::LoadBlockImages() {
+	if (!(i_BlockImages[0] = LoadGraph("Image/Block03.png"))) return;
+	if (!(i_BlockImages[1] = LoadGraph("Image/Block02.png"))) return;
+	if (!(i_BlockImages[2] = LoadGraph("Image/Block01.png"))) return;
+}
+
+void GameMain::DeleteBlockImages() {
+	DeleteGraph(i_BlockImages[0]);
+	DeleteGraph(i_BlockImages[1]);
+	DeleteGraph(i_BlockImages[2]);
+}
+
 void GameMain::CreateInputManagerObj() {
 	// 入力管理クラスを生成。ポインタを保存しておく。
 	inputManager = new InputManager;
@@ -342,6 +357,7 @@ void GameMain::CreateBlockObj() {
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData, this);
 	}
+	LoadBlockImages();
 }
 
 void GameMain::CreateResultObj(int hitPNum) {
@@ -350,7 +366,9 @@ void GameMain::CreateResultObj(int hitPNum) {
 
 void GameMain::CreateTitleObj() {
 	title = new Title(fontData, inputManager, gameManager);
-	ui->~UI();
+	if (ui != nullptr) {
+		ui->~UI();
+	}
 }
 
 void GameMain::CreateDifficultySelectSceneObj() {

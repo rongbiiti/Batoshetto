@@ -36,6 +36,7 @@ public:
 	void GameLoop(void);	// ゲームループ
 
 	void Init(void);			// ゲームリプレイ時などにクラスを生成しなおす
+	void MainObjDelete(void);	// プレイヤーやブロックなど主要なオブジェクトのデストラクタを呼ぶ
 
 	const static int SCREEN_WIDTH = 1280;	// 計算に使う幅
 	const static int SCREEN_HEIGHT = 720;	// 計算に使う高さ
@@ -45,6 +46,7 @@ public:
 	int SCREEN_HEIGHT_HALF;					// 計算に使う画面の高さの半分の数値
 
 	void SetPauseFlg(bool value) { pauseFlg = value; }	// ポーズ画面を開いているかのフラグを切り替え
+	int GetBlockImage(int num) { return i_BlockImages[num]; }	// ブロックの画像を渡す
 
 	void CreateInputManagerObj();				// 入力管理クラスを生成し、ポインタを保存しておく
 	void CreateFontDataObj();					// フォントデータ管理クラスを生成し、ポインタを保存しておく
@@ -84,6 +86,9 @@ private:
 
 	void DrawDebugInfo(void);	// デバッグ情報を描画するための関数
 
+	void LoadBlockImages();			// ブロック画像読み込み
+	void DeleteBlockImages();	// ブロックの画像消去
+
 	const static int DRAW_SCREEN_WIDTH = 1280;	// 描画時のウィンドウの幅
 	const static int DRAW_SCREEN_HEIGHT = 720;	// 描画時のウィンドウの高さ
 
@@ -97,6 +102,8 @@ private:
 
 	bool pauseFlg;				// ポーズ画面のフラグ
 	int pausePushPLNum;			// ポーズボタンを押したプレイヤーの番号 0=RED 1=BLUE 2=キーボードからの入力
+
+	int i_BlockImages[3];	// ブロックの画像
 
 };
 #endif // !_GAMEMAIN_H_

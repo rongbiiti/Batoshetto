@@ -65,6 +65,13 @@ void UI::LoadImages() {
 	
 }
 
-UI::~UI() {
+// ‰æ‘œÁ‹
+void UI::DeleteImages() {
+	DeleteGraph(i_PlayerGuage[0]);
+	DeleteGraph(i_PlayerGuage[1]);
+	DeleteGraph(i_BackGroundImage);
+}
 
+UI::~UI() {
+	//DeleteImages();
 }

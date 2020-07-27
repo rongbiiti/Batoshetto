@@ -147,6 +147,7 @@ void PauseScreen::OpenOptionScreen() {
 void PauseScreen::Return_to_Title() {
 	gameMain->SetPauseFlg(false);
 	gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
+	gameMain->MainObjDelete();
 	gameMain->CreateTitleObj();
 }
 
