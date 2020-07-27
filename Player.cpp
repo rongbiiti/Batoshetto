@@ -160,7 +160,7 @@ void Player::HidingPlayerControll(void) {
 // •`‰æ—p
 void Player::DrawPlayer(void) {
 	//DrawCircle(x, y, size / 2, color);
-	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[0], TRUE);
+	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[isShooter], TRUE);
 }
 
 // Œ‚‚Â‘¤‚É‘_‚Á‚Ä‚¢‚é•ûŒü‚Éü‚ğˆø‚¢‚Ä•`‰æ‚·‚é
@@ -464,7 +464,7 @@ void Player::CreateBullet(void) {
 // ‰æ‘œ“Ç‚İ‚İ
 void Player::LoadImages() {
 	if (!(i_Playerimage[0] = LoadGraph("Image/PlayerDefalut01.png"))) return;
-	if (!(i_Playerimage[1] = LoadGraph("Image/PlayerDefalut01.png"))) return;
+	if (!(i_Playerimage[1] = LoadGraph("Image/PlayerShot.png"))) return;
 
 }
 

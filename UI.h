@@ -20,6 +20,7 @@ public:
 
 	// プレイヤーの残り時間をゲージで描画する関数
 	void DrawPlayerGuage(int x, int y, float maxtime, float nowtime, int playernum);
+	void DrawBackGround();	// 背景画像描画
 
 private:
 	GameMain* gameMain;		// ゲームメインクラスのポインタ
@@ -33,6 +34,7 @@ private:
 
 	void LoadImages();	// 画像読み込み
 	int i_PlayerGuage[2];	// ゲージの画像
+	int i_BackGroundImage;	// 背景画像
 };
 
 #endif // !_UI_H_

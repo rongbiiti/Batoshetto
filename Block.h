@@ -145,8 +145,12 @@ private:
 	// X、Y、サイズの順。
 	const int BlockStartHP = 3;		// ブロックの初期HP
 
+	void LoadImages(void);	// 画像読み込み
+
 	FontData* fontData;				// コンストラクタで受け取ったフォント管理オブジェクトのポインタを保存しておく変数
 	GameMain* gamemain;
+
+	int i_BlockImage[3];	// ブロックの画像
 
 	bool isAlive;			// 生きているか		
 	int x, y;				// 座標 x,y

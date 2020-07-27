@@ -100,6 +100,8 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	}
 
 	this->num = num;
+
+	LoadImages();
 }
 
 // ブロックを描画する関数
@@ -115,16 +117,18 @@ void Block::DrawBlocks(void) {
 	dx2 = x + size / 2;
 	dy1 = y - size / 2;
 	dy2 = y + size / 2;
-	if (HP == 3) {
-		DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
-	}
-	else if (HP == 2) {
-		DrawBox(dx1, dy1, dx2, dy2, 0xFFFF00, 1);
-	}
-	else if (HP == 1) {
-		DrawBox(dx1, dy1, dx2, dy2, 0xFF0000, 1);
-	}
-	DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
+	DrawRotaGraph(x, y, 1, 0, i_BlockImage[HP - 1], 0);
+	//if (HP == 3) {
+	//	//DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
+	//	DrawRotaGraph(x, y, 1, 0, i_BlockImage[HP - 1], 0);
+	//}
+	//else if (HP == 2) {
+	//	DrawBox(dx1, dy1, dx2, dy2, 0xFFFF00, 1);
+	//}
+	//else if (HP == 1) {
+	//	DrawBox(dx1, dy1, dx2, dy2, 0xFF0000, 1);
+	//}
+	//DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
 }
 
 // ブロックのHPを減らす関数。Bulletから呼ばれる。
@@ -133,6 +137,12 @@ void Block::DecrementBlockHP(void) {
 		// HPをデクリメントして0以下なら生存フラグfalseにする
 		isAlive = false;
 	}
+}
+
+void Block::LoadImages(void) {
+	if (!(i_BlockImage[0] = LoadGraph("Image/Block03.png"))) return;
+	if (!(i_BlockImage[1] = LoadGraph("Image/Block02.png"))) return;
+	if (!(i_BlockImage[2] = LoadGraph("Image/Block01.png"))) return;
 }
 
 Block::~Block() {
