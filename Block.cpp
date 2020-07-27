@@ -4,8 +4,7 @@
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。
 Block::Block(int num, FontData* font ,GameMain* main) {
 
-	int knt,rem;
-	int gamemode;
+	int knt,rem,gamemode;
 	isAlive = true;			// 生存フラグオン
 	gamemain = main;		// ゲームメインのポインタ
 	size = BLOCK_SIZE;		// サイズ
@@ -43,11 +42,20 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	// 余りが０だった場合３×３ブロックの始まりなので乱数で２種類のうちどちらのブロックを使うか決める
 	if (rem == 0) {
 		//点対称にするために真ん中以降のブロックは点対称になっているブロックで取得した乱数を代入する
-		if (knt < 5) {
-			rnd = GetRand(1);
-		}
-		else {
-			rnd = gamemain->block[((BLOCK_ONE_MAX - 1) - knt) * BLOCK_ONE_MAX]->rnd;
+		if (gamemode == 2) {
+			if (knt < 5) {
+				rnd = GetRand(1);
+			}
+			else {
+				rnd = gamemain->block[((BLOCK_ONE_MAX - 1) - knt) * BLOCK_ONE_MAX]->rnd;
+			}
+		}else if (gamemode == 1 && num <= 44) {
+			if (knt < 3) {
+				rnd = GetRand(1);
+			}
+			else {
+				rnd = gamemain->block[((BLOCK_ONE_MAX - 5) - knt) * BLOCK_ONE_MAX]->rnd;
+			}
 		}
 	}
 	else {
@@ -77,13 +85,14 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 			}
 		}
 		else if (gamemode == 1) {
-			if (BlockPosition_Casual[knt][rem] == 0) {
+			if (BlockPosition_Casual2[knt][rem] == 0) {
 				isAlive = false;
 			}
 		}
 		break;
 	}
 
+	//ゲームモードにそって最大ブロック数を超えている配列のブロックは消す
 	if (gamemode == 1) {
 		if (num > 44) {
 			isAlive = false;
