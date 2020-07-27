@@ -14,6 +14,7 @@
 #include "Title.h"
 #include  "UI.h"
 #include "DifficultySelectScene.h"
+#include "Option.h"
 
 class Bullet;
 class Player;
@@ -26,6 +27,7 @@ class Title;
 class UI;
 class Block;
 class DifficultySelectScene;
+class Option;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xdc143c , 0x4169e1 };
 class GameMain {
 public:
@@ -45,16 +47,17 @@ public:
 	void SetPauseFlg(bool value) { pauseFlg = value; }	// ポーズ画面を開いているかのフラグを切り替え
 
 	void CreateInputManagerObj();				// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateFontDataObj();					// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreatePlayerObj();						// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateBulletObj();						// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateGameManagerObj();				// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateBlockObj();						// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateResultObj(int hitPNum);			// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateTitleObj();						// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateDifficultySelectSceneObj();		// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreatePauseScreenObj();				// 入力管理クラスを生成し、ポインタを保存しておく
-	void CreateUIObj();						// 入力管理クラスを生成し、ポインタを保存しておく
+	void CreateFontDataObj();					// フォントデータ管理クラスを生成し、ポインタを保存しておく
+	void CreatePlayerObj();						// プレイヤー管理クラスを生成し、ポインタを保存しておく
+	void CreateBulletObj();						// 弾管理クラスを生成し、ポインタを保存しておく
+	void CreateGameManagerObj();				// ゲーム進行管理クラスを生成し、ポインタを保存しておく
+	void CreateBlockObj();						// ブロック管理クラスを生成し、ポインタを保存しておく
+	void CreateResultObj(int hitPNum);			// リザルト画面管理クラスを生成し、ポインタを保存しておく
+	void CreateTitleObj();						// タイトル画面管理クラスを生成し、ポインタを保存しておく
+	void CreateDifficultySelectSceneObj();		// 難易度選択画面管理クラスを生成し、ポインタを保存しておく
+	void CreatePauseScreenObj();				// ポーズ画面管理クラスを生成し、ポインタを保存しておく
+	void CreateUIObj();							// UI管理クラスを生成し、ポインタを保存しておく
+	void CreateOptionObj(int pushPLnum, int prescreennum);						// オプション画面クラスを生成し、ポインタを保存しておく
 
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
 	FontData* fontData;				// 生成したフォントデータ管理クラスのポインタ
@@ -67,6 +70,7 @@ public:
 	DifficultySelectScene* diffiSelectScene;	// 生成した難易度選択画面のポインタ
 	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
 	UI* ui;							// 生成したUI管理クラスのポインタ
+	Option* option;					// 生成したオプション画面クラスのポインタ
 
 private:
 	bool FPSUpdate(void);		// FPSを固定するための関数

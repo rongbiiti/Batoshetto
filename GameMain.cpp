@@ -161,6 +161,9 @@ void GameMain::Update(void) {
 		result->ResultControll();
 		return;
 		break;
+	case GameManager::OPTION:
+		option->OptionControll();
+		break;
 	}
 	
 }
@@ -248,6 +251,9 @@ void GameMain::Output(void) {
 		result->DrawResult();
 		return;
 		break;
+	case GameManager::OPTION:
+		option->DrawOption();
+		break;
 	}
 
 	if (pauseFlg) {
@@ -295,11 +301,11 @@ bool GameMain::PauseProcess(void) {
 	if (IsPushPauseButton()) {
 		if (pauseFlg) {
 			pauseScreen->~PauseScreen();
+			pauseFlg = false;
 		}
 		else {
 			CreatePauseScreenObj();
 		}
-		pauseFlg = !pauseFlg;
 		return true;
 	}
 
@@ -353,8 +359,17 @@ void GameMain::CreateDifficultySelectSceneObj() {
 
 void GameMain::CreatePauseScreenObj() {
 	pauseScreen = new PauseScreen(fontData, inputManager, this, pausePushPLNum);
+	pauseFlg = true;
 }
 
 void GameMain::CreateUIObj() {
 	ui = new UI(this);
+}
+
+void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
+	if (prescreennum == Option::PAUSE) {
+		option = new Option(this, pushPLnum, prescreennum, gameManager->GetPhaseStatus());
+		return;
+	}
+	option = new Option(this, pushPLnum, prescreennum);
 }

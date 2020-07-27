@@ -48,6 +48,7 @@ void PauseScreen::PauseScreenControll() {
 				Return_to_Game();
 				break;
 			case 1:
+				OpenOptionScreen();
 				break;
 			case 2:
 				Return_to_Title();
@@ -92,6 +93,7 @@ void PauseScreen::PauseScreenControll() {
 			Return_to_Game();
 			break;
 		case 1:
+			OpenOptionScreen();
 			break;
 		case 2:
 			Return_to_Title();
@@ -111,7 +113,7 @@ void PauseScreen::DrawPauseScreen() {
 
 	// Pauseの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Pause");
-	DrawFormatStringToHandle(x - fontwidth / 2, GameMain::SCREEN_HEIGHT / 4 - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "Pause");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "Pause");
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
@@ -136,7 +138,9 @@ void PauseScreen::Return_to_Game() {
 
 // オプション画面を開く
 void PauseScreen::OpenOptionScreen() {
-
+	gameMain->SetPauseFlg(false);
+	gameMain->CreateOptionObj(pausePushPLNum, Option::PAUSE);
+	gameMain->gameManager->SetPhaseStatus(GameManager::OPTION);
 }
 
 // 試合を中断してタイトル画面へ戻る

@@ -47,6 +47,11 @@ void Title::TitleControll() {
 				this->~Title();
 				break;
 			case 1:
+				gameManager->SetPhaseStatus(GameManager::OPTION);
+
+				gameMain->CreateOptionObj(i, Option::TITLE);
+
+				this->~Title();
 				break;
 			case 2:
 				break;
@@ -88,6 +93,11 @@ void Title::TitleControll() {
 			this->~Title();
 			break;
 		case 1:
+			gameManager->SetPhaseStatus(GameManager::OPTION);
+
+			gameMain->CreateOptionObj(GameManager::BLUE+1, Option::TITLE);
+
+			this->~Title();
 			break;
 		case 2:
 			break;
