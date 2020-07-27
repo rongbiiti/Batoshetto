@@ -247,6 +247,7 @@ void GameMain::Output(void) {
 			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
+		bullet->DrawSHINOBIEXECUTION();
 		break;
 
 	case GameManager::RESULT:

@@ -278,10 +278,25 @@ bool Bullet::IsHitBlock(void) {
 }
 
 bool Bullet::ResultTransitionWaiting(void) {
-	if (++waitingTimeAfterPlayerHit <= 240) {
+	if (++waitingTimeAfterPlayerHit <= 480) {
 		return false;
 	}
 	return true;
+}
+
+void Bullet::DrawSHINOBIEXECUTION() {
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
+	if (waitingTimeAfterPlayerHit >= 210) {
+		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "”E");
+		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[2], "”E");
+		DrawFormatStringToHandle(x - fontwidth / 2, 350, 0xFFFFFF, gameMain->fontData->f_FontData[2], "ŽE");
+		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "SHINOBI EXECUTION");
+		DrawFormatStringToHandle(x - fontwidth / 2, 500, 0xFFFFFF, gameMain->fontData->f_FontData[1], "SHINOBI EXECUTION");
+	}
+	if (waitingTimeAfterPlayerHit <= 480) {
+		return;
+	}
+	return;
 }
 
 Bullet::~Bullet() {

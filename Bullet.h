@@ -14,6 +14,7 @@ public:
 	void BulletInit(bool alive, float rx, float ry, float ang, GameMain* main);	// ‰Šú‰»—pŠÖ”
 	void BulletControll(void);	// ’e‚ªÀÛ‚É“®‚­‚Æ‚«‚Ìˆ—
 	void DrawBullet();			// ’e‚ğ•`‰æ‚·‚é
+	void DrawSHINOBIEXECUTION();
 
 	bool IsAlive() { return isAlive; }						// ’e‚ª‘¶İ‚µ‚Ä‚¢‚é‚©‚ğ•Ô‚·
 	int GetRicochetCount() { return ricochetCount; }		// ’e‚Ìc‚è’µ’e‰ñ”‚ğ•Ô‚·
