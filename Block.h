@@ -99,6 +99,7 @@ private:
 													 1,1,1,
 													 0,1,0}, };
 
+	//３×３ブロックの種類(カジュアル用)
 	const int BlockPosition_Casual[5][BLOCK_ONE_MAX] = {  {1,1,1,
 													1,0,1,
 													1,1,1},
@@ -119,11 +120,37 @@ private:
 													1,0,1,
 													1,1,1},
 												    };
+
+	//３×３ブロックの種類(カジュアル用2)
+	const int BlockPosition_Casual2[5][BLOCK_ONE_MAX] = { {0,1,0,
+													1,1,1,
+													0,1,0},
+
+												   {1,1,1,
+													1,0,1,
+													1,1,1},
+
+												   {0,1,1,
+													0,1,1,
+													0,1,1},
+
+												   {1,1,1,
+													1,0,1,
+													1,1,1},
+
+												   {0,1,0,
+													1,1,1,
+													0,1,0},
+	};
 	// X、Y、サイズの順。
 	const int BlockStartHP = 3;		// ブロックの初期HP
 
+	void LoadImages(void);	// 画像読み込み
+
 	FontData* fontData;				// コンストラクタで受け取ったフォント管理オブジェクトのポインタを保存しておく変数
 	GameMain* gamemain;
+
+	int i_BlockImage[3];	// ブロックの画像
 
 	bool isAlive;			// 生きているか		
 	int x, y;				// 座標 x,y
@@ -131,7 +158,6 @@ private:
 	int HP;					// ブロックのHP
 	int num;
 	int rnd;				//ブロックの種類
-	int beforeNum;
 
 };
 

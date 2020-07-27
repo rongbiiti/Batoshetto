@@ -52,10 +52,16 @@ void UI::DrawPlayerGuage(int x, int y, float maxtime, float nowtime, int playern
 	DrawCircleGauge(x, y, percent, i_PlayerGuage[playernum]);
 }
 
+// ”wŒi‰æ‘œ•`‰æ
+void UI::DrawBackGround() {
+	DrawGraph(0, 0, i_BackGroundImage, 0);
+}
+
 // ‰æ‘œ“Ç‚İ‚İ
 void UI::LoadImages() {
 	if (!(i_PlayerGuage[0] = LoadGraph("Image/Gauge.png"))) return;
 	if (!(i_PlayerGuage[1] = LoadGraph("Image/Gauge2.png"))) return;
+	if (!(i_BackGroundImage = LoadGraph("Image/BackImage.png"))) return;
 	
 }
 

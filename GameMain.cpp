@@ -188,7 +188,7 @@ void GameMain::Output(void) {
 		break;
 	case GameManager::HIDE:
 		// プレイヤー描画
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x333333, 1);
+		ui->DrawBackGround();
 		player[GameManager::RED]->DrawPlayer();
 		player[GameManager::BLUE]->DrawPlayer();
 
@@ -207,8 +207,8 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::SHOT:
+		ui->DrawBackGround();
 		// プレイヤー描画
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x333333, 1);
 		player[GameManager::RED]->DrawPlayer();
 		player[GameManager::BLUE]->DrawPlayer();
 
@@ -227,8 +227,8 @@ void GameMain::Output(void) {
 		break;
 
 	case GameManager::RECOCHETWAIT:
+		ui->DrawBackGround();
 		// プレイヤー描画
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x333333, 1);
 		player[GameManager::RED]->DrawPlayer();
 		player[GameManager::BLUE]->DrawPlayer();
 

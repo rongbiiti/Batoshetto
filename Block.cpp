@@ -4,8 +4,7 @@
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。
 Block::Block(int num, FontData* font ,GameMain* main) {
 
-	int knt,rem;
-	int gamemode;
+	int knt,rem,gamemode;
 	isAlive = true;			// 生存フラグオン
 	gamemain = main;		// ゲームメインのポインタ
 	size = BLOCK_SIZE;		// サイズ
@@ -43,11 +42,20 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	// 余りが０だった場合３×３ブロックの始まりなので乱数で２種類のうちどちらのブロックを使うか決める
 	if (rem == 0) {
 		//点対称にするために真ん中以降のブロックは点対称になっているブロックで取得した乱数を代入する
-		if (knt < 5) {
-			rnd = GetRand(1);
-		}
-		else {
-			rnd = gamemain->block[((BLOCK_ONE_MAX - 1) - knt) * BLOCK_ONE_MAX]->rnd;
+		if (gamemode == 2) {
+			if (knt < 5) {
+				rnd = GetRand(1);
+			}
+			else {
+				rnd = gamemain->block[((BLOCK_ONE_MAX - 1) - knt) * BLOCK_ONE_MAX]->rnd;
+			}
+		}else if (gamemode == 1 && num <= 44) {
+			if (knt < 3) {
+				rnd = GetRand(1);
+			}
+			else {
+				rnd = gamemain->block[((BLOCK_ONE_MAX - 5) - knt) * BLOCK_ONE_MAX]->rnd;
+			}
 		}
 	}
 	else {
@@ -77,13 +85,14 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 			}
 		}
 		else if (gamemode == 1) {
-			if (BlockPosition_Casual[knt][rem] == 0) {
+			if (BlockPosition_Casual2[knt][rem] == 0) {
 				isAlive = false;
 			}
 		}
 		break;
 	}
 
+	//ゲームモードにそって最大ブロック数を超えている配列のブロックは消す
 	if (gamemode == 1) {
 		if (num > 44) {
 			isAlive = false;
@@ -91,6 +100,8 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	}
 
 	this->num = num;
+
+	LoadImages();
 }
 
 // ブロックを描画する関数
@@ -106,16 +117,18 @@ void Block::DrawBlocks(void) {
 	dx2 = x + size / 2;
 	dy1 = y - size / 2;
 	dy2 = y + size / 2;
-	if (HP == 3) {
-		DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
-	}
-	else if (HP == 2) {
-		DrawBox(dx1, dy1, dx2, dy2, 0xFFFF00, 1);
-	}
-	else if (HP == 1) {
-		DrawBox(dx1, dy1, dx2, dy2, 0xFF0000, 1);
-	}
-	DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
+	DrawRotaGraph(x, y, 1, 0, i_BlockImage[HP - 1], 0);
+	//if (HP == 3) {
+	//	//DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
+	//	DrawRotaGraph(x, y, 1, 0, i_BlockImage[HP - 1], 0);
+	//}
+	//else if (HP == 2) {
+	//	DrawBox(dx1, dy1, dx2, dy2, 0xFFFF00, 1);
+	//}
+	//else if (HP == 1) {
+	//	DrawBox(dx1, dy1, dx2, dy2, 0xFF0000, 1);
+	//}
+	//DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
 }
 
 // ブロックのHPを減らす関数。Bulletから呼ばれる。
@@ -124,6 +137,12 @@ void Block::DecrementBlockHP(void) {
 		// HPをデクリメントして0以下なら生存フラグfalseにする
 		isAlive = false;
 	}
+}
+
+void Block::LoadImages(void) {
+	if (!(i_BlockImage[0] = LoadGraph("Image/Block03.png"))) return;
+	if (!(i_BlockImage[1] = LoadGraph("Image/Block02.png"))) return;
+	if (!(i_BlockImage[2] = LoadGraph("Image/Block01.png"))) return;
 }
 
 Block::~Block() {
