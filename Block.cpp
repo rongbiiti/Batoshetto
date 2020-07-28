@@ -116,7 +116,7 @@ void Block::DrawBlocks(void) {
 	dx2 = x + size / 2;
 	dy1 = y - size / 2;
 	dy2 = y + size / 2;
-	DrawRotaGraph(x, y, 1, 0, gamemain->GetBlockImage(HP-1), 0);
+	DrawRotaGraph(x, y, 1, 0, gamemain->GetBlockImage(HP-1), true);
 	//if (HP == 3) {
 	//	//DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
 	//	DrawRotaGraph(x, y, 1, 0, i_BlockImage[HP - 1], 0);
