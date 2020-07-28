@@ -42,6 +42,7 @@ public:
 	const static int FirstHider = BLUE;		// REDとBLUE、どっちが試合の最初に隠れる方か
 
 	void ShooterChange(void);						// 撃つ側・隠れる側を交代する関数。
+	void ShooterFlgChange(bool allchangeflg);					// 撃つ側・隠れる側のフラグを変える。allchangeflgがtrueなら、REDとBLUEどちらも変える
 	int GetDifficulty() { return difficulty; }		// ゲームの難易度を返す。
 	int GetHideTime() { return t_HideTime; }		// 隠れる側残り時間を返す。
 	int GetShotTime() { return t_ShotTime; }		// 撃つ側残り時間を返す。

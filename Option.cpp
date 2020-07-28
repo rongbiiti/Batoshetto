@@ -5,9 +5,10 @@ Option::Option(GameMain* main, int pushPLnum, int prescreennum, int prephase) {
 	gameMain = main;
 	inputManager = gameMain->inputManager;
 	fontData = gameMain->fontData;
-	BGMVolume = 1.0f;	// BGMの音量
-	SEVolume = 1.0f;	// SEの音量
-	screenNum = TOP;
+	LoadFile();
+	BGMVolume = saveData.bgmVolume;	// BGMの音量
+	SEVolume = saveData.seVolume;	// SEの音量
+	screenNum = VOLUME;
 	optionPushPLNum = pushPLnum;
 	previousNum = prescreennum;
 	previousGamePhase = prephase;
@@ -216,6 +217,7 @@ void Option::ControllVolumeScreen() {
 				if (previousNum == PAUSE) {
 					ChangeBulletSoundVolume();
 				}
+				SaveFile();
 				BackOptionMenu();
 				break;
 			}
@@ -304,6 +306,7 @@ void Option::ControllVolumeScreen() {
 			if (previousNum == PAUSE) {
 				ChangeBulletSoundVolume();
 			}
+			SaveFile();
 			BackOptionMenu();
 			break;
 		}
@@ -418,6 +421,15 @@ void Option::DrawVolumeMenu() {
 
 // 各調節画面からトップに戻るための関数
 void Option::BackOptionMenu() {
+	switch (previousNum)
+	{
+	case TITLE:
+		Return_to_Title();
+		break;
+	case PAUSE:
+		Return_to_PauseScreen();
+		break;
+	}
 	screenNum = TOP;
 	selectNum[0] = 0;
 	selectNum[1] = 0;
@@ -426,6 +438,36 @@ void Option::BackOptionMenu() {
 // 弾の音量調節
 void Option::ChangeBulletSoundVolume() {
 	gameMain->bullet->ChangeVolume(SEVolume);
+}
+
+// セーブデータ読込み
+void Option::LoadFile() {
+	const char *fileName = "config.txt";
+	FILE *fp;
+
+	if ((fp = fopen(fileName, "r")) == NULL) {
+		return;
+	}
+	else {
+		fread(&saveData, sizeof(option_save_data_t), 1, fp);
+		fclose(fp);
+	}
+}
+
+// セーブデータ保存
+void Option::SaveFile() {
+	const char *fileName = "config.txt";
+	FILE *fp;
+	
+	if ((fp = fopen(fileName, "w")) == NULL) {
+		return;
+	}
+	else {
+		saveData.bgmVolume = BGMVolume;
+		saveData.seVolume = SEVolume;
+		fwrite(&saveData, sizeof(option_save_data_t), 1, fp);
+		fclose(fp);
+	}
 }
 
 // デストラクタ

@@ -33,7 +33,7 @@ private:
 	const int PlayerMoveSpeed = 5;						// プレイヤーの移動速度
 	const int PlayerStartPositionX[2] = { 60, 1100 };	// プレイヤーの初期X座標
 	const int PlayerStartPositionY[2] = { 200, 600 };	// プレイヤーの初期Y座標
-	const int PlayerSize = 80;							// プレイヤーの直径サイズ
+	const int PlayerSize = 60;							// プレイヤーの直径サイズ
 
 	float AngleCorrection(float ang);			// 角度を0～360度に収まるように調整
 	int XCoordinateCorrection(int posx, int pnum, int size);	// X座標が指定の範囲を超えていないか、プレイヤーの番号をもとに修正

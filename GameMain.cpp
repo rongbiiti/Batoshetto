@@ -65,6 +65,7 @@ int GameMain::FirstInit(void) {
 // ゲームリプレイ時などにクラスを生成しなおす
 void GameMain::Init() {
 	gameManager->Init();	
+	CreateOptionObj(0, 0);
 	CreateUIObj();
 	CreateBlockObj();
 	CreateBulletObj();	
@@ -342,12 +343,13 @@ void GameMain::CreateFontDataObj() {
 }
 
 void GameMain::CreatePlayerObj() {
-	player[GameManager::RED] = new Player(0, 0xE71122, true, this);
+	player[GameManager::RED] = new Player(0, 0xE71122, false, this);
 	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
 }
 
 void GameMain::CreateBulletObj() {
 	bullet = new Bullet();
+	bullet->ChangeVolume(option->GetSEVolume());
 }
 
 void GameMain::CreateGameManagerObj() {

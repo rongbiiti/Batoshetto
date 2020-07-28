@@ -26,16 +26,40 @@ void GameManager::ShooterChange(void) {
 	switch (NowShooter)
 	{
 	case RED:
-		gameMain->player[RED]->SetIsShooter(false);	// RED‚ð‰B‚ê‚é‘¤‚É
-		gameMain->player[BLUE]->SetIsShooter(true);	// BLUE‚ðŒ‚‚Â‘¤‚É
 		NowShooter = BLUE;							// Œ»Ý‚ÌŒ‚‚Â‘¤‚ðBLUE‚É
 		NowHider = RED;								// Œ»Ý‚Ì‰B‚ê‚é‘¤‚ðRED‚É
 		break;
 	case BLUE:
-		gameMain->player[RED]->SetIsShooter(true);	// RED‚ðŒ‚‚Â‘¤‚É
-		gameMain->player[BLUE]->SetIsShooter(false);// BLUE‚ð‰B‚ê‚é‘¤‚É
 		NowShooter = RED;							// Œ»Ý‚ÌŒ‚‚Â‘¤‚ðRED‚É
 		NowHider = BLUE;							// Œ»Ý‚ÌŒ‚‚Â‘¤‚ðBLUE‚É
+		break;
+	}
+}
+
+// Œ‚‚Â‘¤E‰B‚ê‚é‘¤‚Ìƒtƒ‰ƒO‚ð•Ï‚¦‚é
+// allchangeflg‚ªtrue‚È‚çARED‚ÆBLUE‚Ç‚¿‚ç‚Ìƒtƒ‰ƒO‚à•Ï‚¦‚é
+void GameManager::ShooterFlgChange(bool allchangeflg) {
+	switch (NowShooter)
+	{
+	case RED:
+		if (allchangeflg == false) {
+			gameMain->player[RED]->SetIsShooter(false);		// RED‚ð‰B‚ê‚é‘¤‚É
+			gameMain->player[BLUE]->SetIsShooter(false);	// BLUE‚ðŒ‚‚Â‘¤‚É
+		}
+		else {
+			gameMain->player[RED]->SetIsShooter(true);		// RED‚ð‰B‚ê‚é‘¤‚É
+		}
+		
+		break;
+	case BLUE:
+		if (allchangeflg == false) {
+			gameMain->player[RED]->SetIsShooter(false);		// RED‚ðŒ‚‚Â‘¤‚É
+			gameMain->player[BLUE]->SetIsShooter(false);		// BLUE‚ð‰B‚ê‚é‘¤‚É
+		}
+		else {
+			gameMain->player[BLUE]->SetIsShooter(true);		// RED‚ð‰B‚ê‚é‘¤‚É
+		}
+		
 		break;
 	}
 }

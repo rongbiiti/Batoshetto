@@ -58,7 +58,7 @@ private:
 	int s_Fire;	// 発射音
 	int s_Ricochet;	// 跳弾音
 	int s_BlockBreak;	// ブロック破壊音
-	int s_PlayerHit;	// プレイヤーにヒットした音
+	int s_PlayerHit[2];	// プレイヤーにヒットした音
 	int s_Blood;		// 血が出る音
 };
 

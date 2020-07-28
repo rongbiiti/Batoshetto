@@ -80,6 +80,14 @@ void DifficultySelectScene::DifficultySelectControll() {
 		return;
 	}
 
+	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
+		inputManager->In_Key()[KEY_INPUT_DOWN] = 0;
+		SetDifficulty();
+		gameMangaer->gameMain->Init();
+		this->~DifficultySelectScene();
+		return;
+	}
+
 	// どちらも項目を決定していたら、シーン遷移をする
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
 
@@ -145,7 +153,7 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 // 難易度をGameManagerの変数にセットしてシーンを遷移
 void DifficultySelectScene::SetDifficulty() {
 
-	switch (selectNum[GameManager::RED])
+	switch (selectNum[GameManager::BLUE])
 	{
 	case 0:
 		gameMangaer->SetDifficulty(GameManager::CASUAL);

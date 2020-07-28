@@ -26,6 +26,12 @@ bool UI::TransitionAnimationWaiting() {
 		return false;
 	}
 
+	if (gameManager->GetPhaseStatus() == GameManager::SHOT) {
+		gameManager->ShooterFlgChange(true);
+	}
+	else {
+		gameManager->ShooterFlgChange(false);
+	}
 	transitionFlg = false;
 	return true;
 }

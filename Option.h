@@ -1,4 +1,5 @@
 // オ　プ　シ　ョ　ン　画　面
+#define _CRT_SECURE_NO_WARNINGS
 #ifndef _OPTION_H_
 #define _OPTION_H_
 
@@ -7,6 +8,8 @@
 #include "InputManager.h"
 #include "GameMain.h"
 #include "GameManager.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 class GameMain;
 class GameManager;
@@ -30,10 +33,21 @@ public:
 	void OptionControll();	// オプション画面の処理関数
 	void DrawOption();		// オプション画面の描画
 
+	float GetBGMVolume() { return BGMVolume; }
+	float GetSEVolume() { return SEVolume; }
+
 private:
 	GameMain* gameMain;	// ゲームメインのポインタ
 	InputManager* inputManager;	// 入力管理クラスのポインタ
 	FontData* fontData;	// フォントデータ管理クラスのポインタ
+
+	// セーブ用の構造体
+	typedef struct {
+		float bgmVolume = 1.0f;
+		float seVolume = 1.0f;
+	}option_save_data_t;
+
+	option_save_data_t saveData;
 
 	void ControllOptionTop();	// オプショントップ画面の処理
 	void ControllVolumeScreen();// 音量調節画面の処理
@@ -49,6 +63,9 @@ private:
 	void PlayCanselSound() {}	// キャンセル音再生
 
 	void ChangeBulletSoundVolume();	// 弾の音量調節
+
+	void LoadFile();	// セーブデータ読み込み
+	void SaveFile();	// セーブデータ保存
 
 	const static int SELECT_NUM_MAX = 1;
 	const std::string MenuName[SELECT_NUM_MAX + 1] = { "Volume",

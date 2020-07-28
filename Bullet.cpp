@@ -156,7 +156,7 @@ bool Bullet::IsHitPlayer(void) {
 		if (collision->IsHit((int)x, (int)y, Size, playerX, playerY, playerSize)) {
 			HitPlayerNum = i;
 			isPlayerHit = true;
-			PlaySoundMem(s_PlayerHit, DX_PLAYTYPE_BACK);
+			PlaySoundMem(s_PlayerHit[HitPlayerNum], DX_PLAYTYPE_BACK);
 			PlaySoundMem(s_Blood, DX_PLAYTYPE_BACK);
 			ricochetCount = -1;
 			return true;
@@ -288,10 +288,11 @@ void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
 	if (waitingTimeAfterPlayerHit >= 210) {
 		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "”E");
-		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[2], "”E");
+		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[2], "e");
 		DrawFormatStringToHandle(x - fontwidth / 2, 350, 0xFFFFFF, gameMain->fontData->f_FontData[2], "ŽE");
-		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "SHINOBI EXECUTION");
-		DrawFormatStringToHandle(x - fontwidth / 2, 500, 0xFFFFFF, gameMain->fontData->f_FontData[1], "SHINOBI EXECUTION");
+
+		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "GUN EXECUTION");
+		DrawFormatStringToHandle(x - fontwidth / 2, 500, 0xFFFFFF, gameMain->fontData->f_FontData[1], "GUN EXECUTION");
 	}
 	if (waitingTimeAfterPlayerHit <= 480) {
 		return;
@@ -300,7 +301,7 @@ void Bullet::DrawSHINOBIEXECUTION() {
 }
 
 Bullet::~Bullet() {
-	
+	delete collision;
 }
 
 // ‰¹ƒf[ƒ^“Ç‚Ýž‚Ý
@@ -308,7 +309,8 @@ void Bullet::LoadSounds(void) {
 	if ((s_Fire = LoadSoundMem("sounds/Fire.mp3")) == -1) return;
 	if ((s_Ricochet = LoadSoundMem("sounds/Ricochet.mp3")) == -1) return;
 	if ((s_BlockBreak = LoadSoundMem("sounds/BlockBreak.mp3")) == -1) return;
-	if ((s_PlayerHit = LoadSoundMem("sounds/PlayerHit.mp3")) == -1) return;
+	if ((s_PlayerHit[0] = LoadSoundMem("sounds/PlayerHit.mp3")) == -1) return;
+	if ((s_PlayerHit[1] = LoadSoundMem("sounds/PlayerHit2.mp3")) == -1) return;
 	if ((s_Blood = LoadSoundMem("sounds/Blood_Sibuki.mp3")) == -1) return;
 }
 
@@ -319,6 +321,7 @@ void Bullet::ChangeVolume(float persent) {
 	ChangeVolumeSoundMem(volume, s_Fire);
 	ChangeVolumeSoundMem(volume, s_Ricochet);
 	ChangeVolumeSoundMem(volume, s_BlockBreak);
-	ChangeVolumeSoundMem(volume, s_PlayerHit);
+	ChangeVolumeSoundMem(volume, s_PlayerHit[0]);
+	ChangeVolumeSoundMem(volume, s_PlayerHit[1]);
 	ChangeVolumeSoundMem(volume, s_Blood);
 }

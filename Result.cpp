@@ -81,6 +81,20 @@ void Result::ResultControll(void) {
 		return;
 	}
 
+	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
+		inputManager->In_Key()[KEY_INPUT_DOWN] = 0;
+		switch (selectNum[GameManager::BLUE])
+		{
+		case 0:
+			Return_to_Game();
+			break;
+		case 1:
+			Return_to_Title();
+			break;
+		}
+		return;
+	}
+
 	// ‚Ç‚¿‚ç‚à€–Ú‚ğŒˆ’è‚µ‚Ä‚¢‚½‚çAƒV[ƒ“‘JˆÚ‚ğ‚·‚é
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
 
