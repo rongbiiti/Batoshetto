@@ -1,6 +1,6 @@
-#include "Title.h"
+#include "End.h"
 
-Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
+End::End(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	fontData = font;
 	inputManager = inputMNG;
 	gameManager = gameMNG;
@@ -11,7 +11,7 @@ Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	selectNum[1] = 0;
 }
 
-void Title::TitleControll() {
+void End::EndControll() {
 	for (int i = 0; i < 2; i++) {
 		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
 			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
@@ -40,25 +40,15 @@ void Title::TitleControll() {
 			switch (selectNum[i])
 			{
 			case 0:
-				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 
-				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
-
-				this->~Title();
+				this->~End();
 				break;
 			case 1:
-				gameManager->SetPhaseStatus(GameManager::OPTION);
+				gameManager->SetPhaseStatus(GameManager::TITLE);
 
-				gameMain->CreateOptionObj(i, Option::TITLE);
+				gameMain->CreateTitleObj();
 
-				this->~Title();
-				break;
-			case 2:
-				gameManager->SetPhaseStatus(GameManager::END);
-
-				gameMain->CreateEndObj();
-
-				this->~Title();
+				this->~End();
 				break;
 			}
 			return;
@@ -93,40 +83,37 @@ void Title::TitleControll() {
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
-			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-			gameMain->CreateDifficultySelectSceneObj();
-			this->~Title();
+
+			this->~End();
 			break;
 		case 1:
-			gameManager->SetPhaseStatus(GameManager::OPTION);
+			gameManager->SetPhaseStatus(GameManager::TITLE);
 
-			gameMain->CreateOptionObj(GameManager::BLUE + 1, Option::TITLE);
+			gameMain->CreateTitleObj();
 
-			this->~Title();
-			break;
-		case 2:
-			gameManager->SetPhaseStatus(GameManager::END);
-
-			gameMain->CreateEndObj();
-
-			this->~Title();
+			this->~End();
 			break;
 		}
 	}
 }
 
-void Title::DrawTitle() {
+void End::DrawEnd() {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// ビルドした日
-	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/07/22");
-	
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
+	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[2], "バトシェット");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[2], "バトシェット");
+	// Pauseの文字描画
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "End？");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "End？");
 
+	// 各項目名描画
+	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+	}
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
@@ -137,14 +124,8 @@ void Title::DrawTitle() {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
 	}
-	/*if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::B] == 1 ||
-		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::B] == 1 ||
-		inputManager->In_Key()[KEY_INPUT_F] == 1) {
-		gameManager->SetPhaseStatus(GameManager::INIT);
-		this->~Title();
-	}*/
 }
 
-Title::~Title() {
+End::~End() {
 
 }

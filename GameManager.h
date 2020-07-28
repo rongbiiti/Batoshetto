@@ -14,6 +14,7 @@ public:
 	// GameMainˆÈŠO‚Å‚àŽg‚Á‚Ä‚¢‚é‚Æ‚±‚ë‚ª‚ ‚éB
 	enum PHASE {
 		TITLE,
+		END,
 		DIFFICULTYSELECT,
 		INIT,
 		HIDE,

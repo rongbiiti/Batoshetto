@@ -161,6 +161,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DifficultySelectScene.h" />
+    <ClInclude Include="End.h" />
     <ClInclude Include="FontData.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="GameManager.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DifficultySelectScene.cpp" />
     <ClCompile Include="DXMain.cpp" />
+    <ClCompile Include="End.cpp" />
     <ClCompile Include="FontData.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GameManager.cpp" />
