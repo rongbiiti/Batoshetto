@@ -90,6 +90,26 @@ void GameMain::MainObjDelete() {
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// 入力を受け取る
 
+	BYTE Data[10];
+	int UDPNetHandle;
+	int RecvSize, TotalRecvSize;
+	int SendData;
+	IPDATA Ip;        // 送信用ＩＰアドレスデータ
+
+	// 受信用ＵＤＰソケットハンドルの作成
+	UDPNetHandle = MakeUDPSocket(9876);
+
+	// ＩＰアドレスを設定( ここにある４つのＩＰ値は仮です )
+	Ip.d1 = 172;
+	Ip.d2 = 16;
+	Ip.d3 = 95;
+	Ip.d4 = 86;
+
+	// パケット受信
+	TotalRecvSize = 0;
+
+	SendData = 0;
+
 	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
 									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
 									inputManager->In_Key()[KEY_INPUT_F11] == 0) {
@@ -101,6 +121,15 @@ void GameMain::GameLoop(void) {
 		inputManager->InputKey();	// 入力を受け取る
 		Update();	// オブジェクトの処理を進めて値を更新する
 		Output();	// オブジェクトの描画系関数を呼び出す
+
+		//SendData = NetWorkSendUDP(UDPNetHandle, Ip, 9876, Data, sizeof(Data));
+
+		RecvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, Data, sizeof(Data), FALSE);
+		if (RecvSize >= 0)
+		{
+			TotalRecvSize += RecvSize;
+		}
+		DrawFormatStringToHandle(0, 200, GetColor(255, 255, 255), fontData->f_FontData[0], "TotalRecvSize:%d", TotalRecvSize);
 
 		SetDrawScreen(DX_SCREEN_BACK);
 		// 画面を描画用の大きさに引き伸ばして描画する

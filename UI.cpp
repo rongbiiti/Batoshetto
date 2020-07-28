@@ -17,12 +17,16 @@ void UI::UIControll() {
 // 隠れる・撃つの切替時のアニメーション
 // 処理が終わっていたらtrue、まだならfalseが返る
 bool UI::TransitionAnimationWaiting() {
-	if (++animationWaitingTime <= 45) {
-		transitionX += 500 / 45;
+	if (++animationWaitingTime <= 40) {
+		transitionX += 500 / 40;
 		return false;
 	}
-	if (animationWaitingTime <= 90) {
+	if (animationWaitingTime <= 60) {
 		
+		return false;
+	}
+	if (animationWaitingTime <= 100) {
+		transitionY -= 270 / 40;
 		return false;
 	}
 
@@ -48,7 +52,7 @@ void UI::DrawTransitionAnimation() {
 void UI::TransitionParameterReset() {
 	animationWaitingTime = 0;
 	transitionX = 0;
-	transitionY = 120;
+	transitionY = 330;
 	transitionFlg = true;
 }
 

@@ -288,11 +288,13 @@ void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
 	if (waitingTimeAfterPlayerHit >= 210) {
 		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "”E");
-		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[2], "e");
-		DrawFormatStringToHandle(x - fontwidth / 2, 350, 0xFFFFFF, gameMain->fontData->f_FontData[2], "ŽE");
+		DrawFormatStringToHandle(x - fontwidth / 2, 50,  0xdc143c, gameMain->fontData->f_FontData[2], "•s");
+		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xdc143c, gameMain->fontData->f_FontData[2], "Ž€");
+		DrawFormatStringToHandle(x - fontwidth / 2, 350, 0xdc143c, gameMain->fontData->f_FontData[2], "Ža");
+		DrawFormatStringToHandle(x - fontwidth / 2, 500, 0xdc143c, gameMain->fontData->f_FontData[2], "‚è");
 
-		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "GUN EXECUTION");
-		DrawFormatStringToHandle(x - fontwidth / 2, 500, 0xFFFFFF, gameMain->fontData->f_FontData[1], "GUN EXECUTION");
+		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "IMMORTALITY SEVERED");
+		DrawFormatStringToHandle(x - fontwidth / 2, 600, 0xdc143c, gameMain->fontData->f_FontData[1], "IMMORTALITY SEVERED");
 	}
 	if (waitingTimeAfterPlayerHit <= 480) {
 		return;
