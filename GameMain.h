@@ -12,6 +12,7 @@
 #include "Bullet.h"
 #include "PauseScreen.h"
 #include "Title.h"
+#include "End.h"
 #include  "UI.h"
 #include "DifficultySelectScene.h"
 #include "Option.h"
@@ -24,6 +25,7 @@ class Result;
 class InputManager;
 class PauseScreen;
 class Title;
+class End;
 class UI;
 class Block;
 class DifficultySelectScene;
@@ -56,6 +58,7 @@ public:
 	void CreateBlockObj();						// ブロック管理クラスを生成し、ポインタを保存しておく
 	void CreateResultObj(int hitPNum);			// リザルト画面管理クラスを生成し、ポインタを保存しておく
 	void CreateTitleObj();						// タイトル画面管理クラスを生成し、ポインタを保存しておく
+	void CreateEndObj();						// エンド画面管理クラスを生成し、ポインタを保存しておく
 	void CreateDifficultySelectSceneObj();		// 難易度選択画面管理クラスを生成し、ポインタを保存しておく
 	void CreatePauseScreenObj();				// ポーズ画面管理クラスを生成し、ポインタを保存しておく
 	void CreateUIObj();							// UI管理クラスを生成し、ポインタを保存しておく
@@ -69,6 +72,7 @@ public:
 	Block* block[BLOCK_MAX];		// 生成したブロッククラスのポインタ
 	Result* result;					// 生成したリザルト画面管理クラスのポインタ
 	Title* title;					// 生成したタイトル画面管理クラスのポインタ
+	End* end;						// 生成したエンド画面管理クラスのポインタ
 	DifficultySelectScene* diffiSelectScene;	// 生成した難易度選択画面のポインタ
 	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
 	UI* ui;							// 生成したUI管理クラスのポインタ

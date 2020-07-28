@@ -153,6 +153,14 @@ void GameMain::Update(void) {
 		
 		return;
 		break;
+	case GameManager::END:
+		if (end == nullptr) {
+			CreateEndObj();
+		}
+		end->EndControll();
+
+		return;
+		break;
 	case GameManager::DIFFICULTYSELECT:
 		diffiSelectScene->DifficultySelectControll();
 
@@ -212,6 +220,11 @@ void GameMain::Output(void) {
 	{
 	case GameManager::TITLE:
 		title->DrawTitle();
+
+		return;
+		break;
+	case GameManager::END:
+		end->DrawEnd();
 
 		return;
 		break;
@@ -401,6 +414,11 @@ void GameMain::CreateTitleObj() {
 	if (ui != nullptr) {
 		ui->~UI();
 	}
+}
+
+void GameMain::CreateEndObj() {
+	end = new End(fontData, inputManager, gameManager);
+	ui->~UI();
 }
 
 void GameMain::CreateDifficultySelectSceneObj() {

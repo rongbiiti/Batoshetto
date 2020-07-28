@@ -24,7 +24,7 @@ private:
 
 	void Start();		// 試合を再開する
 	void OpenOptionScreen();	// オプション画面を開く
-	void End();					// ゲームを終了する
+	void EndSocreen();					// ゲームを終了する
 
 	const static int SELECT_NUM_MAX = 2;
 	const std::string MenuName[SELECT_NUM_MAX + 1] = { "Start",
