@@ -90,26 +90,32 @@ void GameMain::MainObjDelete() {
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// 入力を受け取る
 
-	BYTE Data[10];
-	int send = 10;
+	int send = 1;
 	int post = 0;
 	int totalpost = 0;
 	int UDPNetHandle;
-	int RecvSize, TotalRecvSize;
+	int UDPNetHandle2;
+	int RecvSize = 0, TotalRecvSize;
 	int SendData;
 	IPDATA Ip;        // 送信用ＩＰアドレスデータ
 	IPDATA Ip2;
 
 	// 受信用ＵＤＰソケットハンドルの作成
-	UDPNetHandle = MakeUDPSocket(19850);
+	UDPNetHandle = MakeUDPSocket(9876);
+	UDPNetHandle2 = MakeUDPSocket();
 
 	// ＩＰアドレスを設定( ここにある４つのＩＰ値は仮です )
-	Ip.d1 = 255;
+	/*Ip.d1 = 255;
 	Ip.d2 = 255;
 	Ip.d3 = 255;
-	Ip.d4 = 255;
+	Ip.d4 = 255;*/
 
-	//GetMyIPAddress(&Ip);
+	GetMyIPAddress(&Ip);
+
+	Ip2.d1 = 0;
+	Ip2.d2 = 0;
+	Ip2.d3 = 0;
+	Ip2.d4 = 0;
 
 	// パケット受信
 	TotalRecvSize = 0;
@@ -128,12 +134,11 @@ void GameMain::GameLoop(void) {
 		Update();	// オブジェクトの処理を進めて値を更新する
 		Output();	// オブジェクトの描画系関数を呼び出す
 
-		if (inputManager->In_Key()[KEY_INPUT_E] >= 1) {
-			SendData = NetWorkSendUDP(UDPNetHandle, Ip, 19850, &send, sizeof(send));
-			DrawFormatStringToHandle(0, 280, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip.d1, Ip.d2, Ip.d3, Ip.d4);
-
+		SendData = NetWorkSendUDP(UDPNetHandle2, Ip, 9876, &send, sizeof(send));
+		/*if (CheckNetWorkRecvUDP(UDPNetHandle)) {
+			RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(post), FALSE);
 		}
-		/*RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(post), FALSE);
+
 		if (RecvSize >= 0)
 		{
 			TotalRecvSize += RecvSize;
@@ -141,7 +146,7 @@ void GameMain::GameLoop(void) {
 		}*/
 		DrawFormatStringToHandle(0, 200, GetColor(255, 255, 255), fontData->f_FontData[0], "TotalRecvSize:%d", TotalRecvSize);
 		DrawFormatStringToHandle(0, 260, GetColor(255, 255, 255), fontData->f_FontData[0], "post:%d", totalpost);
-		//DrawFormatStringToHandle(0, 240, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip2.d1,Ip2.d2,Ip2.d3,Ip2.d4);
+		DrawFormatStringToHandle(0, 240, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip2.d1,Ip2.d2,Ip2.d3,Ip2.d4);
 
 		SetDrawScreen(DX_SCREEN_BACK);
 		// 画面を描画用の大きさに引き伸ばして描画する
