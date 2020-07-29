@@ -133,15 +133,15 @@ void GameMain::GameLoop(void) {
 			DrawFormatStringToHandle(0, 280, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip.d1, Ip.d2, Ip.d3, Ip.d4);
 
 		}
-		RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(post), FALSE);
+		/*RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(post), FALSE);
 		if (RecvSize >= 0)
 		{
 			TotalRecvSize += RecvSize;
 			totalpost += post;
-		}
+		}*/
 		DrawFormatStringToHandle(0, 200, GetColor(255, 255, 255), fontData->f_FontData[0], "TotalRecvSize:%d", TotalRecvSize);
 		DrawFormatStringToHandle(0, 260, GetColor(255, 255, 255), fontData->f_FontData[0], "post:%d", totalpost);
-		DrawFormatStringToHandle(0, 240, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip2.d1,Ip2.d2,Ip2.d3,Ip2.d4);
+		//DrawFormatStringToHandle(0, 240, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip2.d1,Ip2.d2,Ip2.d3,Ip2.d4);
 
 		SetDrawScreen(DX_SCREEN_BACK);
 		// ‰æ–Ê‚ğ•`‰æ—p‚Ì‘å‚«‚³‚Éˆø‚«L‚Î‚µ‚Ä•`‰æ‚·‚é
