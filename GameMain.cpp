@@ -93,6 +93,7 @@ void GameMain::GameLoop(void) {
 	BYTE Data[10];
 	int send = 10;
 	int post = 0;
+	int totalpost = 0;
 	int UDPNetHandle;
 	int RecvSize, TotalRecvSize;
 	int SendData;
@@ -100,7 +101,7 @@ void GameMain::GameLoop(void) {
 	IPDATA Ip2;
 
 	// 受信用ＵＤＰソケットハンドルの作成
-	UDPNetHandle = MakeUDPSocket(9876);
+	UDPNetHandle = MakeUDPSocket(19850);
 
 	// ＩＰアドレスを設定( ここにある４つのＩＰ値は仮です )
 	Ip.d1 = 255;
@@ -127,16 +128,19 @@ void GameMain::GameLoop(void) {
 		Update();	// オブジェクトの処理を進めて値を更新する
 		Output();	// オブジェクトの描画系関数を呼び出す
 
-		if (inputManager->In_Key()[KEY_INPUT_W] == 1) {
-			SendData = NetWorkSendUDP(UDPNetHandle, Ip, 9876, &send, sizeof(Data));
-		}
+		if (inputManager->In_Key()[KEY_INPUT_E] >= 1) {
+			SendData = NetWorkSendUDP(UDPNetHandle, Ip, 19850, &send, sizeof(send));
+			DrawFormatStringToHandle(0, 280, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip.d1, Ip.d2, Ip.d3, Ip.d4);
 
-		RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(Data), FALSE);
+		}
+		RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(post), FALSE);
 		if (RecvSize >= 0)
 		{
 			TotalRecvSize += RecvSize;
+			totalpost += post;
 		}
 		DrawFormatStringToHandle(0, 200, GetColor(255, 255, 255), fontData->f_FontData[0], "TotalRecvSize:%d", TotalRecvSize);
+		DrawFormatStringToHandle(0, 260, GetColor(255, 255, 255), fontData->f_FontData[0], "post:%d", totalpost);
 		DrawFormatStringToHandle(0, 240, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip2.d1,Ip2.d2,Ip2.d3,Ip2.d4);
 
 		SetDrawScreen(DX_SCREEN_BACK);
