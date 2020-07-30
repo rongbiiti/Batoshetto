@@ -5,8 +5,10 @@
 #include "Collision.h"
 #include "GameMain.h"
 #include "DxLib.h"
+#include "Effect.h"
 
 class GameMain;
+class Effect;
 class Player {
 public:
 	// コンストラクタ。REDかBLUEか、色、撃つ側か否か、GameMainオブジェクトのポインタを引数で受け取る。
@@ -26,6 +28,8 @@ public:
 	int GetPlayerNum(void) { return num; }				// プレイヤーがREDかBLUEかを返す
 
 	void DeleteImages();// 画像データメモリから消去
+
+	Effect* effect;							// 生成したUI管理クラスのポインタ
 
 private:
 	Collision* collision;	// 生成した衝突判定するクラスのポインタ

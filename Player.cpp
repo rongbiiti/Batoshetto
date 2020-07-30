@@ -161,6 +161,7 @@ void Player::HidingPlayerControll(void) {
 void Player::DrawPlayer(void) {
 	//DrawCircle(x, y, size / 2, color);
 	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[isShooter], TRUE);
+	//effect->DrawEffect();		//ˆ—‚ð‘‚¢‚Ä‚é“r’†
 }
 
 // Œ‚‚Â‘¤Žž‚É‘_‚Á‚Ä‚¢‚é•ûŒü‚Éü‚ðˆø‚¢‚Ä•`‰æ‚·‚é
