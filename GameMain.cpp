@@ -129,10 +129,40 @@ void GameMain::Update(void) {
 		
 		return;
 		break;
+
+
+
+
+
 	case GameManager::IPADDRESS_SELECT:
 		network->IPAddressSelect();
+		if (inputManager->GetPadInput()[0].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+			network->VariableInit();
+			CreateTitleObj();
+			gameManager->SetPhaseStatus(GameManager::TITLE);
+		}
 		return;
 		break;
+	case GameManager::CONNECT_TYPE_SELECT:
+		network->CommunicationMethodSelect();
+		if (inputManager->GetPadInput()[0].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+			network->VariableInit();
+			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+		}
+		return;
+		break;
+	case GameManager::CONNECTION_WAIT:
+		network->ConnectionWait();
+		if (inputManager->GetPadInput()[0].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+			network->VariableInit();
+			gameManager->SetPhaseStatus(GameManager::CONNECT_TYPE_SELECT);
+		}
+		return;
+		break;
+
+
+
+
 	case GameManager::END:
 		if (end == nullptr) {
 			CreateEndObj();
@@ -206,6 +236,14 @@ void GameMain::Output(void) {
 	case GameManager::IPADDRESS_SELECT:
 		network->DrawIPAddressSelect();
 
+		return;
+		break;
+	case GameManager::CONNECT_TYPE_SELECT:
+		network->DrawCommunicationMethodSelect();
+		return;
+		break;
+	case GameManager::CONNECTION_WAIT:
+		network->DrawConnectionWait();
 		return;
 		break;
 	case GameManager::END:
@@ -428,5 +466,5 @@ void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
 }
 
 void GameMain::CreateNetworkObj() {
-	network = new Network(fontData, inputManager);
+	network = new Network(fontData, inputManager, gameManager);
 }

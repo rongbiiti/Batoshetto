@@ -64,7 +64,6 @@ void Title::TitleControll() {
 
 				this->~Title();
 				break;
-				break;
 			}
 			return;
 		}
@@ -99,17 +98,23 @@ void Title::TitleControll() {
 		{
 		case 0:
 			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-			gameMain->CreateDifficultySelectSceneObj();
+
+			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+
 			this->~Title();
 			break;
 		case 1:
+			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+			this->~Title();
+			break;
+		case 2:
 			gameManager->SetPhaseStatus(GameManager::OPTION);
 
 			gameMain->CreateOptionObj(GameManager::BLUE + 1, Option::TITLE);
 
 			this->~Title();
 			break;
-		case 2:
+		case 3:
 			gameManager->SetPhaseStatus(GameManager::END);
 
 			gameMain->CreateEndObj();

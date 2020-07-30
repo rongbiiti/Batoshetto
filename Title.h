@@ -22,9 +22,9 @@ private:
 	GameManager* gameManager;
 	GameMain* gameMain;
 
-	void Start();		// 試合を再開する
-	void OpenOptionScreen();	// オプション画面を開く
-	void EndSocreen();					// ゲームを終了する
+	//void Start();		// 試合を再開する
+	//void OpenOptionScreen();	// オプション画面を開く
+	//void EndSocreen();					// ゲームを終了する
 
 	const static int SELECT_NUM_MAX = 3;
 	const std::string MenuName[SELECT_NUM_MAX + 1] = { "Start",
