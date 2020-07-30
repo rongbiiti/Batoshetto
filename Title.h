@@ -26,8 +26,9 @@ private:
 	void OpenOptionScreen();	// オプション画面を開く
 	void EndSocreen();					// ゲームを終了する
 
-	const static int SELECT_NUM_MAX = 2;
+	const static int SELECT_NUM_MAX = 3;
 	const std::string MenuName[SELECT_NUM_MAX + 1] = { "Start",
+													   "Online",
 													   "Option",
 													   "End"
 	};

@@ -167,6 +167,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Network.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Player.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Network.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Player.cpp" />

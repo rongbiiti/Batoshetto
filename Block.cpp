@@ -1,6 +1,23 @@
 #include "Block.h"
 #include "GameMain.h"
 
+//void Block::ReadFile(void){
+//	int num , i = 0;
+//	fp = FileRead_open("filename");
+//	if (fp == NULL) {
+//		printfDx("read error\n");
+//		return;
+//	}
+//	while (1)
+//	{
+//		num = FileRead_getc(fp);
+//		BlockPosition[9][BLOCK_ONE_MAX] = num;
+//		i++;
+//		if (num == ',' || num == '\n' || num == EOF) {
+//		}
+//	}
+//}
+
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。
 Block::Block(int num, FontData* font ,GameMain* main) {
 
@@ -117,17 +134,6 @@ void Block::DrawBlocks(void) {
 	dy1 = y - size / 2;
 	dy2 = y + size / 2;
 	DrawRotaGraph(x, y, 1, 0, gamemain->GetBlockImage(HP-1), true);
-	//if (HP == 3) {
-	//	//DrawBox(dx1, dy1, dx2, dy2, 0x7A6611, 1);
-	//	DrawRotaGraph(x, y, 1, 0, i_BlockImage[HP - 1], 0);
-	//}
-	//else if (HP == 2) {
-	//	DrawBox(dx1, dy1, dx2, dy2, 0xFFFF00, 1);
-	//}
-	//else if (HP == 1) {
-	//	DrawBox(dx1, dy1, dx2, dy2, 0xFF0000, 1);
-	//}
-	//DrawFormatStringToHandle(x - size / 3 - 10, y, 0xFFFFFF, fontData->f_FontData[0], "HP%d,%d番", HP, num);
 }
 
 // ブロックのHPを減らす関数。Bulletから呼ばれる。

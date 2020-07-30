@@ -40,7 +40,8 @@ void End::EndControll() {
 			switch (selectNum[i])
 			{
 			case 0:
-
+				//if (DxLib_Init() == -1) return -1;
+				DxLib_End();
 				this->~End();
 				break;
 			case 1:
@@ -83,7 +84,8 @@ void End::EndControll() {
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
-
+			//if (DxLib_Init() == -1) return -1;
+			DxLib_End();
 			this->~End();
 			break;
 		case 1:
