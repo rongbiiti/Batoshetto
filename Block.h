@@ -19,6 +19,7 @@ public:
 	int GetBlockX(void) { return x; }			// ブロックのX中心座標を返す。
 	int GetBlockY(void) { return y; }			// ブロックのY中心座標を返す。
 	int GetBlockSize(void) { return size; }		// ブロックの直径を返す。
+	//void ReadFile(void);
 
 	void DecrementBlockHP(void);				// ブロックのHPを減らす関数。Bulletから呼ばれる。
 private:
@@ -26,7 +27,7 @@ private:
 	const int BlockStartPosition[9][2] = { {280,40}, {600,40},{840,40},{280,280},{600,280},{840,280},{280,520}, {520,520},{840,520}, };
 	const int BlockStartPosition2[5][2] = { {280,40}, {840,40},{520,280},{280,520},{840,520},};
 	//３×３ブロックの種類
-	const int BlockPosition[9][BLOCK_ONE_MAX] = {  {1,1,1,
+	 int BlockPosition[9][BLOCK_ONE_MAX] = {	   {1,1,1,
 													1,0,1,
 													0,0,0},
 
@@ -154,7 +155,7 @@ private:
 	int HP;					// ブロックのHP
 	int num;
 	int rnd;				//ブロックの種類
-
+	int fp;					//ファイル用
 };
 
 #endif // !_BLOCK_H_
