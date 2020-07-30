@@ -287,14 +287,14 @@ bool Bullet::ResultTransitionWaiting(void) {
 void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
 	if (waitingTimeAfterPlayerHit >= 210) {
-		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "”E");
-		DrawFormatStringToHandle(x - fontwidth / 2, 50,  0xdc143c, gameMain->fontData->f_FontData[2], "•s");
-		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xdc143c, gameMain->fontData->f_FontData[2], "Ž€");
-		DrawFormatStringToHandle(x - fontwidth / 2, 350, 0xdc143c, gameMain->fontData->f_FontData[2], "Ža");
-		DrawFormatStringToHandle(x - fontwidth / 2, 500, 0xdc143c, gameMain->fontData->f_FontData[2], "‚è");
+		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "‚ ");
+		DrawFormatStringToHandle(x - fontwidth / 2, 70,  0xdc143c, gameMain->fontData->f_FontData[2], "Ÿ");
+		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xdc143c, gameMain->fontData->f_FontData[2], "•‰");
+		DrawFormatStringToHandle(x - fontwidth / 2, 330, 0xdc143c, gameMain->fontData->f_FontData[2], "‚ ");
+		DrawFormatStringToHandle(x - fontwidth / 2, 460, 0xdc143c, gameMain->fontData->f_FontData[2], "‚è");
 
-		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "IMMORTALITY SEVERED");
-		DrawFormatStringToHandle(x - fontwidth / 2, 600, 0xdc143c, gameMain->fontData->f_FontData[1], "IMMORTALITY SEVERED");
+		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "The Match Has Finished");
+		DrawFormatStringToHandle(x - fontwidth / 2, 560, 0xdc143c, gameMain->fontData->f_FontData[1], "The Match Has Finished");
 	}
 	if (waitingTimeAfterPlayerHit <= 480) {
 		return;
