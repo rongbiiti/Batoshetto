@@ -16,6 +16,7 @@
 #include  "UI.h"
 #include "DifficultySelectScene.h"
 #include "Option.h"
+#include "Network.h"
 
 class Bullet;
 class Player;
@@ -63,6 +64,7 @@ public:
 	void CreatePauseScreenObj();				// ポーズ画面管理クラスを生成し、ポインタを保存しておく
 	void CreateUIObj();							// UI管理クラスを生成し、ポインタを保存しておく
 	void CreateOptionObj(int pushPLnum, int prescreennum);						// オプション画面クラスを生成し、ポインタを保存しておく
+	void CreateNetworkObj();					// 通信対戦用クラスを生成し、ポインタを保存しておく
 
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
 	FontData* fontData;				// 生成したフォントデータ管理クラスのポインタ
@@ -77,6 +79,7 @@ public:
 	PauseScreen* pauseScreen;		// 生成したポーズ画面クラスのポインタ
 	UI* ui;							// 生成したUI管理クラスのポインタ
 	Option* option;					// 生成したオプション画面クラスのポインタ
+	Network* network;				// 生成した通信対戦用クラスのポインタ
 
 private:
 	bool FPSUpdate(void);		// FPSを固定するための関数

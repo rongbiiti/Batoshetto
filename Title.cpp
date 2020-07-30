@@ -47,18 +47,23 @@ void Title::TitleControll() {
 				this->~Title();
 				break;
 			case 1:
+				gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+				this->~Title();
+				break;
+			case 2:
 				gameManager->SetPhaseStatus(GameManager::OPTION);
 
 				gameMain->CreateOptionObj(i, Option::TITLE);
 
 				this->~Title();
 				break;
-			case 2:
+			case 3:
 				gameManager->SetPhaseStatus(GameManager::END);
 
 				gameMain->CreateEndObj();
 
 				this->~Title();
+				break;
 				break;
 			}
 			return;

@@ -59,6 +59,9 @@ int GameMain::FirstInit(void) {
 	// タイトル画面クラスを生成
 	CreateTitleObj();
 
+	// 通信対戦用クラスを生成
+	CreateNetworkObj();
+
 	return 1;
 }
 
@@ -90,36 +93,6 @@ void GameMain::MainObjDelete() {
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// 入力を受け取る
 
-	int send = 1;
-	int post = 0;
-	int totalpost = 0;
-	int UDPNetHandle;
-	int RecvSize = 0, TotalRecvSize;
-	int SendData;
-	IPDATA Ip;        // 送信用ＩＰアドレスデータ
-	IPDATA Ip2;
-
-	// 受信用ＵＤＰソケットハンドルの作成
-	UDPNetHandle = MakeUDPSocket(9876);
-
-	// ＩＰアドレスを設定( ここにある４つのＩＰ値は仮です )
-	Ip.d1 = 172;
-	Ip.d2 = 16;
-	Ip.d3 = 95;
-	Ip.d4 = 255;
-
-	//GetMyIPAddress(&Ip);
-
-	Ip2.d1 = 0;
-	Ip2.d2 = 0;
-	Ip2.d3 = 0;
-	Ip2.d4 = 0;
-
-	// パケット受信
-	TotalRecvSize = 0;
-
-	SendData = 0;
-
 	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
 									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
 									inputManager->In_Key()[KEY_INPUT_F11] == 0) {
@@ -132,22 +105,7 @@ void GameMain::GameLoop(void) {
 		Update();	// オブジェクトの処理を進めて値を更新する
 		Output();	// オブジェクトの描画系関数を呼び出す
 
-		if (inputManager->In_Key()[KEY_INPUT_S] == 1) {
-			SendData = NetWorkSendUDP(UDPNetHandle, Ip, 9876, &send, sizeof(send));
-		}
-		
-		if (inputManager->In_Key()[KEY_INPUT_R] >= 1) {
-			RecvSize = NetWorkRecvUDP(UDPNetHandle, &Ip2, NULL, &post, sizeof(post), FALSE);
-			if (RecvSize >= 0)
-			{
-				TotalRecvSize += RecvSize;
-				totalpost += post;
-			}
-		}
-		
-		DrawFormatStringToHandle(0, 200, GetColor(255, 255, 255), fontData->f_FontData[0], "TotalRecvSize:%d", TotalRecvSize);
-		DrawFormatStringToHandle(0, 260, GetColor(255, 255, 255), fontData->f_FontData[0], "post:%d", totalpost);
-		DrawFormatStringToHandle(0, 240, GetColor(255, 255, 255), fontData->f_FontData[0], "%d.%d.%d.%d", Ip2.d1,Ip2.d2,Ip2.d3,Ip2.d4);
+		network->DrawNetWorkData();
 
 		SetDrawScreen(DX_SCREEN_BACK);
 		// 画面を描画用の大きさに引き伸ばして描画する
@@ -169,6 +127,10 @@ void GameMain::Update(void) {
 		}
 		title->TitleControll();
 		
+		return;
+		break;
+	case GameManager::IPADDRESS_SELECT:
+		network->IPAddressSelect();
 		return;
 		break;
 	case GameManager::END:
@@ -238,6 +200,11 @@ void GameMain::Output(void) {
 	{
 	case GameManager::TITLE:
 		title->DrawTitle();
+
+		return;
+		break;
+	case GameManager::IPADDRESS_SELECT:
+		network->DrawIPAddressSelect();
 
 		return;
 		break;
@@ -458,4 +425,8 @@ void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
 		return;
 	}
 	option = new Option(this, pushPLnum, prescreennum);
+}
+
+void GameMain::CreateNetworkObj() {
+	network = new Network(fontData, inputManager);
 }
