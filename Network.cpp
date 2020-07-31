@@ -256,7 +256,9 @@ void Network::ConnectionWait_TypeHOST() {
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
 		RecvDataAddition();
 		if (post == 3 && sendSize >= 0) {
-			gameManager->SetPhaseStatus(GameManager::INIT);
+			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+
+			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
 		}
 	}
 }
@@ -266,7 +268,7 @@ void Network::ConnectionWait_TypeGEST() {
 	if (GEST_phaseNum == 0) {
 		++GEST_hostSerchWaitTime;
 		post = 0;
-		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &post, sizeof(post), FALSE);
 		RecvDataAddition();
 		if (GEST_hostSerchWaitTime % 60 == 0) {
 			send = 1;
@@ -274,11 +276,22 @@ void Network::ConnectionWait_TypeGEST() {
 			SendDataAddition();
 		}
 		if (post == 2) {
-			GEST_phaseNum = 2;
+			GEST_phaseNum = 1;
 		}
 	}
 	else if (GEST_phaseNum == 1) {
+		++GEST_hostSerchWaitTime;
+		if (GEST_hostSerchWaitTime % 60 == 0) {
+			send = 3;
+			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &send, sizeof(send));
+			SendDataAddition();
+			if (sendSize >= 0) {
+				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 
+				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+			}
+		}
+		
 	}
 }
 
