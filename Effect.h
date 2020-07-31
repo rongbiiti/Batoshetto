@@ -13,12 +13,13 @@ public:
 	~Effect();	// デストラクタ
 	void LoadImages();	// 画像読み込み
 
-	void DrawEffect();	
+	void DrawEffect(int x, int y);	//エフェクトを描画
 	
 
 private:
 	GameMain* gameMain;		// ゲームメインクラスのポインタ
 	GameManager* gameManager;	// ゲーム進行管理クラスのポインタ
+	int i_ShotEffect[4];	// マズルフラッシュの画像
 };
 
 #endif // !_UI_H_
