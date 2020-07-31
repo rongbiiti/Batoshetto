@@ -424,6 +424,7 @@ void GameMain::CreateGameManagerObj() {
 }
 
 void GameMain::CreateBlockObj() {
+	SRand(gameManager->GetRandSeedNum());
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData, this);
 	}

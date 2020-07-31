@@ -225,10 +225,10 @@ void Network::CommunicationMethodSelect() {
 
 // 通信待機
 void Network::ConnectionWait() {
-	if (ConnectType == 0) {
+	if (ConnectType == HOST) {
 		ConnectionWait_TypeHOST();
 	}
-	else {
+	else if (ConnectType == GEST) {
 		ConnectionWait_TypeGEST();
 	}
 }
@@ -277,6 +277,7 @@ void Network::ConnectionWait_TypeGEST() {
 		}
 		if (post == 2) {
 			GEST_phaseNum = 1;
+			GEST_hostSerchWaitTime = 0;
 		}
 	}
 	else if (GEST_phaseNum == 1) {
@@ -301,7 +302,7 @@ void Network::DrawConnectionWait() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	// ホスト////////////////////////////////////////////
-	if (ConnectType == 0) {
+	if (ConnectType == HOST) {
 		if (HOST_phaseNum == 0) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストを待っています...");
 			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストを待っています...");
@@ -324,7 +325,7 @@ void Network::DrawConnectionWait() {
 
 
 	// ゲスト/////////////////////////////////////////////
-	else {
+	else if (ConnectType == GEST) {
 		if (GEST_phaseNum == 0) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストを探しています...");
 			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストを探しています...");

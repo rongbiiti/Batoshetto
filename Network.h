@@ -10,6 +10,11 @@
 const static int PORT_NUMBER = 9876;
 class Network {
 public:
+	enum CONNECT_TYPE {
+		HOST,
+		GEST
+	};
+
 	Network(FontData* font, InputManager* input, GameManager* gameMNG);	// コンストラクタ
 	~Network();	// デストラクタ
 
