@@ -43,7 +43,9 @@ int GameMain::FirstInit(void) {
 	SetMainWindowText("バトシェット");	// ウィンドウの名前設定
 	SetGraphMode(DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, 32);	// ウィンドウの計算用大きさ設定
 	ChangeWindowMode(TRUE);				// ウィンドウモードで起動
+	SetDoubleStartValidFlag(TRUE);		// ウィンドウを2個まで多重起動を許可
 	if (DxLib_Init() == -1) return -1;	// DxLibの初期化処理が上手くいかなかったら強制終了
+	SetAlwaysRunFlag(TRUE);
 	offscreen_handle = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
 	SetDrawScreen(offscreen_handle);
 
@@ -422,6 +424,7 @@ void GameMain::CreateGameManagerObj() {
 }
 
 void GameMain::CreateBlockObj() {
+	SRand(gameManager->GetRandSeedNum());
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData, this);
 	}

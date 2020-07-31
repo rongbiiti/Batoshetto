@@ -53,6 +53,7 @@ public:
 	int GetPhaseStatus() { return PhaseStatus; }	// 現在のゲームのフェーズを返す。
 	int GetNowShooter() { return NowShooter; }		// 現在の撃つ側がREDかBLUEかを返す。
 	int GetNowHider() { return NowHider; }			// 現在の隠れる側がREDかBLUEかを返す。
+	int GetRandSeedNum() { return randSeedNum; }	// 乱数のシード値を渡す
 
 	void SetDifficulty(int value) { difficulty = value; }	// 難易度をセットする。
 	void SetHideTime(void) { t_HideTime = HidePhaseTime; }	// 隠れる側残り時間をリセットする。
@@ -78,6 +79,8 @@ private:
 	int PhaseStatus;	// 現在のゲームのフェーズ
 	int NowShooter;		// 現在の撃つ側
 	int NowHider;		// 現在の隠れる側
+
+	int randSeedNum;	// 乱数のシード値
 	
 };
 

@@ -10,6 +10,11 @@
 const static int PORT_NUMBER = 9876;
 class Network {
 public:
+	enum CONNECT_TYPE {
+		HOST,
+		GEST
+	};
+
 	Network(FontData* font, InputManager* input, GameManager* gameMNG);	// コンストラクタ
 	~Network();	// デストラクタ
 
@@ -17,6 +22,9 @@ public:
 	void VariableInit();	// 普通の変数を初期化
 
 	void DrawNetWorkData();		// ネット系のデータ表示
+
+	void RecvDataAddition();	// 受信データ加算
+	void SendDataAddition();	// 送信データ加算
 
 	void IPAddressSelect();		// 使用するIPアドレスを選択させる
 	void DrawIPAddressSelect();	// 使用するIPアドレスを選択させる画面を描画

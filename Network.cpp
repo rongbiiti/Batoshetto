@@ -37,6 +37,22 @@ void Network::VariableInit() {
 	selectNum = 0;
 }
 
+// 受信データ加算
+void Network::RecvDataAddition() {
+	if (recvSize >= 0) {
+		totalRecvSize += recvSize;
+		totalpost += post;
+	}
+}
+
+// 送信データ加算
+void Network::SendDataAddition() {
+	if (sendSize >= 0) {
+		totalSendSize += sendSize;
+		totalsend += send;
+	}
+}
+
 // broadCast_IPを初期化
 void Network::InitIPAddress() {
 	// コンピュータの全IPアドレスを取得
@@ -66,13 +82,9 @@ void Network::InitIPAddress() {
 		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &send, sizeof(send));
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &post, sizeof(post), FALSE);
 
-		totalSendSize += sendSize;
-		totalsend += send;
-
-		if (recvSize > 0) {
-			totalRecvSize += recvSize;
-			totalpost += post;
-		}
+		SendDataAddition();
+		RecvDataAddition();
+		
 	}while (i < IPsNumber);
 
 	// もし有効なIPアドレスがひとつもなかったらエラーコードに1をセットして処理を終わる
@@ -213,10 +225,10 @@ void Network::CommunicationMethodSelect() {
 
 // 通信待機
 void Network::ConnectionWait() {
-	if (ConnectType == 0) {
+	if (ConnectType == HOST) {
 		ConnectionWait_TypeHOST();
 	}
-	else {
+	else if (ConnectType == GEST) {
 		ConnectionWait_TypeGEST();
 	}
 }
@@ -227,6 +239,8 @@ void Network::ConnectionWait_TypeHOST() {
 		++HOST_gestSerchWaitTime;
 		post = 0;
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &post, sizeof(post), FALSE);
+
+		RecvDataAddition();
 		if (post == 1) {
 			HOST_phaseNum = 1;
 			send = 2;
@@ -235,11 +249,16 @@ void Network::ConnectionWait_TypeHOST() {
 	else if (HOST_phaseNum == 1) {
 		++HOST_gestReplyWaitTime;
 		if (HOST_gestReplyWaitTime % 60 == 0) {
+			send = 2;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &send, sizeof(send));
+			SendDataAddition();
 		}
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
+		RecvDataAddition();
 		if (post == 3 && sendSize >= 0) {
-			gameManager->SetPhaseStatus(GameManager::INIT);
+			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+
+			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
 		}
 	}
 }
@@ -248,17 +267,32 @@ void Network::ConnectionWait_TypeHOST() {
 void Network::ConnectionWait_TypeGEST() {
 	if (GEST_phaseNum == 0) {
 		++GEST_hostSerchWaitTime;
-		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
+		post = 0;
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &post, sizeof(post), FALSE);
+		RecvDataAddition();
 		if (GEST_hostSerchWaitTime % 60 == 0) {
 			send = 1;
 			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &send, sizeof(send));
+			SendDataAddition();
 		}
-		if (post == 1) {
-
+		if (post == 2) {
+			GEST_phaseNum = 1;
+			GEST_hostSerchWaitTime = 0;
 		}
 	}
 	else if (GEST_phaseNum == 1) {
+		++GEST_hostSerchWaitTime;
+		if (GEST_hostSerchWaitTime % 60 == 0) {
+			send = 3;
+			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &send, sizeof(send));
+			SendDataAddition();
+			if (sendSize >= 0) {
+				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 
+				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+			}
+		}
+		
 	}
 }
 
@@ -268,7 +302,7 @@ void Network::DrawConnectionWait() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	// ホスト////////////////////////////////////////////
-	if (ConnectType == 0) {
+	if (ConnectType == HOST) {
 		if (HOST_phaseNum == 0) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストを待っています...");
 			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストを待っています...");
@@ -291,7 +325,7 @@ void Network::DrawConnectionWait() {
 
 
 	// ゲスト/////////////////////////////////////////////
-	else {
+	else if (ConnectType == GEST) {
 		if (GEST_phaseNum == 0) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストを探しています...");
 			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストを探しています...");
