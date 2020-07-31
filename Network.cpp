@@ -37,6 +37,22 @@ void Network::VariableInit() {
 	selectNum = 0;
 }
 
+// 受信データ加算
+void Network::RecvDataAddition() {
+	if (recvSize >= 0) {
+		totalRecvSize += recvSize;
+		totalpost += post;
+	}
+}
+
+// 送信データ加算
+void Network::SendDataAddition() {
+	if (sendSize >= 0) {
+		totalSendSize += sendSize;
+		totalsend += send;
+	}
+}
+
 // broadCast_IPを初期化
 void Network::InitIPAddress() {
 	// コンピュータの全IPアドレスを取得
@@ -66,13 +82,9 @@ void Network::InitIPAddress() {
 		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &send, sizeof(send));
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &post, sizeof(post), FALSE);
 
-		totalSendSize += sendSize;
-		totalsend += send;
-
-		if (recvSize > 0) {
-			totalRecvSize += recvSize;
-			totalpost += post;
-		}
+		SendDataAddition();
+		RecvDataAddition();
+		
 	}while (i < IPsNumber);
 
 	// もし有効なIPアドレスがひとつもなかったらエラーコードに1をセットして処理を終わる
@@ -227,6 +239,8 @@ void Network::ConnectionWait_TypeHOST() {
 		++HOST_gestSerchWaitTime;
 		post = 0;
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &post, sizeof(post), FALSE);
+
+		RecvDataAddition();
 		if (post == 1) {
 			HOST_phaseNum = 1;
 			send = 2;
@@ -235,9 +249,12 @@ void Network::ConnectionWait_TypeHOST() {
 	else if (HOST_phaseNum == 1) {
 		++HOST_gestReplyWaitTime;
 		if (HOST_gestReplyWaitTime % 60 == 0) {
+			send = 2;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &send, sizeof(send));
+			SendDataAddition();
 		}
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
+		RecvDataAddition();
 		if (post == 3 && sendSize >= 0) {
 			gameManager->SetPhaseStatus(GameManager::INIT);
 		}
@@ -248,13 +265,16 @@ void Network::ConnectionWait_TypeHOST() {
 void Network::ConnectionWait_TypeGEST() {
 	if (GEST_phaseNum == 0) {
 		++GEST_hostSerchWaitTime;
+		post = 0;
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
+		RecvDataAddition();
 		if (GEST_hostSerchWaitTime % 60 == 0) {
 			send = 1;
 			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &send, sizeof(send));
+			SendDataAddition();
 		}
-		if (post == 1) {
-
+		if (post == 2) {
+			GEST_phaseNum = 2;
 		}
 	}
 	else if (GEST_phaseNum == 1) {

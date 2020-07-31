@@ -18,6 +18,9 @@ public:
 
 	void DrawNetWorkData();		// ネット系のデータ表示
 
+	void RecvDataAddition();	// 受信データ加算
+	void SendDataAddition();	// 送信データ加算
+
 	void IPAddressSelect();		// 使用するIPアドレスを選択させる
 	void DrawIPAddressSelect();	// 使用するIPアドレスを選択させる画面を描画
 
