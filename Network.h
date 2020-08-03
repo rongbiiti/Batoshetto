@@ -60,6 +60,7 @@ private:
 
 	int IPsNumber;		// IPアドレスの個数
 	int errorCode;		// エラーコード
+
 	int ConnectType;	// ホストかゲストか 0 = ホスト。1 = ゲスト。
 
 	int GEST_hostSerchWaitTime;	// ゲストの、ホストを探している時間

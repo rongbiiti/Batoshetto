@@ -50,24 +50,24 @@ void Player::ShooterPlayerControll(void) {
 	}
 
 	// 方向キーを押した瞬間の角度を参照し、角度増分量をプラスかマイナスか判断する
-	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_DOWN] == 1) {
+	if (inputManager->GetButtonDown(PAD_UP, shooter) || inputManager->GetButtonDown(PAD_DOWN, shooter)) {
 		ChangeDirectionalKeyAng();
 	}
-	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyDown(KEY_INPUT_DOWN)) {
 		ChangeDirectionalKeyAng();
 	}
 
 	// コントローラーの十字キーでも角度操作を受付。
 	// Aボタンを押していると、速度がアップする。
-	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_UP] != 0) {
+	if (inputManager->GetPadInput()[shooter].in_Button[PAD_UP] != 0) {
 		angle += directionalKeyAng;
-		if (inputManager->GetPadInput()[shooter].in_Button[InputManager::A] != 0) {
+		if (inputManager->GetPadInput()[shooter].in_Button[A] != 0) {
 			angle += directionalKeyAng * 2;
 		}
 	}
-	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::PAD_DOWN] != 0) {
+	if (inputManager->GetPadInput()[shooter].in_Button[PAD_DOWN] != 0) {
 		angle -= directionalKeyAng;
-		if (inputManager->GetPadInput()[shooter].in_Button[InputManager::A] != 0) {
+		if (inputManager->GetPadInput()[shooter].in_Button[A] != 0) {
 			angle -= directionalKeyAng * 2;
 		}
 	}
@@ -105,14 +105,14 @@ void Player::ShooterPlayerControll(void) {
 	//TargetPointWindowHitCheck();
 
 	// PASSして隠れる側フェーズに
-	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
+	if (inputManager->GetPadInput()[shooter].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
 		gameMain->gameManager->ToHidePhase();
 		return;
 	}
 
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
 	// または、制限時間になったら勝手に発射する
-	if (inputManager->GetPadInput()[shooter].in_Button[InputManager::B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
+	if (inputManager->GetPadInput()[shooter].in_Button[B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
 		CreateBullet();
 		gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
@@ -152,7 +152,7 @@ void Player::HidingPlayerControll(void) {
 	BlockHitCheck();
 
 	// PASSして撃つ側フェーズに
-	if (inputManager->GetPadInput()[hider].in_Button[InputManager::X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
+	if (inputManager->GetPadInput()[hider].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
 		gameMain->gameManager->ToShotPhase();
 	}
 }
@@ -466,15 +466,17 @@ void Player::CreateBullet(void) {
 void Player::LoadImages() {
 	if (!(i_Playerimage[0] = LoadGraph("Image/PlayerDefalut01.png"))) return;
 	if (!(i_Playerimage[1] = LoadGraph("Image/PlayerShot.png"))) return;
-
 }
 
 // 画像データメモリから消去
 void Player::DeleteImages() {
 	DeleteGraph(i_Playerimage[0]);
 	DeleteGraph(i_Playerimage[1]);
+	i_Playerimage[0] = NULL;
+	i_Playerimage[1] = NULL;
 }
 
 Player::~Player() {
-	//DeleteImages();
+	delete collision;
+	DeleteImages();
 }

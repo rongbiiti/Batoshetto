@@ -78,26 +78,38 @@ void GameMain::Init() {
 }
 
 void GameMain::MainObjDelete() {	
-	ui->DeleteImages();
-	if (ui != nullptr) ui->~UI();
+	// UIクラス消去
+	delete ui;
+	ui = NULL;
+
+	// 弾クラス消去
+	delete bullet;
+	bullet = NULL;
+
+	// ブロッククラス消去
 	for (int i = 0; i < BLOCK_MAX; i++) {
-		if (block[i] != nullptr) block[i]->~Block();
+		delete block[i];
+		block[i] = NULL;
 	}
+	// ブロック画像消去
 	DeleteBlockImages();
-	if (bullet != nullptr) bullet->~Bullet();
-	player[GameManager::RED]->DeleteImages();
-	player[GameManager::BLUE]->DeleteImages();
-	if (player[GameManager::RED] != nullptr) player[GameManager::RED]->~Player();
-	if (player[GameManager::BLUE] != nullptr) player[GameManager::BLUE]->~Player();
+
+	// プレイヤークラス消去
+	delete player[GameManager::RED];
+	delete player[GameManager::BLUE];
+	player[GameManager::RED] = NULL;
+	player[GameManager::BLUE] = NULL;
+	
 }
 
 // ゲームループ
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// 入力を受け取る
 
-	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::BACK] == 0 &&
-									inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::BACK] == 0) &&
-									inputManager->In_Key()[KEY_INPUT_F11] == 0) {
+	while (ProcessMessage() == 0 && (inputManager->GetPadInput()[GameManager::RED].in_Button[BACK] == 0 &&
+									 inputManager->GetPadInput()[GameManager::BLUE].in_Button[BACK] == 0) &&
+									 inputManager->In_Key()[KEY_INPUT_F11] == 0 &&
+									 gameManager->GetPhaseStatus() != GameManager::QUIT) {
 		FPSUpdate();	//FPS更新
 
 		SetDrawScreen(offscreen_handle);
@@ -135,19 +147,18 @@ void GameMain::Update(void) {
 
 
 
-
+	// ここらへんネットワーク系///////////////////////////////////////////////////
 	case GameManager::IPADDRESS_SELECT:
 		network->IPAddressSelect();
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+		if (inputManager->GetButtonDown(A,0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
 			CreateTitleObj();
-			gameManager->SetPhaseStatus(GameManager::TITLE);
 		}
 		return;
 		break;
 	case GameManager::CONNECT_TYPE_SELECT:
 		network->CommunicationMethodSelect();
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
 			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
 		}
@@ -155,13 +166,14 @@ void GameMain::Update(void) {
 		break;
 	case GameManager::CONNECTION_WAIT:
 		network->ConnectionWait();
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::A] == 1 || inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
+			network->InitIPAddress();
 			gameManager->SetPhaseStatus(GameManager::CONNECT_TYPE_SELECT);
 		}
 		return;
 		break;
-
+	///////////////////////////////////////////////////////////////////////////
 
 
 
@@ -175,6 +187,11 @@ void GameMain::Update(void) {
 		break;
 	case GameManager::DIFFICULTYSELECT:
 		diffiSelectScene->DifficultySelectControll();
+		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
+			delete diffiSelectScene;
+			diffiSelectScene = NULL;
+			CreateTitleObj();
+		}
 
 		return;
 		break;
@@ -216,6 +233,12 @@ void GameMain::Update(void) {
 		break;
 	case GameManager::OPTION:
 		option->OptionControll();
+		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
+			CreateTitleObj();
+		}
+		break;
+	case GameManager::QUIT:
+
 		break;
 	}
 	
@@ -342,7 +365,7 @@ void GameMain::DrawDebugInfo(void) {
 
 // ポーズ画面を開閉するボタンが押されたかチェック
 bool GameMain::IsPushPauseButton() {
-	if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::START] == 1) {
+	if (inputManager->GetButtonDown(START, GameManager::RED)) {
 		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
 		if (pauseFlg && pausePushPLNum != GameManager::RED) {
 			return false;
@@ -350,7 +373,7 @@ bool GameMain::IsPushPauseButton() {
 		pausePushPLNum = GameManager::RED;
 		return true;
 	}
-	if (inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::START] == 1) {
+	if (inputManager->GetButtonDown(START, GameManager::BLUE)) {
 		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
 		if (pauseFlg && pausePushPLNum != GameManager::BLUE) {
 			return false;
@@ -358,7 +381,7 @@ bool GameMain::IsPushPauseButton() {
 		pausePushPLNum = GameManager::BLUE;
 		return true;
 	}
-	if (inputManager->In_Key()[KEY_INPUT_ESCAPE] == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
 		if (pauseFlg && pausePushPLNum != GameManager::BLUE + 1) {
 			return false;
@@ -438,13 +461,18 @@ void GameMain::CreateResultObj(int hitPNum) {
 void GameMain::CreateTitleObj() {
 	title = new Title(fontData, inputManager, gameManager);
 	if (ui != nullptr) {
-		ui->~UI();
+		delete ui;
+		ui = NULL;
 	}
+	gameManager->SetPhaseStatus(GameManager::TITLE);
 }
 
 void GameMain::CreateEndObj() {
 	end = new End(fontData, inputManager, gameManager);
-	ui->~UI();
+	if (ui != nullptr) {
+		delete ui;
+		ui = NULL;
+	}
 }
 
 void GameMain::CreateDifficultySelectSceneObj() {

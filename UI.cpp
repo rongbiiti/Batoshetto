@@ -80,8 +80,11 @@ void UI::DeleteImages() {
 	DeleteGraph(i_PlayerGuage[0]);
 	DeleteGraph(i_PlayerGuage[1]);
 	DeleteGraph(i_BackGroundImage);
+	i_PlayerGuage[0] = NULL;
+	i_PlayerGuage[1] = NULL;
+	i_BackGroundImage = NULL;
 }
 
 UI::~UI() {
-	//DeleteImages();
+	DeleteImages();
 }

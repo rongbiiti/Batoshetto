@@ -1,7 +1,8 @@
 #include "Network.h"
 #include "GameMain.h"
-
+////////////////////////////////////////////////
 // コンストラクタ
+////////////////////////////////////////////////
 Network::Network(FontData* font, InputManager* input, GameManager* gameMNG) {
 	fontData = font;
 	inputManager = input;
@@ -27,17 +28,24 @@ Network::Network(FontData* font, InputManager* input, GameManager* gameMNG) {
 	VariableInit();
 }
 
+////////////////////////////////////////////////
 // 普通の変数の初期化
+////////////////////////////////////////////////
 void Network::VariableInit() {
 	ConnectType = 0;	// ホストかゲストか
 	HOST_gestSerchWaitTime = 0;
 	GEST_hostSerchWaitTime = 0;
 	HOST_gestReplyWaitTime = 0;
 
+	GEST_phaseNum = 0;
+	HOST_phaseNum = 0;
+
 	selectNum = 0;
 }
 
+////////////////////////////////////////////////
 // 受信データ加算
+////////////////////////////////////////////////
 void Network::RecvDataAddition() {
 	if (recvSize >= 0) {
 		totalRecvSize += recvSize;
@@ -45,7 +53,9 @@ void Network::RecvDataAddition() {
 	}
 }
 
+////////////////////////////////////////////////
 // 送信データ加算
+////////////////////////////////////////////////
 void Network::SendDataAddition() {
 	if (sendSize >= 0) {
 		totalSendSize += sendSize;
@@ -53,7 +63,9 @@ void Network::SendDataAddition() {
 	}
 }
 
+////////////////////////////////////////////////
 // broadCast_IPを初期化
+////////////////////////////////////////////////
 void Network::InitIPAddress() {
 	// コンピュータの全IPアドレスを取得
 	GetMyIPAddress(All_IP, ALL_IP_LENGTH, &IPsNumber);
@@ -95,31 +107,27 @@ void Network::InitIPAddress() {
 
 }
 
+////////////////////////////////////////////////
 // 使用するIPアドレスを選択させる
+////////////////////////////////////////////////
 void Network::IPAddressSelect() {
-	if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] >= 18) {
+	if (inputManager->GetButtonDown(PAD_UP, 0) || inputManager->GetButtonHold(PAD_UP, 0, 4)) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum < 0) {
 			selectNum = IPsNumber - 1;
 		}
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] >= 18) {
-			inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] -= 4;
-		}
 	}
 
-	if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] == 1 || inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] >= 18) {
+	if (inputManager->GetButtonDown(PAD_DOWN, 0) || inputManager->GetButtonHold(PAD_DOWN, 0, 4)) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum > IPsNumber - 1) {
 			selectNum = 0;
 		}
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] >= 18) {
-			inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] -= 4;
-		}
 	}
 
-	if (inputManager->GetPadInput()[0].in_Button[InputManager::B] == 1) {
+	if (inputManager->GetButtonDown(B, 0)) {
 		my_IP = All_IP[selectNum];
 		broadCast_IP.d1 = my_IP.d1;
 		broadCast_IP.d2 = my_IP.d2;
@@ -130,29 +138,23 @@ void Network::IPAddressSelect() {
 	}
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum < 0) {
 			selectNum = IPsNumber - 1;
 		}
-		if (inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_UP] -= 4;
-		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_DOWN] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum > IPsNumber - 1) {
 			selectNum = 0;
 		}
-		if (inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_DOWN] -= 4;
-		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
 		my_IP = All_IP[selectNum];
 		broadCast_IP.d1 = my_IP.d1;
 		broadCast_IP.d2 = my_IP.d2;
@@ -162,31 +164,27 @@ void Network::IPAddressSelect() {
 	}
 }
 
+////////////////////////////////////////////////
 // ホストになるかゲストになるかを選択させる
+////////////////////////////////////////////////
 void Network::CommunicationMethodSelect() {
-	if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] >= 18) {
+	if (inputManager->GetButtonDown(PAD_UP, 0) || inputManager->GetButtonHold(PAD_UP, 0, 4)) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum < 0) {
 			selectNum = 1;
 		}
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] >= 18) {
-			inputManager->GetPadInput()[0].in_Button[InputManager::PAD_UP] -= 4;
-		}
 	}
 
-	if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] == 1 || inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] >= 18) {
+	if (inputManager->GetButtonDown(PAD_DOWN, 0) || inputManager->GetButtonHold(PAD_DOWN, 0, 4)) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum > 1) {
 			selectNum = 0;
 		}
-		if (inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] >= 18) {
-			inputManager->GetPadInput()[0].in_Button[InputManager::PAD_DOWN] -= 4;
-		}
 	}
 
-	if (inputManager->GetPadInput()[0].in_Button[InputManager::B] == 1) {
+	if (inputManager->GetButtonDown(B, 0)) {
 		ConnectType = selectNum;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
@@ -194,36 +192,32 @@ void Network::CommunicationMethodSelect() {
 	}
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum < 0) {
 			selectNum = 1;
 		}
-		if (inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_UP] -= 4;
-		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_DOWN] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum > 1) {
 			selectNum = 0;
 		}
-		if (inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_DOWN] -= 4;
-		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
 		ConnectType = selectNum;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
 	}
 }
 
+////////////////////////////////////////////////
 // 通信待機
+////////////////////////////////////////////////
 void Network::ConnectionWait() {
 	if (ConnectType == HOST) {
 		ConnectionWait_TypeHOST();
@@ -233,7 +227,9 @@ void Network::ConnectionWait() {
 	}
 }
 
+////////////////////////////////////////////////
 // 通信待機：ホスト
+////////////////////////////////////////////////
 void Network::ConnectionWait_TypeHOST() {
 	if (HOST_phaseNum == 0) {
 		++HOST_gestSerchWaitTime;
@@ -263,7 +259,9 @@ void Network::ConnectionWait_TypeHOST() {
 	}
 }
 
+////////////////////////////////////////////////
 // 通信待機：ゲスト
+////////////////////////////////////////////////
 void Network::ConnectionWait_TypeGEST() {
 	if (GEST_phaseNum == 0) {
 		++GEST_hostSerchWaitTime;
@@ -296,7 +294,9 @@ void Network::ConnectionWait_TypeGEST() {
 	}
 }
 
+////////////////////////////////////////////////
 // 通信待機中の画面
+////////////////////////////////////////////////
 void Network::DrawConnectionWait() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
@@ -344,7 +344,9 @@ void Network::DrawConnectionWait() {
 	
 }
 
+////////////////////////////////////////////////
 // ホストになるかゲストになるかを選択させる画面の描画
+////////////////////////////////////////////////
 void Network::DrawCommunicationMethodSelect() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
@@ -363,7 +365,9 @@ void Network::DrawCommunicationMethodSelect() {
 	DrawCircle(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 10, COLOR_VALUE_PLAYER[0], 1, 1);
 }
 
+////////////////////////////////////////////////
 // 使用するIPアドレスを選択させる画面を描画
+////////////////////////////////////////////////
 void Network::DrawIPAddressSelect() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
@@ -381,7 +385,9 @@ void Network::DrawIPAddressSelect() {
 	DrawCircle(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 10, COLOR_VALUE_PLAYER[0], 1, 1);
 }
 
+////////////////////////////////////////////////
 // ネット系のデータ表示
+////////////////////////////////////////////////
 void Network::DrawNetWorkData() {
 	int handle = fontData->f_FontData[0];
 	unsigned int c = 0xFFFFFF;
@@ -403,7 +409,9 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 280, c, handle, "IpsNumber%d", IPsNumber);
 }
 
+////////////////////////////////////////////////
 // デストラクタ
+////////////////////////////////////////////////
 Network::~Network() {
-
+	DeleteUDPSocket(UDPNetHandle);
 }

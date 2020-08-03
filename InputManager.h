@@ -5,6 +5,24 @@
 #include "DxLib.h"
 #include <string>
 
+enum BUTTON {
+	PAD_UP,
+	PAD_DOWN,
+	PAD_LEFT,
+	PAD_RIGHT,
+	START,
+	BACK,
+	L_PUSH,
+	R_PUSH,
+	LB,
+	RB,
+	A = 12,
+	B,
+	X,
+	Y
+};
+// ボタンの名前列挙体
+
 class InputManager {
 public:
 	InputManager();			// コンストラクタ
@@ -37,24 +55,6 @@ public:
 									     "Y"
 	};
 
-	enum BUTTON {
-		PAD_UP,
-		PAD_DOWN,
-		PAD_LEFT,
-		PAD_RIGHT,
-		START,
-		BACK,
-		L_PUSH,
-		R_PUSH,
-		LB,
-		RB,
-		A = 12,
-		B,
-		X,
-		Y
-	};
-	// ボタンの名前列挙体
-
 	typedef struct PAD_INPUT	// x座標とy座標をまとめて渡せるようにするための構造体
 	{
 		int in_Button[16];			// どのボタンが何フレーム押されているかの結果を記憶してる関数
@@ -64,9 +64,19 @@ public:
 		float in_Stick_RY;			// 右スティックY軸
 	}GamePad;
 
+	bool GetButtonDown(BUTTON buttonCode, int playerNum);	// 指定したプレイヤーのパッドのボタンを押した瞬間かを受け取る
+	bool GetButtonHold(BUTTON buttonCode, int playerNum);	// 指定したプレイヤーのパッドのボタンを押し続けているかを受け取る
+	bool GetButtonHold(BUTTON buttonCode, int playerNum, int reduceValue);	// 押し続けているかを受け取り、ボタンの押し続け秒数を減らす。
+
+	bool GetKeyDown(int KeyCode);	// キーボードのキーを押した瞬間かを受け取る
+	bool GetKeyHold(int KeyCode);	// キーボードのキーを押し続けているかを受け取る
+	bool GetKeyHold(int KeyCode, int reduceValue);	// 押し続けているかを受け取り、キーの押し続け秒数を減らす。
+
 	GamePad* GetPadInput() { return gamePad; }
 	
 private:
+	const static int HOLD_FRAMECOUNT = 18;
+
 	char Key[256];		// キーボードが押されているかをこの配列に全て入れる。
 	XINPUT_STATE input[2];		// DXLibで定義されているXINPUTの入力を受け取ることができる構造体
 

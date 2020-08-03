@@ -68,7 +68,7 @@ void Bullet::BulletControll(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
 	if (RemainingRicochetTimesCheck()) return;
 
-	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[InputManager::PAD_RIGHT] != 0)return;
+	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[PAD_RIGHT] != 0)return;
 
 	if (IsHitBlock()) return;		// ブロックと当たり判定
 }
@@ -304,6 +304,18 @@ void Bullet::DrawSHINOBIEXECUTION() {
 
 Bullet::~Bullet() {
 	delete collision;
+	DeleteSoundMem(s_Fire);
+	DeleteSoundMem(s_Ricochet);
+	DeleteSoundMem(s_BlockBreak);
+	DeleteSoundMem(s_PlayerHit[0]);
+	DeleteSoundMem(s_PlayerHit[1]);
+	DeleteSoundMem(s_Blood);
+	s_Fire = NULL;
+	s_Ricochet = NULL;
+	s_BlockBreak = NULL;
+	s_PlayerHit[0] = NULL;
+	s_PlayerHit[1] = NULL;
+	s_Blood = NULL;
 }
 
 // 音データ読み込み

@@ -67,3 +67,53 @@ void InputManager::InputButton(void) {
 		//DrawFormatString(900, 32, 0xFFFFFF, "ThumbRX:%.4f ThumbRY:%.4f", in_Stick_RX, in_Stick_RY);
 	}
 }
+
+// 指定したプレイヤーのパッドのボタンを押した瞬間かを受け取る
+bool InputManager::GetButtonDown(BUTTON buttonCode, int playerNum) {
+	if (gamePad[playerNum].in_Button[buttonCode] == 1) {
+		return true;
+	}
+	return false;
+}
+
+// 指定したプレイヤーのパッドのボタンを押し続けているかを受け取る
+bool InputManager::GetButtonHold(BUTTON buttonCode, int playerNum) {
+	if (gamePad[playerNum].in_Button[buttonCode] >= HOLD_FRAMECOUNT) {
+		return true;
+	}
+	return false;
+}
+
+// 押し続けているかを受け取り、ボタンの押し続け秒数を減らす。
+bool InputManager::GetButtonHold(BUTTON buttonCode, int playerNum, int reduceValue) {
+	if (gamePad[playerNum].in_Button[buttonCode] >= HOLD_FRAMECOUNT) {
+		gamePad[playerNum].in_Button[buttonCode] -= reduceValue;
+		return true;
+	}
+	return false;
+}
+
+// キーボードのキーを押した瞬間かを受け取る
+bool InputManager::GetKeyDown(int KeyCode) {
+	if (in_Key[KeyCode] == 1) {
+		return true;
+	}
+	return false;
+}
+
+// キーボードのキーを押し続けているかを受け取る
+bool InputManager::GetKeyHold(int KeyCode) {
+	if (in_Key[KeyCode] >= HOLD_FRAMECOUNT) {
+		return true;
+	}
+	return false;
+}
+
+// 押し続けているかを受け取り、ボタンの押し続け秒数を減らす。
+bool InputManager::GetKeyHold(int KeyCode, int reduceValue) {
+	if (in_Key[KeyCode] >= HOLD_FRAMECOUNT) {
+		in_Key[KeyCode] -= reduceValue;
+		return true;
+	}
+	return false;
+}
