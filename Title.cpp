@@ -13,29 +13,24 @@ Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 
 void Title::TitleControll() {
 	for (int i = 0; i < 2; i++) {
-		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
+		if (inputManager->GetButtonDown(PAD_UP, i) || inputManager->GetButtonHold(PAD_UP, i, 4)) {
 			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 			// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
-			if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] >= 18) {
-				inputManager->GetPadInput()[i].in_Button[InputManager::PAD_UP] -= 4;
-			}
 		}
 
-		if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] == 1 || inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] >= 18) {
+		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
 			// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 			// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
-			if (inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] >= 18) {
-				inputManager->GetPadInput()[i].in_Button[InputManager::PAD_DOWN] -= 4;
-			}
+			
 		}
 
-		if (inputManager->GetPadInput()[i].in_Button[InputManager::B] == 1) {
+		if (inputManager->GetButtonDown(B, i)) {
 			// ゲームパッド1のBボタン入力。
 			switch (selectNum[i])
 			{
@@ -64,52 +59,51 @@ void Title::TitleControll() {
 
 				this->~Title();
 				break;
-				break;
 			}
 			return;
 		}
 	}
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (inputManager->In_Key()[KEY_INPUT_UP] == 1 || inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
+	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
-		if (inputManager->In_Key()[KEY_INPUT_UP] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_UP] -= 4;
-		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_DOWN] == 1 || inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
+	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
-		if (inputManager->In_Key()[KEY_INPUT_DOWN] >= 18) {
-			inputManager->In_Key()[KEY_INPUT_DOWN] -= 4;
-		}
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_F] == 1 || inputManager->In_Key()[KEY_INPUT_RETURN] == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
 		// ゲームパッド1のBボタン入力。
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
 			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-			gameMain->CreateDifficultySelectSceneObj();
+
+			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+
 			this->~Title();
 			break;
 		case 1:
+			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+			this->~Title();
+			break;
+		case 2:
 			gameManager->SetPhaseStatus(GameManager::OPTION);
 
 			gameMain->CreateOptionObj(GameManager::BLUE + 1, Option::TITLE);
 
 			this->~Title();
 			break;
-		case 2:
+		case 3:
 			gameManager->SetPhaseStatus(GameManager::END);
 
 			gameMain->CreateEndObj();
@@ -124,7 +118,7 @@ void Title::DrawTitle() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
 
 	// ビルドした日
-	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/07/22");
+	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/07/30");
 	
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
@@ -151,5 +145,5 @@ void Title::DrawTitle() {
 }
 
 Title::~Title() {
-
+	gameMain->title = NULL;
 }

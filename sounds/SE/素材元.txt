@@ -1,0 +1,5 @@
+効果音ラボ(https://soundeffect-lab.info/)
+bomb2
+sniperrifle--firing1
+handgun-firing1
+sniperrifle-shell1

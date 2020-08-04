@@ -14,10 +14,12 @@ GameManager::GameManager(GameMain* main) {
 
 // ŠÔŒn‚Ì•Ï”‰Šú‰»
 void GameManager::Init() {
+	randSeedNum = GetRand(10000);
 	t_HideTime = HidePhaseTime;
 	t_ShotTime = ShotPhaseTime;
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
+	PhaseStatus = HIDE;
 }
 
 // Œ‚‚Â‘¤E‰B‚ê‚é‘¤‚ğŒğ‘ã‚·‚éŠÖ”B

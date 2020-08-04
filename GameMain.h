@@ -31,6 +31,7 @@ class UI;
 class Block;
 class DifficultySelectScene;
 class Option;
+class Network;
 const static unsigned int COLOR_VALUE_PLAYER[2] = { 0xdc143c , 0x4169e1 };
 class GameMain {
 public:
