@@ -41,7 +41,7 @@ void Network::VariableInit() {
 	HOST_phaseNum = 0;
 
 	matchInfo_Send.num = 0;
-	matchInfo_Send.difficulty = 0;
+	matchInfo_Send.difficulty = gameManager->GetDifficulty();
 	matchInfo_Send.seed = 0;
 
 	matchInfo_Post.num = 0;
@@ -99,7 +99,7 @@ void Network::InitIPAddress() {
 	int i = 0;
 
 	do {
-		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &send, sizeof(send));
+		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 
 		SendDataAddition();

@@ -156,7 +156,15 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		// ­‚µ‘Ò‚Á‚Ä‚©‚ç‘JˆÚ‚·‚é
 		if (!(SCENE_TRANSITION_WAITING_TIME < ++waitTime))  return;
 		waitTime = 0;
-		SetDifficulty();
+		switch (selectNum[GameManager::RED])
+		{
+		case 0:
+			gameMangaer->SetDifficulty(GameManager::CASUAL);
+			break;
+		case 1:
+			gameMangaer->SetDifficulty(GameManager::EXPERT);
+			break;
+		}
 		gameMangaer->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
 		gameMangaer->gameMain->diffiSelectScene = NULL;
 		this->~DifficultySelectScene();
