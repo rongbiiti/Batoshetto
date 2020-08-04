@@ -166,6 +166,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 			break;
 		}
 		gameMangaer->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+		gameMangaer->gameMain->network->VariableInit();
 		gameMangaer->gameMain->diffiSelectScene = NULL;
 		this->~DifficultySelectScene();
 		

@@ -200,6 +200,9 @@ void Network::CommunicationMethodSelect() {
 			gameManager->SetRandSeedNum(randSeedNum);
 		}
 		ConnectType = selectNum;
+		matchInfo_Post.num = 0;
+		matchInfo_Post.difficulty = 0;
+		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
 		return;
@@ -223,7 +226,16 @@ void Network::CommunicationMethodSelect() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+		if (selectNum == HOST) {
+			randSeedNum = GetRand(10000);
+			SRand(randSeedNum);
+			matchInfo_Send.seed = randSeedNum;
+			gameManager->SetRandSeedNum(randSeedNum);
+		}
 		ConnectType = selectNum;
+		matchInfo_Post.num = 0;
+		matchInfo_Post.difficulty = 0;
+		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
 	}
