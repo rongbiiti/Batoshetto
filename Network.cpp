@@ -258,7 +258,7 @@ void Network::ConnectionWait_TypeHOST() {
 	}
 	else if (HOST_phaseNum == 1) {
 		++HOST_gestReplyWaitTime;
-		if (HOST_gestReplyWaitTime % 60 == 0) {
+		if (HOST_gestReplyWaitTime % 10 == 0) {
 			matchInfo_Send.num = 2;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -280,7 +280,7 @@ void Network::ConnectionWait_TypeGEST() {
 		matchInfo_Post.num = 0;
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 		RecvDataAddition();
-		if (GEST_hostSerchWaitTime % 60 == 0) {
+		if (GEST_hostSerchWaitTime % 10 == 0) {
 			matchInfo_Send.num = 1;
 			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -421,6 +421,8 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 280, c, handle, "IpsNumber:%d", IPsNumber);
 	DrawFormatStringToHandle(0, 300, c, handle, "matchInfo_Send.seed:%d", matchInfo_Send.seed);
 	DrawFormatStringToHandle(0, 320, c, handle, "matchInfo_Post.seed:%d", matchInfo_Post.seed);
+	DrawFormatStringToHandle(0, 340, c, handle, "matchInfo_Send.Diff:%d", matchInfo_Send.difficulty);
+	DrawFormatStringToHandle(0, 360, c, handle, "matchInfo_Post.Diff:%d", matchInfo_Post.difficulty);
 }
 
 ////////////////////////////////////////////////
