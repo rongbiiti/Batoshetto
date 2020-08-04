@@ -1,27 +1,41 @@
 #include "Block.h"
 #include "GameMain.h"
+#pragma warning(disable : 4996)
 
-//void Block::ReadFile(void){
-//	int num , i = 0;
-//	fp = FileRead_open("filename");
-//	if (fp == NULL) {
-//		printfDx("read error\n");
-//		return;
-//	}
-//	while (1)
-//	{
-//		num = FileRead_getc(fp);
-//		BlockPosition[9][BLOCK_ONE_MAX] = num;
-//		i++;
-//		if (num == ',' || num == '\n' || num == EOF) {
-//		}
-//	}
-//}
+void Block::ReadFile(void){
+	int c;
+	char buf[100] = {0};
+	fp = fopen("Block.csv","r");
+
+	if (fp == NULL) {
+		printfDx("read error\n");
+		return;
+	}
+
+	for (int i = 0; i < BLOCK_ONE_MAX; i++) {
+		for (int j = 0; j < BLOCK_ONE_MAX; j++)
+		{
+			c = fgetc(fp);
+			if (c != ',' && c != '\n') {
+				strcat(buf, (const char*)&c);
+				j--;
+			}
+			else
+			{
+				BlockPosition[i][j] = atoi(buf);
+				memset(buf, 0, sizeof(buf));
+			}
+		}
+		if (c == EOF) break;
+	}
+	fclose(fp);
+}
 
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。
 Block::Block(int num, FontData* font ,GameMain* main) {
 
 	int knt,rem,gamemode;
+	ReadFile();
 	isAlive = true;			// 生存フラグオン
 	gamemain = main;		// ゲームメインのポインタ
 	size = BLOCK_SIZE;		// サイズ
@@ -117,7 +131,6 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	}
 
 	this->num = num;
-
 }
 
 // ブロックを描画する関数
