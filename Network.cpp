@@ -48,6 +48,12 @@ void Network::VariableInit() {
 	matchInfo_Post.difficulty = 0;
 	matchInfo_Post.seed = 0;
 
+	// 送り先のIPアドレス初期化
+	send_IP.d1 = 0;
+	send_IP.d2 = 0;
+	send_IP.d3 = 0;
+	send_IP.d4 = 0;
+
 	selectNum = 0;
 }
 
@@ -205,7 +211,11 @@ void Network::CommunicationMethodSelect() {
 		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
-		return;
+		NetWorkRecvBufferClear(UDPNetHandle);
+		while (NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE) >= 0)
+		{
+
+		}
 	}
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
@@ -237,7 +247,12 @@ void Network::CommunicationMethodSelect() {
 		matchInfo_Post.difficulty = 0;
 		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
+		NetWorkRecvBufferClear(UDPNetHandle);
 		selectNum = 0;
+		while (NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE) >= 0)
+		{
+
+		}
 	}
 }
 
@@ -270,7 +285,7 @@ void Network::ConnectionWait_TypeHOST() {
 	}
 	else if (HOST_phaseNum == 1) {
 		++HOST_gestReplyWaitTime;
-		if (HOST_gestReplyWaitTime % 10 == 0) {
+		if (HOST_gestReplyWaitTime % 30 == 0) {
 			matchInfo_Send.num = 2;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -292,7 +307,7 @@ void Network::ConnectionWait_TypeGEST() {
 		matchInfo_Post.num = 0;
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 		RecvDataAddition();
-		if (GEST_hostSerchWaitTime % 10 == 0) {
+		if (GEST_hostSerchWaitTime % 30 == 0) {
 			matchInfo_Send.num = 1;
 			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -304,7 +319,7 @@ void Network::ConnectionWait_TypeGEST() {
 	}
 	else if (GEST_phaseNum == 1) {
 		++GEST_hostSerchWaitTime;
-		if (GEST_hostSerchWaitTime % 10 == 0) {
+		if (GEST_hostSerchWaitTime % 30 == 0) {
 			matchInfo_Send.num = 3;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
