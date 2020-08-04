@@ -13,7 +13,9 @@ public:
 	~DifficultySelectScene();					// デストラクタ
 
 	void DifficultySelectControll();		// 難易度選択画面の処理
+	void DifficultySelectControll_Net();	// 難易度選択画面：通信対戦用
 	void DrawDifficultySelectScene();	// 難易度選択画面の描画処理
+	void DrawDifficultySelectScene_Net();	// 難易度選択画面の描画処理：通信対戦用
 
 private:
 	InputManager* inputManager;	// コンストラクタの引数で受け取ったポインタ

@@ -101,6 +101,69 @@ void DifficultySelectScene::DifficultySelectControll() {
 	}
 }
 
+// 難易度選択画面の処理
+void DifficultySelectScene::DifficultySelectControll_Net() {
+
+	if (inputManager->GetButtonDown(PAD_UP, GameManager::RED) || inputManager->GetButtonHold(PAD_UP, GameManager::RED, 4)) {
+		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
+		if (--selectNum[GameManager::RED] < 0) {
+			selectNum[GameManager::RED] = SELECT_NUM_MAX;
+		}
+	}
+
+	if (inputManager->GetButtonDown(PAD_DOWN, GameManager::RED) || inputManager->GetButtonHold(PAD_DOWN, GameManager::RED, 4)) {
+		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
+		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
+			selectNum[GameManager::RED] = 0;
+		}
+	}
+
+	if (inputManager->GetButtonDown(B, GameManager::RED)) {
+		// ゲームパッド1のBボタン入力。
+		dicideNumFlg[GameManager::RED] = true;
+
+	}
+	
+
+
+	// キーボードからの入力。2プレイヤーのカーソルを操作する。
+	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
+		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
+		if (--selectNum[GameManager::RED] < 0) {
+			selectNum[GameManager::RED] = SELECT_NUM_MAX;
+		}
+	}
+
+	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
+		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
+		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
+			selectNum[GameManager::RED] = 0;
+		}
+	}
+
+	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+		// ゲームパッド1のBボタン入力。
+		dicideNumFlg[GameManager::RED] = true;
+		return;
+	}
+
+	// どちらも項目を決定していたら、シーン遷移をする
+	if (dicideNumFlg[GameManager::RED]) {
+		// 少し待ってから遷移する
+		if (!(SCENE_TRANSITION_WAITING_TIME < ++waitTime))  return;
+		waitTime = 0;
+		SetDifficulty();
+		gameMangaer->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+		gameMangaer->gameMain->diffiSelectScene = NULL;
+		this->~DifficultySelectScene();
+		
+	}
+}
+
 // 難易度選択画面の描画処理
 void DifficultySelectScene::DrawDifficultySelectScene() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
@@ -140,6 +203,35 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 	}
 }
 
+// 難易度選択画面の描画処理
+void DifficultySelectScene::DrawDifficultySelectScene_Net() {
+	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+
+	// DIFFICULTYSELECTの文字描画
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
+
+	// 難易度を選んでくださいの文字描画
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "難易度を選んでください");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "難易度を選んでください");
+
+	// 項目を決定していたら、長い四角を表示する
+	if (dicideNumFlg[GameManager::RED]) {
+		DrawBox(0, starty + y * selectNum[GameManager::RED] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[GameManager::RED] + 15, COLOR_VALUE_PLAYER[GameManager::RED], 1);
+	}
+	else {
+		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
+		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * GameManager::RED), starty + y * selectNum[GameManager::RED], 10, COLOR_VALUE_PLAYER[GameManager::RED], 1, 1);
+	}
+
+	// 各項目名描画
+	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+	}
+}
+
 // 難易度をGameManagerの変数にセットしてシーンを遷移
 void DifficultySelectScene::SetDifficulty() {
 
@@ -152,8 +244,7 @@ void DifficultySelectScene::SetDifficulty() {
 		gameMangaer->SetDifficulty(GameManager::EXPERT);
 		break;
 	}
-
-	gameMangaer->SetPhaseStatus(GameManager::HIDE);
+	
 }
 
 // デストラクタ

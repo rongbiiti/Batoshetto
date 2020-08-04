@@ -40,6 +40,14 @@ void Network::VariableInit() {
 	GEST_phaseNum = 0;
 	HOST_phaseNum = 0;
 
+	matchInfo_Send.num = 0;
+	matchInfo_Send.difficulty = 0;
+	matchInfo_Send.seed = 0;
+
+	matchInfo_Post.num = 0;
+	matchInfo_Post.difficulty = 0;
+	matchInfo_Post.seed = 0;
+
 	selectNum = 0;
 }
 
@@ -49,7 +57,7 @@ void Network::VariableInit() {
 void Network::RecvDataAddition() {
 	if (recvSize >= 0) {
 		totalRecvSize += recvSize;
-		totalpost += post;
+		totalpost += matchInfo_Post.num;
 	}
 }
 
@@ -59,7 +67,7 @@ void Network::RecvDataAddition() {
 void Network::SendDataAddition() {
 	if (sendSize >= 0) {
 		totalSendSize += sendSize;
-		totalsend += send;
+		totalsend += matchInfo_Send.num;
 	}
 }
 
@@ -92,7 +100,7 @@ void Network::InitIPAddress() {
 
 	do {
 		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &send, sizeof(send));
-		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &post, sizeof(post), FALSE);
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 
 		SendDataAddition();
 		RecvDataAddition();
@@ -185,6 +193,12 @@ void Network::CommunicationMethodSelect() {
 	}
 
 	if (inputManager->GetButtonDown(B, 0)) {
+		if (selectNum == HOST) {
+			randSeedNum = GetRand(10000);
+			SRand(randSeedNum);
+			matchInfo_Send.seed = randSeedNum;
+			gameManager->SetRandSeedNum(randSeedNum);
+		}
 		ConnectType = selectNum;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
@@ -233,28 +247,26 @@ void Network::ConnectionWait() {
 void Network::ConnectionWait_TypeHOST() {
 	if (HOST_phaseNum == 0) {
 		++HOST_gestSerchWaitTime;
-		post = 0;
-		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &post, sizeof(post), FALSE);
+		matchInfo_Post.num = 0;
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 
 		RecvDataAddition();
-		if (post == 1) {
+		if (matchInfo_Post.num == 1 && matchInfo_Post.difficulty == gameManager->GetDifficulty()) {
 			HOST_phaseNum = 1;
-			send = 2;
+			matchInfo_Send.num = 2;
 		}
 	}
 	else if (HOST_phaseNum == 1) {
 		++HOST_gestReplyWaitTime;
 		if (HOST_gestReplyWaitTime % 60 == 0) {
-			send = 2;
-			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &send, sizeof(send));
+			matchInfo_Send.num = 2;
+			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
 		}
-		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &post, sizeof(post), FALSE);
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 		RecvDataAddition();
-		if (post == 3 && sendSize >= 0) {
-			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
-			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+		if (matchInfo_Post.num == 3 && sendSize >= 0) {
+			gameManager->gameMain->Init();
 		}
 	}
 }
@@ -265,15 +277,15 @@ void Network::ConnectionWait_TypeHOST() {
 void Network::ConnectionWait_TypeGEST() {
 	if (GEST_phaseNum == 0) {
 		++GEST_hostSerchWaitTime;
-		post = 0;
-		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &post, sizeof(post), FALSE);
+		matchInfo_Post.num = 0;
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 		RecvDataAddition();
 		if (GEST_hostSerchWaitTime % 60 == 0) {
-			send = 1;
-			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &send, sizeof(send));
+			matchInfo_Send.num = 1;
+			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
 		}
-		if (post == 2) {
+		if (matchInfo_Post.num == 2) {
 			GEST_phaseNum = 1;
 			GEST_hostSerchWaitTime = 0;
 		}
@@ -281,13 +293,13 @@ void Network::ConnectionWait_TypeGEST() {
 	else if (GEST_phaseNum == 1) {
 		++GEST_hostSerchWaitTime;
 		if (GEST_hostSerchWaitTime % 60 == 0) {
-			send = 3;
-			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &send, sizeof(send));
+			matchInfo_Send.num = 3;
+			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
 			if (sendSize >= 0) {
-				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
-				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+				gameManager->SetRandSeedNum(matchInfo_Post.seed);
+				SRand(matchInfo_Post.seed);
+				gameManager->gameMain->Init();
 			}
 		}
 		
@@ -391,9 +403,9 @@ void Network::DrawIPAddressSelect() {
 void Network::DrawNetWorkData() {
 	int handle = fontData->f_FontData[0];
 	unsigned int c = 0xFFFFFF;
-	DrawFormatStringToHandle(0, 40, c, handle, "send:%d", send);
+	DrawFormatStringToHandle(0, 40, c, handle, "send:%d", matchInfo_Send.num);
 	DrawFormatStringToHandle(0, 60, c, handle, "totalSend:%d", totalsend);
-	DrawFormatStringToHandle(0, 80, c, handle, "post:%d", post);
+	DrawFormatStringToHandle(0, 80, c, handle, "post:%d", matchInfo_Post.num);
 	DrawFormatStringToHandle(0, 100, c, handle, "totalPost%d", totalpost);
 
 	DrawFormatStringToHandle(0, 120, c, handle, "recvSize:%d", recvSize);
@@ -406,7 +418,9 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 220, c, handle, "broadCast_IP:%d.%d.%d.%d", broadCast_IP.d1,broadCast_IP.d2,broadCast_IP.d3,broadCast_IP.d4);
 	DrawFormatStringToHandle(0, 240, c, handle, "my_IP:%d.%d.%d.%d", my_IP.d1, my_IP.d2, my_IP.d3, my_IP.d4);
 	DrawFormatStringToHandle(0, 260, c, handle, "send_IP:%d.%d.%d.%d", send_IP.d1, send_IP.d2, send_IP.d3, send_IP.d4);
-	DrawFormatStringToHandle(0, 280, c, handle, "IpsNumber%d", IPsNumber);
+	DrawFormatStringToHandle(0, 280, c, handle, "IpsNumber:%d", IPsNumber);
+	DrawFormatStringToHandle(0, 300, c, handle, "matchInfo_Send.seed:%d", matchInfo_Send.seed);
+	DrawFormatStringToHandle(0, 320, c, handle, "matchInfo_Post.seed:%d", matchInfo_Post.seed);
 }
 
 ////////////////////////////////////////////////

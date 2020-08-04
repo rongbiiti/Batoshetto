@@ -61,6 +61,7 @@ public:
 	void SetShotTime(void) { t_ShotTime = ShotPhaseTime; }	// 撃つ側残り時間をリセットする。
 	void SetPhaseStatus(int value);							// ゲームのフェーズをセットする。引数に、PHASE列挙体を使ってくれ。
 	void SetPhaseStatus(int value, int hitPlayerNum);		// オーバーロードで、当たったプレイヤーがREDかBLUEかを追加している。Bulletから呼ばれる。
+	void SetRandSeedNum(int seed) { randSeedNum = seed; }	// 乱数のシード値セット
 
 	void HideTimerControll(void);					// 隠れる側の残り時間を管理している関数。
 	void ShotTimerControll(void);					// 撃つ側の残り時間を管理している関数。
