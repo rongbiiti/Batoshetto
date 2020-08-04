@@ -14,7 +14,6 @@ GameManager::GameManager(GameMain* main) {
 
 // ŠÔŒn‚Ì•Ï”‰Šú‰»
 void GameManager::Init() {
-	randSeedNum = GetRand(10000);
 	t_HideTime = HidePhaseTime;
 	t_ShotTime = ShotPhaseTime;
 	NowShooter = FirstShooter;

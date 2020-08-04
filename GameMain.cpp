@@ -13,6 +13,7 @@ GameMain::GameMain(void) {
 	mFps = 0;
 	pauseFlg = false;
 	pausePushPLNum = 0;
+	netBattleFlg = false;
 }
 
 // FPS‚ðŒÅ’è‚·‚é‚½‚ß‚ÌŠÖ”
@@ -152,7 +153,8 @@ void GameMain::Update(void) {
 		network->IPAddressSelect();
 		if (inputManager->GetButtonDown(A,0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
-			CreateTitleObj();
+			CreateDifficultySelectSceneObj();
+			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 		}
 		return;
 		break;
@@ -186,11 +188,13 @@ void GameMain::Update(void) {
 		return;
 		break;
 	case GameManager::DIFFICULTYSELECT:
-		diffiSelectScene->DifficultySelectControll();
+		if(netBattleFlg) diffiSelectScene->DifficultySelectControll_Net();
+		else diffiSelectScene->DifficultySelectControll();
 		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			delete diffiSelectScene;
 			diffiSelectScene = NULL;
 			CreateTitleObj();
+			netBattleFlg = false;
 		}
 
 		return;
@@ -277,7 +281,9 @@ void GameMain::Output(void) {
 		return;
 		break;
 	case GameManager::DIFFICULTYSELECT:
-		diffiSelectScene->DrawDifficultySelectScene();
+		if(netBattleFlg) diffiSelectScene->DrawDifficultySelectScene_Net();
+		else diffiSelectScene->DrawDifficultySelectScene();
+		
 		return;
 		break;
 	case GameManager::HIDE:
@@ -447,7 +453,6 @@ void GameMain::CreateGameManagerObj() {
 }
 
 void GameMain::CreateBlockObj() {
-	SRand(gameManager->GetRandSeedNum());
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData, this);
 	}

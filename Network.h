@@ -44,6 +44,16 @@ private:
 	InputManager* inputManager;	// 入力管理クラスのポインタ
 	GameManager* gameManager;	// ゲーム進行管理クラスのポインタ
 
+	typedef struct MATCHING_INFO	// sendと選択した難易度を同時に送る
+	{
+		int num;		// 送信する値
+		int difficulty;	// 選択した難易度
+		int seed;		// 乱数のシード値
+	}MatchingInfo;
+
+	MatchingInfo matchInfo_Send;	// 構造体生成
+	MatchingInfo matchInfo_Post;	// 受信用構造体
+
 	const static int ALL_IP_LENGTH = 6;	// All_IP配列の要素数
 
 	int UDPNetHandle;	// UDPネットハンドル
@@ -76,6 +86,8 @@ private:
 	IPDATA All_IP[ALL_IP_LENGTH];	// 複数のネットワークアダプターがあると思うので全部受け取る。最大6個。
 
 	int selectNum;
+
+	int randSeedNum;	// 乱数のシード値
 };
 
 #endif // !_NETWORK_H_

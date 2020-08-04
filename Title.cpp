@@ -42,7 +42,11 @@ void Title::TitleControll() {
 				this->~Title();
 				break;
 			case 1:
-				gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+
+				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+
+				gameMain->SetNetBallteFlg(TRUE);
 				this->~Title();
 				break;
 			case 2:
@@ -93,7 +97,11 @@ void Title::TitleControll() {
 			this->~Title();
 			break;
 		case 1:
-			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+
+			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
+
+			gameMain->SetNetBallteFlg(TRUE);
 			this->~Title();
 			break;
 		case 2:

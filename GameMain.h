@@ -52,6 +52,9 @@ public:
 	void SetPauseFlg(bool value) { pauseFlg = value; }	// ポーズ画面を開いているかのフラグを切り替え
 	int GetBlockImage(int num) { return i_BlockImages[num]; }	// ブロックの画像を渡す
 
+	void SetNetBallteFlg(bool value) { netBattleFlg = value; }	// 通信モードがONかOFFかをセットする
+	bool GetNetBallteFlg() { return netBattleFlg; }				// 通信モードがONかOFFか取得する
+
 	void CreateInputManagerObj();				// 入力管理クラスを生成し、ポインタを保存しておく
 	void CreateFontDataObj();					// フォントデータ管理クラスを生成し、ポインタを保存しておく
 	void CreatePlayerObj();						// プレイヤー管理クラスを生成し、ポインタを保存しておく
@@ -110,6 +113,8 @@ private:
 
 	bool pauseFlg;				// ポーズ画面のフラグ
 	int pausePushPLNum;			// ポーズボタンを押したプレイヤーの番号 0=RED 1=BLUE 2=キーボードからの入力
+
+	bool netBattleFlg;
 
 	int i_BlockImages[3];	// ブロックの画像
 
