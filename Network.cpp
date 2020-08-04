@@ -292,7 +292,7 @@ void Network::ConnectionWait_TypeGEST() {
 	}
 	else if (GEST_phaseNum == 1) {
 		++GEST_hostSerchWaitTime;
-		if (GEST_hostSerchWaitTime % 60 == 0) {
+		if (GEST_hostSerchWaitTime % 10 == 0) {
 			matchInfo_Send.num = 3;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
