@@ -4,6 +4,7 @@
 
 void Block::ReadFile(void){
 	int c;
+	bool flg = FALSE;
 	char buf[100] = {0};
 	fp = fopen("Block.csv","r");
 
@@ -12,7 +13,7 @@ void Block::ReadFile(void){
 		return;
 	}
 
-	for (int i = 0; i < BLOCK_ONE_MAX; i++) {
+	for (int i = 0; i < BLOCK_ONE_MAX * 2; i++) {
 		for (int j = 0; j < BLOCK_ONE_MAX; j++)
 		{
 			c = fgetc(fp);
@@ -22,13 +23,23 @@ void Block::ReadFile(void){
 			}
 			else
 			{
-				BlockPosition[i][j] = atoi(buf);
+				if (!flg) {
+					BlockPosition[i][j] = atoi(buf);
+				}
+				else if(i >= BLOCK_ONE_MAX)
+				{
+					BlockPosition2[i / BLOCK_ONE_MAX][j] = atoi(buf);
+				}
 				memset(buf, 0, sizeof(buf));
 			}
 		}
-		if (c == EOF) break;
 	}
 	fclose(fp);
+	/*fp = fopen("Block_Casual", "r");
+	if (fp == NULL) {
+		printfDx("read error\n");
+		return;
+	}*/
 }
 
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。

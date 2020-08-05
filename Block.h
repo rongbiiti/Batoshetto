@@ -27,44 +27,10 @@ private:
 	const int BlockStartPosition[9][2] = { {280,40}, {600,40},{840,40},{280,280},{600,280},{840,280},{280,520}, {520,520},{840,520}, };
 	const int BlockStartPosition2[5][2] = { {280,40}, {840,40},{520,280},{280,520},{840,520},};
 	//ÇRÅ~ÇRÉuÉçÉbÉNÇÃéÌóﬁ
-	 int BlockPosition[9][BLOCK_ONE_MAX] = {};
+	int BlockPosition[9][BLOCK_ONE_MAX] = {};
 
 	//ÇRÅ~ÇRÉuÉçÉbÉNÇÃéÌóﬁÇQ
-	const int BlockPosition2[9][BLOCK_ONE_MAX] = {  {0,1,0,
-													 1,1,1,
-													 0,1,0},
-
-												    {1,1,0,
-													 1,1,0,
-													 0,0,0},
-
-												    {1,0,0,
-													 1,0,0,
-													 1,1,1},
-
-												    {1,0,1,
-													 0,1,0,
-													 0,0,0},
-
-												    {1,1,0,
-													 1,1,0,
-													 1,1,0},
-
-												    {0,0,0,
-													 0,1,0,
-													 1,0,1},
-
-												    {1,1,1,
-													 0,0,1,
-													 0,0,1},
-
-												    {0,0,0,
-													 0,1,1,
-													 0,1,1},
-
-												    {0,1,0,
-													 1,1,1,
-													 0,1,0}, };
+	int BlockPosition2[9][BLOCK_ONE_MAX] = {};
 
 	//ÇRÅ~ÇRÉuÉçÉbÉNÇÃéÌóﬁ(ÉJÉWÉÖÉAÉãóp)
 	const int BlockPosition_Casual[5][BLOCK_ONE_MAX] = {  {1,1,1,
