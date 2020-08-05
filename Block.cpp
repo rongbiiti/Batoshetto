@@ -6,47 +6,90 @@ void Block::ReadFile(void){
 	int c;
 	bool flg = FALSE;
 	char buf[100] = {0};
+
+	//ファイルを読み取り専用で開く（エキスパート用）
 	fp = fopen("Block.csv","r");
 
+	//ファイルオープンに失敗したらエラーメッセージを出す
 	if (fp == NULL) {
 		printfDx("read error\n");
 		return;
 	}
 
+	//ブロック情報をファイルから読み取り、配列に書き込む（エキスパート用）
 	for (int i = 0; i < BLOCK_ONE_MAX * 2; i++) {
 		for (int j = 0; j < BLOCK_ONE_MAX; j++)
 		{
 			c = fgetc(fp);
+			//','か'\n'（改行）ならbufに文字連結して添え字のjを一回戻す
 			if (c != ',' && c != '\n') {
 				strcat(buf, (const char*)&c);
 				j--;
 			}
 			else
 			{
+				//','か'\n'（改行）じゃない場合はそれぞれ対応した配列にatoi関数で代入
 				if (!flg) {
 					BlockPosition[i][j] = atoi(buf);
 				}
 				else if(i >= BLOCK_ONE_MAX)
 				{
+					flg = TRUE;
 					BlockPosition2[i / BLOCK_ONE_MAX][j] = atoi(buf);
 				}
 				memset(buf, 0, sizeof(buf));
 			}
 		}
 	}
+	flg = FALSE;
+	//ファイルを閉じる
 	fclose(fp);
-	/*fp = fopen("Block_Casual", "r");
+
+	//ファイルを読み取り専用で開く（カジュアル用）
+	fp = fopen("Block_Casual.csv", "r");
+
+	//ファイルオープンに失敗したらエラーメッセージを出す
 	if (fp == NULL) {
 		printfDx("read error\n");
 		return;
-	}*/
+	}
+
+	//ブロック情報をファイルから読み取り、配列に書き込む（カジュアル用）
+	for (int i = 0; i < BLOCK_Casual_MAX * 2; i++) {
+		for (int j = 0; j < BLOCK_ONE_MAX; j++)
+		{
+			c = fgetc(fp);
+			//','か'\n'（改行）ならbufに文字連結して添え字のjを一回戻す
+			if (c != ',' && c != '\n') {
+				strcat(buf, (const char*)&c);
+				j--;
+			}
+			else
+			{
+				//','か'\n'（改行）じゃない場合はそれぞれ対応した配列にatoi関数で代入
+				if (!flg) {
+					BlockPosition_Casual[i][j] = atoi(buf);
+				}
+				else if (i >= BLOCK_Casual_MAX)
+				{
+					flg = TRUE;
+					BlockPosition_Casual2[i / BLOCK_Casual_MAX][j] = atoi(buf);
+				}
+				memset(buf, 0, sizeof(buf));
+			}
+		}
+	}
+	flg = FALSE;
+	//ファイルを閉じる
+	fclose(fp);
+
 }
 
 // コンストラクタ。ブロックの番号と、フォント管理オブジェクトのポインタを入れる。
 Block::Block(int num, FontData* font ,GameMain* main) {
 
 	int knt,rem,gamemode;
-	ReadFile();
+	ReadFile();	//ファイルからブロック情報を読み取る
 	isAlive = true;			// 生存フラグオン
 	gamemain = main;		// ゲームメインのポインタ
 	size = BLOCK_SIZE;		// サイズ
