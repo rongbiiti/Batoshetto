@@ -397,6 +397,62 @@ void Network::DrawIPAddressSelect() {
 }
 
 ////////////////////////////////////////////////
+// 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
+////////////////////////////////////////////////
+void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
+	shooterInfo_Send.angle = ang;
+	shooterInfo_Send.shotFlg = isShot;
+	shooterInfo_Send.passFlg = isPass;
+	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &shooterInfo_Send, sizeof(shooterInfo_Send));
+	SendDataAddition();
+}
+
+////////////////////////////////////////////////
+// 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
+////////////////////////////////////////////////
+void Network::SendHiderInfo(int px, int py, bool isPass) {
+	hiderInfo_Send.x = px;
+	hiderInfo_Send.y = py;
+	hiderInfo_Send.passFlg = isPass;
+	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &hiderInfo_Send, sizeof(hiderInfo_Send));
+	SendDataAddition();
+}
+
+////////////////////////////////////////////////
+// 撃つ側の情報を受信する。バッファが0になったらtrueが返る
+////////////////////////////////////////////////
+bool Network::PostShooterInfo() {
+	while (1)
+	{
+		if (recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE) < 0) {
+			RecvDataAddition();
+			break;
+		}
+		else {
+			RecvDataAddition();
+		}
+	}
+	return true;
+}
+
+////////////////////////////////////////////////
+// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
+////////////////////////////////////////////////
+bool Network::PostHiderInfo() {
+	while (1)
+	{
+		if (recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE) < 0) {
+			RecvDataAddition();
+			break;
+		}
+		else {
+			RecvDataAddition();
+		}
+	}
+	return true;
+}
+
+////////////////////////////////////////////////
 // ネット系のデータ表示
 ////////////////////////////////////////////////
 void Network::DrawNetWorkData() {

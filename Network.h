@@ -25,6 +25,22 @@ public:
 		GEST_MATCH_START
 	};
 
+	typedef struct SHOOTER_INFO	// 撃つ側に必要な情報
+	{
+		float angle;	// 角度
+		bool shotFlg;	// 発射したかのフラグ
+		bool passFlg;	// パスしたかのフラグ
+		bool isRecvCheck;	// 受信確認が必要なデータか
+	}ShooterInfo;
+
+	typedef struct HIDER_INFO	// 隠れる側に必要な情報
+	{
+		int x;			// X座標
+		int y;			// Y座標
+		bool passFlg;	// パスしたかのフラグ
+		bool isRecvCheck;	// 受信確認が必要なデータか
+	}HiderInfo;
+
 	Network(FontData* font, InputManager* input, GameManager* gameMNG);	// コンストラクタ
 	~Network();	// デストラクタ
 
@@ -47,6 +63,8 @@ public:
 	void ConnectionWait_TypeGEST();		// 通信待機：ゲスト側
 	void DrawConnectionWait();			// 通信待機中の描画
 
+	int GetConnectType() { return ConnectType; }	// コネクトタイプを取得する
+
 	// 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
 	void SendShooterInfo(float ang, bool isShot, bool isPass);
 
@@ -59,7 +77,11 @@ public:
 	// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
 	bool PostHiderInfo();
 
+	// 受信した撃つ側の情報の構造体を取得
+	ShooterInfo GetShooterInfo() { return shooterInfo_Post; }
 
+	// 受信した隠れる側の情報の構造体を取得
+	HiderInfo GetHiderInfo() { return hiderInfo_Post; }
 
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
@@ -74,22 +96,6 @@ private:
 		int difficulty;	// 選択した難易度
 		int seed;		// 乱数のシード値
 	}MatchingInfo;
-
-	typedef struct SHOOTER_INFO	// 撃つ側に必要な情報
-	{
-		float angle;	// 角度
-		bool shotFlg;	// 発射したかのフラグ
-		bool passFlg;	// パスしたかのフラグ
-		bool isRecvCheck;	// 受信確認が必要なデータか
-	}ShooterInfo;
-
-	typedef struct HIDER_INFO	// 隠れる側に必要な情報
-	{
-		int x;			// X座標
-		int y;			// Y座標
-		bool passFlg;	// パスしたかのフラグ
-		bool isRecvCheck;	// 受信確認が必要なデータか
-	}HiderInfo;
 
 	MatchingInfo matchInfo_Send;	// 構造体生成
 	MatchingInfo matchInfo_Post;	// 受信用構造体

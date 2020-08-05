@@ -208,19 +208,33 @@ void GameMain::Update(void) {
 
 	case GameManager::HIDE:
 		// 隠れる側フェーズ
-		if (!ui->TransitionAnimationWaiting()) return;
-		if (PauseProcess()) return;
-		gameManager->HideTimerControll();
-		player[gameManager->GetNowHider()]->HidingPlayerControll();
+		if (netBattleFlg) {
+			gameManager->HideTimerControll();
+			player[gameManager->GetNowHider()]->HidingPlayerControll_Net();
+		}
+		else {
+			if (!ui->TransitionAnimationWaiting()) return;
+			if (PauseProcess()) return;
+			gameManager->HideTimerControll();
+			player[gameManager->GetNowHider()]->HidingPlayerControll();
+		}
+		
 		return;
 		break;
 
 	case GameManager::SHOT:
 		// 撃つ側フェーズ
-		if (!ui->TransitionAnimationWaiting()) return;
-		if (PauseProcess()) return;
-		gameManager->ShotTimerControll();
-		player[gameManager->GetNowShooter()]->ShooterPlayerControll();
+		if (netBattleFlg) {
+			gameManager->ShotTimerControll();
+			player[gameManager->GetNowShooter()]->ShooterPlayerControll_Net();
+		}
+		else {
+			if (!ui->TransitionAnimationWaiting()) return;
+			if (PauseProcess()) return;
+			gameManager->ShotTimerControll();
+			player[gameManager->GetNowShooter()]->ShooterPlayerControll();
+		}
+		
 		return;
 		break;
 
