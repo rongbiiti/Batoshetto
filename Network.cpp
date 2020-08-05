@@ -41,12 +41,18 @@ void Network::VariableInit() {
 	HOST_phaseNum = 0;
 
 	matchInfo_Send.num = 0;
-	matchInfo_Send.difficulty = 0;
+	matchInfo_Send.difficulty = gameManager->GetDifficulty();
 	matchInfo_Send.seed = 0;
 
 	matchInfo_Post.num = 0;
 	matchInfo_Post.difficulty = 0;
 	matchInfo_Post.seed = 0;
+
+	// 送り先のIPアドレス初期化
+	send_IP.d1 = 0;
+	send_IP.d2 = 0;
+	send_IP.d3 = 0;
+	send_IP.d4 = 0;
 
 	selectNum = 0;
 }
@@ -99,7 +105,7 @@ void Network::InitIPAddress() {
 	int i = 0;
 
 	do {
-		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &send, sizeof(send));
+		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 
 		SendDataAddition();
@@ -200,9 +206,16 @@ void Network::CommunicationMethodSelect() {
 			gameManager->SetRandSeedNum(randSeedNum);
 		}
 		ConnectType = selectNum;
+		matchInfo_Post.num = 0;
+		matchInfo_Post.difficulty = 0;
+		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
-		return;
+		NetWorkRecvBufferClear(UDPNetHandle);
+		while (NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE) >= 0)
+		{
+
+		}
 	}
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
@@ -223,9 +236,23 @@ void Network::CommunicationMethodSelect() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+		if (selectNum == HOST) {
+			randSeedNum = GetRand(10000);
+			SRand(randSeedNum);
+			matchInfo_Send.seed = randSeedNum;
+			gameManager->SetRandSeedNum(randSeedNum);
+		}
 		ConnectType = selectNum;
+		matchInfo_Post.num = 0;
+		matchInfo_Post.difficulty = 0;
+		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
+		NetWorkRecvBufferClear(UDPNetHandle);
 		selectNum = 0;
+		while (NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE) >= 0)
+		{
+
+		}
 	}
 }
 
@@ -258,7 +285,7 @@ void Network::ConnectionWait_TypeHOST() {
 	}
 	else if (HOST_phaseNum == 1) {
 		++HOST_gestReplyWaitTime;
-		if (HOST_gestReplyWaitTime % 60 == 0) {
+		if (HOST_gestReplyWaitTime % 30 == 0) {
 			matchInfo_Send.num = 2;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -280,7 +307,7 @@ void Network::ConnectionWait_TypeGEST() {
 		matchInfo_Post.num = 0;
 		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 		RecvDataAddition();
-		if (GEST_hostSerchWaitTime % 60 == 0) {
+		if (GEST_hostSerchWaitTime % 30 == 0) {
 			matchInfo_Send.num = 1;
 			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -292,7 +319,7 @@ void Network::ConnectionWait_TypeGEST() {
 	}
 	else if (GEST_phaseNum == 1) {
 		++GEST_hostSerchWaitTime;
-		if (GEST_hostSerchWaitTime % 60 == 0) {
+		if (GEST_hostSerchWaitTime % 30 == 0) {
 			matchInfo_Send.num = 3;
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
@@ -421,6 +448,8 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 280, c, handle, "IpsNumber:%d", IPsNumber);
 	DrawFormatStringToHandle(0, 300, c, handle, "matchInfo_Send.seed:%d", matchInfo_Send.seed);
 	DrawFormatStringToHandle(0, 320, c, handle, "matchInfo_Post.seed:%d", matchInfo_Post.seed);
+	DrawFormatStringToHandle(0, 340, c, handle, "matchInfo_Send.Diff:%d", matchInfo_Send.difficulty);
+	DrawFormatStringToHandle(0, 360, c, handle, "matchInfo_Post.Diff:%d", matchInfo_Post.difficulty);
 }
 
 ////////////////////////////////////////////////

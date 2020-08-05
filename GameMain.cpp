@@ -162,6 +162,7 @@ void GameMain::Update(void) {
 		network->CommunicationMethodSelect();
 		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
+			network->InitIPAddress();
 			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
 		}
 		return;
@@ -170,7 +171,6 @@ void GameMain::Update(void) {
 		network->ConnectionWait();
 		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
-			network->InitIPAddress();
 			gameManager->SetPhaseStatus(GameManager::CONNECT_TYPE_SELECT);
 		}
 		return;
