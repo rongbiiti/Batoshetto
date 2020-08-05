@@ -15,6 +15,16 @@ public:
 		GEST
 	};
 
+	enum HOST_WAIT_PHASE {
+		HOST_GEST_WAITING,
+		HOST_GEST_REPTY_WAITING
+	};
+
+	enum GEST_WAIT_PHASE {
+		GEST_HOST_SEARCHING,
+		GEST_MATCH_START
+	};
+
 	Network(FontData* font, InputManager* input, GameManager* gameMNG);	// コンストラクタ
 	~Network();	// デストラクタ
 
@@ -37,6 +47,20 @@ public:
 	void ConnectionWait_TypeGEST();		// 通信待機：ゲスト側
 	void DrawConnectionWait();			// 通信待機中の描画
 
+	// 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
+	void SendShooterInfo(float ang, bool isShot, bool isPass);
+
+	// 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
+	void SendHiderInfo(int px, int py, bool isPass);
+
+	// 撃つ側の情報を受信する。バッファが0になったらtrueが返る
+	bool PostShooterInfo();
+
+	// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
+	bool PostHiderInfo();
+
+
+
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
 private:
@@ -51,8 +75,28 @@ private:
 		int seed;		// 乱数のシード値
 	}MatchingInfo;
 
+	typedef struct SHOOTER_INFO	// 撃つ側に必要な情報
+	{
+		float angle;	// 角度
+		bool shotFlg;	// 発射したかのフラグ
+		bool passFlg;	// パスしたかのフラグ
+		bool isRecvCheck;	// 受信確認が必要なデータか
+	}ShooterInfo;
+
+	typedef struct HIDER_INFO	// 隠れる側に必要な情報
+	{
+		int x;			// X座標
+		int y;			// Y座標
+		bool passFlg;	// パスしたかのフラグ
+		bool isRecvCheck;	// 受信確認が必要なデータか
+	}HiderInfo;
+
 	MatchingInfo matchInfo_Send;	// 構造体生成
 	MatchingInfo matchInfo_Post;	// 受信用構造体
+	ShooterInfo shooterInfo_Send;	// 撃つ側の送信データ
+	HiderInfo hiderInfo_Send;	// 隠れる側の送信データ
+	ShooterInfo shooterInfo_Post;	// 撃つ側の受信データ
+	HiderInfo hiderInfo_Post;	// 隠れる側の受信データ
 
 	const static int ALL_IP_LENGTH = 6;	// All_IP配列の要素数
 
@@ -88,6 +132,7 @@ private:
 	int selectNum;
 
 	int randSeedNum;	// 乱数のシード値
+	int recvCheckTime;	// 受信できたかの応答待ち時間　既定値に達するとタイムアウトでエラーとする
 };
 
 #endif // !_NETWORK_H_
