@@ -23,9 +23,9 @@ Network::Network(FontData* font, InputManager* input, GameManager* gameMNG) {
 
 	// UDPƒnƒ“ƒhƒ‹‚Ìì¬
 	UDPNetHandle = MakeUDPSocket(PORT_NUMBER);
-
-	InitIPAddress();
 	VariableInit();
+	InitIPAddress();
+	
 }
 
 ////////////////////////////////////////////////
@@ -105,8 +105,8 @@ void Network::InitIPAddress() {
 	int i = 0;
 
 	do {
-		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
-		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
+		sendSize = NetWorkSendUDP(UDPNetHandle, All_IP[i++], PORT_NUMBER, &send, sizeof(send));
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &my_IP, NULL, &post, sizeof(post), FALSE);
 
 		SendDataAddition();
 		RecvDataAddition();
@@ -168,13 +168,14 @@ void Network::IPAddressSelect() {
 		}
 	}
 
-	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		my_IP = All_IP[selectNum];
 		broadCast_IP.d1 = my_IP.d1;
 		broadCast_IP.d2 = my_IP.d2;
 		broadCast_IP.d3 = my_IP.d3;
 		gameManager->SetPhaseStatus(GameManager::CONNECT_TYPE_SELECT);
 		selectNum = 0;
+		return;
 	}
 }
 
@@ -212,7 +213,7 @@ void Network::CommunicationMethodSelect() {
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 		selectNum = 0;
 		NetWorkRecvBufferClear(UDPNetHandle);
-		while (NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE) >= 0)
+		while (NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE) >= 0)
 		{
 
 		}
@@ -235,7 +236,7 @@ void Network::CommunicationMethodSelect() {
 		}
 	}
 
-	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		if (selectNum == HOST) {
 			randSeedNum = GetRand(10000);
 			SRand(randSeedNum);
@@ -247,9 +248,9 @@ void Network::CommunicationMethodSelect() {
 		matchInfo_Post.difficulty = 0;
 		matchInfo_Post.seed = 0;
 		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
-		NetWorkRecvBufferClear(UDPNetHandle);
 		selectNum = 0;
-		while (NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE) >= 0)
+		NetWorkRecvBufferClear(UDPNetHandle);
+		while (NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE) >= 0)
 		{
 
 		}
