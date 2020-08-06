@@ -83,6 +83,9 @@ public:
 	// 受信した隠れる側の情報の構造体を取得
 	HiderInfo GetHiderInfo() { return hiderInfo_Post; }
 
+	// バッファークリア
+	void BufferClear();
+
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
 private:

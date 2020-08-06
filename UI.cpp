@@ -37,6 +37,7 @@ bool UI::TransitionAnimationWaiting() {
 		gameManager->ShooterFlgChange(false);
 	}
 	transitionFlg = false;
+	gameMain->network->BufferClear();
 	return true;
 }
 
