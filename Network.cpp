@@ -515,10 +515,10 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 320, c, handle, "matchInfo_Post.seed:%d", matchInfo_Post.seed);
 	DrawFormatStringToHandle(0, 340, c, handle, "matchInfo_Send.Diff:%d", matchInfo_Send.difficulty);
 	DrawFormatStringToHandle(0, 360, c, handle, "matchInfo_Post.Diff:%d", matchInfo_Post.difficulty);
-	DrawFormatStringToHandle(0, 380, c, handle, "shooterInfo_Post.angle:%d", shooterInfo_Send.angle);
-	DrawFormatStringToHandle(0, 400, c, handle, "shooterInfo_Post.shotFlg:%d", shooterInfo_Send.shotFlg);
-	DrawFormatStringToHandle(0, 420, c, handle, "shooterInfo_Post.passFlg:%d", shooterInfo_Send.passFlg);
-	DrawFormatStringToHandle(0, 440, c, handle, "shooterInfo_Post.isRecvCheck:%d", shooterInfo_Send.isRecvCheck);
+	DrawFormatStringToHandle(0, 380, c, handle, "shooterInfo_Post.angle:%d", shooterInfo_Post.angle);
+	DrawFormatStringToHandle(0, 400, c, handle, "shooterInfo_Post.shotFlg:%d", shooterInfo_Post.shotFlg);
+	DrawFormatStringToHandle(0, 420, c, handle, "shooterInfo_Post.passFlg:%d", shooterInfo_Post.passFlg);
+	DrawFormatStringToHandle(0, 440, c, handle, "shooterInfo_Post.isRecvCheck:%d", shooterInfo_Post.isRecvCheck);
 	DrawFormatStringToHandle(0, 460, c, handle, "hiderInfo_Post.x:%d", hiderInfo_Post.x);
 	DrawFormatStringToHandle(0, 480, c, handle, "hiderInfo_Post.y:%d", hiderInfo_Post.y);
 	DrawFormatStringToHandle(0, 500, c, handle, "hiderInfo_Post.passFlg:%d", hiderInfo_Post.passFlg);
