@@ -457,7 +457,6 @@ void Network::SendHiderInfo(int px, int py, bool isPass) {
 // 撃つ側の情報を受信する。バッファが0になったらtrueが返る
 ////////////////////////////////////////////////
 bool Network::PostShooterInfo() {
-	NetWorkRecvBufferClear(UDPNetHandle);
 	while (1)
 	{
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE);
@@ -476,7 +475,6 @@ bool Network::PostShooterInfo() {
 // 隠れる側の情報を受信する。バッファが0になったらtrueが返る
 ////////////////////////////////////////////////
 bool Network::PostHiderInfo() {
-	NetWorkRecvBufferClear(UDPNetHandle);
 	while (1)
 	{
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE);
@@ -495,9 +493,10 @@ bool Network::PostHiderInfo() {
 // バッファークリア
 ////////////////////////////////////////////////
 void Network::BufferClear() {
-	while (NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE) != -3)
+	while (CheckNetWorkRecvUDP(UDPNetHandle) == FALSE)
 	{
-		RecvDataAddition();
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
 	}
 	RecvDataAddition();
 }
