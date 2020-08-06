@@ -128,16 +128,6 @@ void Player::ShooterPlayerControll_Net() {
 	if (shooter == net->GetConnectType()) {
 		net->PostHiderInfo();
 		Network::HiderInfo hiderInfo = net->GetHiderInfo();
-		x = hiderInfo.x;
-		y = hiderInfo.y;
-		if (hiderInfo.passFlg) {
-			gameMain->gameManager->ToShotPhase();
-		}
-
-		// 受信したことの応答が必要な場合の処理
-		if (hiderInfo.isRecvCheck) {
-
-		}
 		// 角度変更
 	// コントローラーのスティック
 		if (abs(inputManager->GetPadInput()[0].in_Stick_LX) + abs(inputManager->GetPadInput()[0].in_Stick_LY) >= 0.97f) {
@@ -286,14 +276,6 @@ void Player::HidingPlayerControll_Net() {
 	if (hider == net->GetConnectType()) {
 		net->PostShooterInfo();
 		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
-		angle = shooterInfo.angle;
-		if (shooterInfo.passFlg) {
-			gameMain->gameManager->ToHidePhase();
-		}
-		else if (shooterInfo.shotFlg) {
-			CreateBullet();
-			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
-		}
 
 		// 受信したことの応答が必要な場合の処理
 		if (shooterInfo.isRecvCheck) {
