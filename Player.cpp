@@ -13,7 +13,7 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 	
 	if (num == GameManager::RED) {
 		// 受け取った番号がREDだったら、角度の初期値を右になるようにする
-		angle = 66;
+		angle = 0;
 	} else if (num == GameManager::BLUE) {
 		// BLUEだったら、初期値は左
 		angle = 180;

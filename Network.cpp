@@ -460,7 +460,8 @@ bool Network::PostShooterInfo() {
 	NetWorkRecvBufferClear(UDPNetHandle);
 	while (1)
 	{
-		if (recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE) == -3) {
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE);
+		if (recvSize == -3) {
 			RecvDataAddition();
 			break;
 		}
@@ -478,7 +479,8 @@ bool Network::PostHiderInfo() {
 	NetWorkRecvBufferClear(UDPNetHandle);
 	while (1)
 	{
-		if (recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE) == -3) {
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE);
+		if (recvSize == -3) {
 			RecvDataAddition();
 			break;
 		}
@@ -493,10 +495,11 @@ bool Network::PostHiderInfo() {
 // バッファークリア
 ////////////////////////////////////////////////
 void Network::BufferClear() {
-	while (NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE) == -3)
+	while (NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE) != -3)
 	{
-
+		RecvDataAddition();
 	}
+	RecvDataAddition();
 }
 
 ////////////////////////////////////////////////
