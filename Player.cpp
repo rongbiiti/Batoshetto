@@ -33,6 +33,7 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 	inputManager = main->inputManager;	// 入力管理オブジェクトのポインタを入れる。
 
 	collision = new Collision;	// 衝突判定管理オブジェクトを生成する
+	effect = new Effect;	// エフェクトオブジェクトの生成
 
 	LoadImages();	//画像読み込み
 
@@ -117,6 +118,8 @@ void Player::ShooterPlayerControll(void) {
 	if (inputManager->GetPadInput()[shooter].in_Button[B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
 		CreateBullet();
+		effect->InitEffectCount();	// エフェクトのフレームカウント初期化
+		effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
 		gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 		return;
 	}
@@ -126,6 +129,8 @@ void Player::ShooterPlayerControll(void) {
 void Player::ShooterPlayerControll_Net() {
 	int shooter = gameMain->gameManager->GetNowShooter();
 	if (shooter == net->GetConnectType()) {
+		net->PostHiderInfo();
+		Network::HiderInfo hiderInfo = net->GetHiderInfo();
 		// 角度変更
 	// コントローラーのスティック
 		if (abs(inputManager->GetPadInput()[0].in_Stick_LX) + abs(inputManager->GetPadInput()[0].in_Stick_LY) >= 0.97f) {
@@ -214,6 +219,18 @@ void Player::ShooterPlayerControll_Net() {
 		net->PostShooterInfo();
 		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
 		angle = shooterInfo.angle;
+		targetx = cosf(angle * DX_PI_F / 180.0f) * 10000 + x;	// 狙っている方向のX座標
+		targety = sinf(angle * DX_PI_F / 180.0f) * 10000 + y;	// 狙っている方向のY座標
+		int blocknum = 0;
+		// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
+		if (TrajectoryPrecalculation_ToBlock(&blocknum)) {
+			CalcHitAfterAngle_ToBlock(blocknum);
+			blocknumber = blocknum;
+		}
+		else {	// 有効な値がなかったとき、つまりブロックと当たらず画面端を狙っている場合の処理。
+			blocknum = TrajectoryPrecalculation_ToWindow();
+			CalcHitAfterAngle_ToWindow(blocknum);
+		}
 		if (shooterInfo.passFlg) {
 			gameMain->gameManager->ToHidePhase();
 		}
@@ -265,6 +282,7 @@ void Player::HidingPlayerControll(void) {
 	// PASSして撃つ側フェーズに
 	if (inputManager->GetPadInput()[hider].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
 		gameMain->gameManager->ToShotPhase();
+
 	}
 }
 
@@ -272,6 +290,13 @@ void Player::HidingPlayerControll(void) {
 void Player::HidingPlayerControll_Net() {
 	int hider = gameMain->gameManager->GetNowHider();
 	if (hider == net->GetConnectType()) {
+		net->PostShooterInfo();
+		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
+
+		// 受信したことの応答が必要な場合の処理
+		if (shooterInfo.isRecvCheck) {
+
+		}
 		// 移動前の座標を記憶しておく
 		preX = x;
 		preY = y;
@@ -302,8 +327,10 @@ void Player::HidingPlayerControll_Net() {
 
 		// PASSして撃つ側フェーズに
 		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
-			gameMain->gameManager->ToShotPhase();
 			net->SendHiderInfo(x, y, TRUE);
+			gameMain->gameManager->ToShotPhase();
+			return;
+		
 		}
 		net->SendHiderInfo(x, y, FALSE);
 	}
@@ -327,7 +354,10 @@ void Player::HidingPlayerControll_Net() {
 void Player::DrawPlayer(void) {
 	//DrawCircle(x, y, size / 2, color);
 	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[isShooter], TRUE);
-	//effect->DrawEffect();		//処理を書いてる途中
+
+	if(effect->EffectStatus != 0){		//０以外の数字が入ってる時にエフェクト関数に移行
+		effect->DrawEffect(x, y,angle);		// エフェクト描画
+	}
 }
 
 // 撃つ側時に狙っている方向に線を引いて描画する
@@ -644,5 +674,6 @@ void Player::DeleteImages() {
 
 Player::~Player() {
 	delete collision;
+	delete effect;
 	DeleteImages();
 }

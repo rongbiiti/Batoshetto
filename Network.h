@@ -83,6 +83,11 @@ public:
 	// 受信した隠れる側の情報の構造体を取得
 	HiderInfo GetHiderInfo() { return hiderInfo_Post; }
 
+	// バッファークリア
+	void BufferClear();
+
+	void StructsReset();	// 試合用送受信構造体初期化！
+
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
 private:

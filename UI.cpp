@@ -17,7 +17,12 @@ void UI::UIControll() {
 // 隠れる・撃つの切替時のアニメーション
 // 処理が終わっていたらtrue、まだならfalseが返る
 bool UI::TransitionAnimationWaiting() {
-	if (++animationWaitingTime <= 40) {
+	if (++animationWaitingTime <= 100) {
+		gameMain->network->BufferClear();
+		gameMain->network->StructsReset();
+	}
+	
+	if (animationWaitingTime <= 40) {
 		transitionX += 500 / 40;
 		return false;
 	}
@@ -37,6 +42,7 @@ bool UI::TransitionAnimationWaiting() {
 		gameManager->ShooterFlgChange(false);
 	}
 	transitionFlg = false;
+	
 	return true;
 }
 

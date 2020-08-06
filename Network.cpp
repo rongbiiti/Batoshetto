@@ -55,6 +55,33 @@ void Network::VariableInit() {
 	send_IP.d4 = 0;
 
 	selectNum = 0;
+
+	StructsReset();
+}
+
+////////////////////////////////////////////////
+// 試合用送受信構造体初期化！
+////////////////////////////////////////////////
+void Network::StructsReset() {
+	shooterInfo_Send.angle = 0;
+	shooterInfo_Send.shotFlg = FALSE;
+	shooterInfo_Send.passFlg = FALSE;
+	shooterInfo_Send.isRecvCheck = FALSE;
+
+	hiderInfo_Send.x = 0;
+	hiderInfo_Send.y = 0;
+	hiderInfo_Send.passFlg = FALSE;
+	hiderInfo_Send.isRecvCheck = FALSE;
+
+	shooterInfo_Post.angle = 0;
+	shooterInfo_Post.shotFlg = FALSE;
+	shooterInfo_Post.passFlg = FALSE;
+	shooterInfo_Post.isRecvCheck = FALSE;
+
+	hiderInfo_Post.x = 0;
+	hiderInfo_Post.y = 0;
+	hiderInfo_Post.passFlg = FALSE;
+	hiderInfo_Post.isRecvCheck = FALSE;
 }
 
 ////////////////////////////////////////////////
@@ -400,9 +427,17 @@ void Network::DrawIPAddressSelect() {
 // 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
 ////////////////////////////////////////////////
 void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
+	NetWorkRecvBufferClear(UDPNetHandle);
+
 	shooterInfo_Send.angle = ang;
 	shooterInfo_Send.shotFlg = isShot;
 	shooterInfo_Send.passFlg = isPass;
+	if (isShot || isPass) {
+		shooterInfo_Send.isRecvCheck = TRUE;
+	}
+	else {
+		shooterInfo_Send.isRecvCheck = FALSE;
+	}
 	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &shooterInfo_Send, sizeof(shooterInfo_Send));
 	SendDataAddition();
 }
@@ -411,9 +446,16 @@ void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
 // 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
 ////////////////////////////////////////////////
 void Network::SendHiderInfo(int px, int py, bool isPass) {
+	NetWorkRecvBufferClear(UDPNetHandle);
 	hiderInfo_Send.x = px;
 	hiderInfo_Send.y = py;
 	hiderInfo_Send.passFlg = isPass;
+	if (isPass) {
+		hiderInfo_Send.isRecvCheck = TRUE;
+	}
+	else {
+		hiderInfo_Send.isRecvCheck = FALSE;
+	}
 	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &hiderInfo_Send, sizeof(hiderInfo_Send));
 	SendDataAddition();
 }
@@ -424,13 +466,16 @@ void Network::SendHiderInfo(int px, int py, bool isPass) {
 bool Network::PostShooterInfo() {
 	while (1)
 	{
-		if (recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE) < 0) {
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE);
+		if (recvSize == -3) {
 			RecvDataAddition();
 			break;
 		}
 		else {
 			RecvDataAddition();
 		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
 	}
 	return true;
 }
@@ -441,15 +486,37 @@ bool Network::PostShooterInfo() {
 bool Network::PostHiderInfo() {
 	while (1)
 	{
-		if (recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE) < 0) {
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE);
+		if (recvSize == -3) {
 			RecvDataAddition();
 			break;
 		}
 		else {
 			RecvDataAddition();
 		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
 	}
 	return true;
+}
+
+////////////////////////////////////////////////
+// バッファークリア
+////////////////////////////////////////////////
+void Network::BufferClear() {
+	while (1)
+	{
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE);
+		if (recvSize == -3) {
+			RecvDataAddition();
+			break;
+		}
+		else {
+			RecvDataAddition();
+		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
+	}
 }
 
 ////////////////////////////////////////////////
@@ -478,6 +545,14 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 320, c, handle, "matchInfo_Post.seed:%d", matchInfo_Post.seed);
 	DrawFormatStringToHandle(0, 340, c, handle, "matchInfo_Send.Diff:%d", matchInfo_Send.difficulty);
 	DrawFormatStringToHandle(0, 360, c, handle, "matchInfo_Post.Diff:%d", matchInfo_Post.difficulty);
+	DrawFormatStringToHandle(0, 380, c, handle, "shooterInfo_Post.angle:%.3f", shooterInfo_Post.angle);
+	DrawFormatStringToHandle(0, 400, c, handle, "shooterInfo_Post.shotFlg:%d", shooterInfo_Post.shotFlg);
+	DrawFormatStringToHandle(0, 420, c, handle, "shooterInfo_Post.passFlg:%d", shooterInfo_Post.passFlg);
+	DrawFormatStringToHandle(0, 440, c, handle, "shooterInfo_Post.isRecvCheck:%d", shooterInfo_Post.isRecvCheck);
+	DrawFormatStringToHandle(0, 460, c, handle, "hiderInfo_Post.x:%d", hiderInfo_Post.x);
+	DrawFormatStringToHandle(0, 480, c, handle, "hiderInfo_Post.y:%d", hiderInfo_Post.y);
+	DrawFormatStringToHandle(0, 500, c, handle, "hiderInfo_Post.passFlg:%d", hiderInfo_Post.passFlg);
+	DrawFormatStringToHandle(0, 520, c, handle, "hiderInfo_Post.isRecvCheck:%d", hiderInfo_Post.isRecvCheck);
 }
 
 ////////////////////////////////////////////////
