@@ -37,6 +37,7 @@ void Block::ReadFile(void){
 					flg = TRUE;
 					BlockPosition2[i / BLOCK_ONE_MAX][j] = atoi(buf);
 				}
+				//文字連結したbufを初期化
 				memset(buf, 0, sizeof(buf));
 			}
 		}
@@ -75,6 +76,7 @@ void Block::ReadFile(void){
 					flg = TRUE;
 					BlockPosition_Casual2[i / BLOCK_Casual_MAX][j] = atoi(buf);
 				}
+				//文字連結したbufを初期化
 				memset(buf, 0, sizeof(buf));
 			}
 		}
@@ -95,7 +97,7 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	size = BLOCK_SIZE;		// サイズ
 	HP = BlockStartHP;		// HP初期化
 	fontData = font;		// フォントデータのポインタ
-	gamemode = main->gameManager->GetDifficulty();
+	gamemode = main->gameManager->GetDifficulty();	// 難易度
 
 	knt =  num / BLOCK_ONE_MAX;		// ブロックの初期位置を商で求める
 	rem =  num % BLOCK_ONE_MAX;		// ３×３ブロックの何番目かを余りで求める
@@ -104,10 +106,13 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	if (rem == 0) {
 		switch (gamemode)
 		{
+		//ゲームモードがカジュアル
+		//左上のブロックは初期座標を代入
 		case 1:
 			x = BlockStartPosition2[knt][0];
 			y = BlockStartPosition2[knt][1];
 			break;
+		//ゲームモードがエキスパート
 		case 2:
 			x = BlockStartPosition[knt][0];
 			y = BlockStartPosition[knt][1];
@@ -127,6 +132,7 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	// 余りが０だった場合３×３ブロックの始まりなので乱数で２種類のうちどちらのブロックを使うか決める
 	if (rem == 0) {
 		//点対称にするために真ん中以降のブロックは点対称になっているブロックで取得した乱数を代入する
+		//エキスパート
 		if (gamemode == 2) {
 			if (knt < 5) {
 				rnd = GetRand(1);
@@ -134,6 +140,7 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 			else {
 				rnd = gamemain->block[((BLOCK_ONE_MAX - 1) - knt) * BLOCK_ONE_MAX]->rnd;
 			}
+		//カジュアル
 		}else if (gamemode == 1 && num <= 44) {
 			if (knt < 3) {
 				rnd = GetRand(1);
