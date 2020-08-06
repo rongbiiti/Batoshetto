@@ -56,6 +56,13 @@ void Network::VariableInit() {
 
 	selectNum = 0;
 
+	StructsReset();
+}
+
+////////////////////////////////////////////////
+// 試合用送受信構造体初期化！
+////////////////////////////////////////////////
+void Network::StructsReset() {
 	shooterInfo_Send.angle = 0;
 	shooterInfo_Send.shotFlg = FALSE;
 	shooterInfo_Send.passFlg = FALSE;
@@ -467,6 +474,8 @@ bool Network::PostShooterInfo() {
 		else {
 			RecvDataAddition();
 		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
 	}
 	return true;
 }
@@ -485,6 +494,8 @@ bool Network::PostHiderInfo() {
 		else {
 			RecvDataAddition();
 		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
 	}
 	return true;
 }
@@ -493,12 +504,19 @@ bool Network::PostHiderInfo() {
 // バッファークリア
 ////////////////////////////////////////////////
 void Network::BufferClear() {
-	while (CheckNetWorkRecvUDP(UDPNetHandle) == FALSE)
+	while (1)
 	{
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE);
+		if (recvSize == -3) {
+			RecvDataAddition();
+			break;
+		}
+		else {
+			RecvDataAddition();
+		}
 		// ウインドウズメッセージ処理
 		if (ProcessMessage() < 0) break;
 	}
-	RecvDataAddition();
 }
 
 ////////////////////////////////////////////////
@@ -527,7 +545,7 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 320, c, handle, "matchInfo_Post.seed:%d", matchInfo_Post.seed);
 	DrawFormatStringToHandle(0, 340, c, handle, "matchInfo_Send.Diff:%d", matchInfo_Send.difficulty);
 	DrawFormatStringToHandle(0, 360, c, handle, "matchInfo_Post.Diff:%d", matchInfo_Post.difficulty);
-	DrawFormatStringToHandle(0, 380, c, handle, "shooterInfo_Post.angle:%d", shooterInfo_Post.angle);
+	DrawFormatStringToHandle(0, 380, c, handle, "shooterInfo_Post.angle:%.3f", shooterInfo_Post.angle);
 	DrawFormatStringToHandle(0, 400, c, handle, "shooterInfo_Post.shotFlg:%d", shooterInfo_Post.shotFlg);
 	DrawFormatStringToHandle(0, 420, c, handle, "shooterInfo_Post.passFlg:%d", shooterInfo_Post.passFlg);
 	DrawFormatStringToHandle(0, 440, c, handle, "shooterInfo_Post.isRecvCheck:%d", shooterInfo_Post.isRecvCheck);

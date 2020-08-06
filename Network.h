@@ -86,6 +86,8 @@ public:
 	// バッファークリア
 	void BufferClear();
 
+	void StructsReset();	// 試合用送受信構造体初期化！
+
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
 private:
