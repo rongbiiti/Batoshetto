@@ -216,6 +216,18 @@ void Player::ShooterPlayerControll_Net() {
 		net->PostShooterInfo();
 		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
 		angle = shooterInfo.angle;
+		targetx = cosf(angle * DX_PI_F / 180.0f) * 10000 + x;	// 狙っている方向のX座標
+		targety = sinf(angle * DX_PI_F / 180.0f) * 10000 + y;	// 狙っている方向のY座標
+		int blocknum = 0;
+		// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
+		if (TrajectoryPrecalculation_ToBlock(&blocknum)) {
+			CalcHitAfterAngle_ToBlock(blocknum);
+			blocknumber = blocknum;
+		}
+		else {	// 有効な値がなかったとき、つまりブロックと当たらず画面端を狙っている場合の処理。
+			blocknum = TrajectoryPrecalculation_ToWindow();
+			CalcHitAfterAngle_ToWindow(blocknum);
+		}
 		if (shooterInfo.passFlg) {
 			gameMain->gameManager->ToHidePhase();
 		}
