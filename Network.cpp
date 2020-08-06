@@ -423,6 +423,12 @@ void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
 	shooterInfo_Send.angle = ang;
 	shooterInfo_Send.shotFlg = isShot;
 	shooterInfo_Send.passFlg = isPass;
+	if (isShot || isPass) {
+		shooterInfo_Send.isRecvCheck = TRUE;
+	}
+	else {
+		shooterInfo_Send.isRecvCheck = FALSE;
+	}
 	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &shooterInfo_Send, sizeof(shooterInfo_Send));
 	SendDataAddition();
 }
@@ -434,6 +440,12 @@ void Network::SendHiderInfo(int px, int py, bool isPass) {
 	hiderInfo_Send.x = px;
 	hiderInfo_Send.y = py;
 	hiderInfo_Send.passFlg = isPass;
+	if (isPass) {
+		hiderInfo_Send.isRecvCheck = TRUE;
+	}
+	else {
+		hiderInfo_Send.isRecvCheck = FALSE;
+	}
 	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &hiderInfo_Send, sizeof(hiderInfo_Send));
 	SendDataAddition();
 }
