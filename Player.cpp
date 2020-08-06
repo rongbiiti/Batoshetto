@@ -323,8 +323,10 @@ void Player::HidingPlayerControll_Net() {
 
 		// PASSして撃つ側フェーズに
 		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
-			gameMain->gameManager->ToShotPhase();
 			net->SendHiderInfo(x, y, TRUE);
+			gameMain->gameManager->ToShotPhase();
+			return;
+		
 		}
 		net->SendHiderInfo(x, y, FALSE);
 	}
