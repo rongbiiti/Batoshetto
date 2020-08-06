@@ -36,6 +36,8 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 	effect = new Effect;	// エフェクトオブジェクトの生成
 
 	LoadImages();	//画像読み込み
+
+	net = gameMain->network;
 }
 
 // 撃つ側時の操作処理
@@ -119,6 +121,115 @@ void Player::ShooterPlayerControll(void) {
 		effect->InitEffectCount();	// エフェクトのフレームカウント初期化
 		effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
 		gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
+		return;
+	}
+}
+
+// 撃つ側の操作処理・通信対戦
+void Player::ShooterPlayerControll_Net() {
+	int shooter = gameMain->gameManager->GetNowShooter();
+	if (shooter == net->GetConnectType()) {
+		// 角度変更
+	// コントローラーのスティック
+		if (abs(inputManager->GetPadInput()[0].in_Stick_LX) + abs(inputManager->GetPadInput()[0].in_Stick_LY) >= 0.97f) {
+			// X軸とY軸の倒した量の合計が規定の値以下なら角度を固定させる
+			float rad = atan2(inputManager->GetPadInput()[0].in_Stick_LY, inputManager->GetPadInput()[0].in_Stick_LX);
+			angle = -rad * 180.0f / DX_PI_F;
+			if (angle < 0) angle += 360;
+		}
+
+		// 方向キーを押した瞬間の角度を参照し、角度増分量をプラスかマイナスか判断する
+		if (inputManager->GetButtonDown(PAD_UP, 0) || inputManager->GetButtonDown(PAD_DOWN, 0)) {
+			ChangeDirectionalKeyAng();
+		}
+		if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyDown(KEY_INPUT_DOWN)) {
+			ChangeDirectionalKeyAng();
+		}
+
+		// コントローラーの十字キーでも角度操作を受付。
+		// Aボタンを押していると、速度がアップする。
+		if (inputManager->GetPadInput()[0].in_Button[PAD_UP] != 0) {
+			angle += directionalKeyAng;
+			if (inputManager->GetPadInput()[0].in_Button[A] != 0) {
+				angle += directionalKeyAng * 2;
+			}
+		}
+		if (inputManager->GetPadInput()[0].in_Button[PAD_DOWN] != 0) {
+			angle -= directionalKeyAng;
+			if (inputManager->GetPadInput()[0].in_Button[A] != 0) {
+				angle -= directionalKeyAng * 2;
+			}
+		}
+
+		// キーボードでの角度変更
+		if (inputManager->In_Key()[KEY_INPUT_UP] != 0) {
+			angle += directionalKeyAng;
+			if (inputManager->In_Key()[KEY_INPUT_LSHIFT] != 0) {
+				angle += directionalKeyAng * 2;
+			}
+		}
+		if (inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
+			angle -= directionalKeyAng;
+			if (inputManager->In_Key()[KEY_INPUT_LSHIFT] != 0) {
+				angle -= directionalKeyAng * 2;
+			}
+		}
+
+		angle = AngleCorrection(angle);
+
+		targetx = cosf(angle * DX_PI_F / 180.0f) * 10000 + x;	// 狙っている方向のX座標
+		targety = sinf(angle * DX_PI_F / 180.0f) * 10000 + y;	// 狙っている方向のY座標
+
+		int blocknum = 0;
+		// なにかしら有効な値が入っていたら、ターゲット位置をその座標にする
+		if (TrajectoryPrecalculation_ToBlock(&blocknum)) {
+			CalcHitAfterAngle_ToBlock(blocknum);
+			blocknumber = blocknum;
+		}
+		else {	// 有効な値がなかったとき、つまりブロックと当たらず画面端を狙っている場合の処理。
+			blocknum = TrajectoryPrecalculation_ToWindow();
+			CalcHitAfterAngle_ToWindow(blocknum);
+		}
+
+		//TargetPointWindowHitCheck();
+
+		// PASSして隠れる側フェーズに
+		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
+			gameMain->gameManager->ToHidePhase();
+			net->SendShooterInfo(angle, FALSE, TRUE);
+			return;
+		}
+
+		// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
+		// または、制限時間になったら勝手に発射する
+		if (inputManager->GetPadInput()[0].in_Button[B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
+			// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
+			CreateBullet();
+			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
+			net->SendShooterInfo(angle, TRUE, FALSE);
+			return;
+		}
+
+		net->SendShooterInfo(angle, FALSE, FALSE);
+		
+	}
+	else {
+		net->PostShooterInfo();
+		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
+		angle = shooterInfo.angle;
+		if (shooterInfo.passFlg) {
+			gameMain->gameManager->ToHidePhase();
+		}
+		else if (shooterInfo.shotFlg) {
+			CreateBullet();
+			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
+		}
+
+		// 受信したことの応答が必要な場合の処理
+		if (shooterInfo.isRecvCheck) {
+
+		}
+
 	}
 }
 
@@ -158,6 +269,61 @@ void Player::HidingPlayerControll(void) {
 	if (inputManager->GetPadInput()[hider].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
 		gameMain->gameManager->ToShotPhase();
 
+	}
+}
+
+// 隠れる側の操作処理・通信対戦
+void Player::HidingPlayerControll_Net() {
+	int hider = gameMain->gameManager->GetNowHider();
+	if (hider == net->GetConnectType()) {
+		// 移動前の座標を記憶しておく
+		preX = x;
+		preY = y;
+
+		// 移動処理
+		if (inputManager->GetPadInput()[0].in_Stick_LY >= 0.45f || inputManager->In_Key()[KEY_INPUT_UP] != 0) {
+			// 左スティックが上に傾けられていたら上に移動する
+			y -= moveSpeed;
+		}
+		if (inputManager->GetPadInput()[0].in_Stick_LY <= -0.45f || inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
+			// 左スティックが下に傾けられていたら下に移動する
+			y += moveSpeed;
+		}
+		if (inputManager->GetPadInput()[0].in_Stick_LX <= -0.45f || inputManager->In_Key()[KEY_INPUT_LEFT] != 0) {
+			// 左スティックが左に傾けられていたら左に移動する
+			x -= moveSpeed;
+		}
+		if (inputManager->GetPadInput()[0].in_Stick_LX >= 0.45f || inputManager->In_Key()[KEY_INPUT_RIGHT] != 0) {
+			// 左スティックが右に傾けられていたら右に移動する
+			x += moveSpeed;
+		}
+
+		x = XCoordinateCorrection(x, num, size);
+		y = YCoordinateCorrection(y, size);
+
+		// ブロックたちと当たり判定する。
+		BlockHitCheck();
+
+		// PASSして撃つ側フェーズに
+		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
+			gameMain->gameManager->ToShotPhase();
+			net->SendHiderInfo(x, y, TRUE);
+		}
+		net->SendHiderInfo(x, y, FALSE);
+	}
+	else {
+		net->PostHiderInfo();
+		Network::HiderInfo hiderInfo = net->GetHiderInfo();
+		x = hiderInfo.x;
+		y = hiderInfo.y;
+		if (hiderInfo.passFlg) {
+			gameMain->gameManager->ToShotPhase();
+		}
+
+		// 受信したことの応答が必要な場合の処理
+		if (hiderInfo.isRecvCheck) {
+
+		}
 	}
 }
 

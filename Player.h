@@ -9,6 +9,7 @@
 
 class GameMain;
 class Effect;
+class Network;
 class Player {
 public:
 	// コンストラクタ。REDかBLUEか、色、撃つ側か否か、GameMainオブジェクトのポインタを引数で受け取る。
@@ -16,6 +17,10 @@ public:
 	~Player();							// デストラクタ
 	void HidingPlayerControll(void);	// 隠れる側時の操作処理
 	void ShooterPlayerControll(void);	// 撃つ側時の操作処理
+
+	void ShooterPlayerControll_Net(void);	// 撃つ側の操作処理・通信対戦
+	void HidingPlayerControll_Net(void);	// 隠れる側の操作処理・通信対戦
+
 
 	void DrawPlayer(void);				// 描画用
 	void DrawTargetAngle(void);			// 撃つ側時に狙っている方向に線を引いて描画する
@@ -33,6 +38,7 @@ public:
 
 private:
 	Collision* collision;	// 生成した衝突判定するクラスのポインタ
+	Network* net;	// ネットワーク管理クラスのポインタ
 
 	const int PlayerMoveSpeed = 5;						// プレイヤーの移動速度
 	const int PlayerStartPositionX[2] = { 60, 1100 };	// プレイヤーの初期X座標
