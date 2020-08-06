@@ -209,6 +209,7 @@ void GameMain::Update(void) {
 	case GameManager::HIDE:
 		// 隠れる側フェーズ
 		if (netBattleFlg) {
+			if (!ui->TransitionAnimationWaiting()) return;
 			gameManager->HideTimerControll();
 			player[gameManager->GetNowHider()]->HidingPlayerControll_Net();
 		}
@@ -225,6 +226,7 @@ void GameMain::Update(void) {
 	case GameManager::SHOT:
 		// 撃つ側フェーズ
 		if (netBattleFlg) {
+			if (!ui->TransitionAnimationWaiting()) return;
 			gameManager->ShotTimerControll();
 			player[gameManager->GetNowShooter()]->ShooterPlayerControll_Net();
 		}
