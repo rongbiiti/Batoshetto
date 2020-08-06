@@ -55,6 +55,26 @@ void Network::VariableInit() {
 	send_IP.d4 = 0;
 
 	selectNum = 0;
+
+	shooterInfo_Send.angle = 0;
+	shooterInfo_Send.shotFlg = FALSE;
+	shooterInfo_Send.passFlg = FALSE;
+	shooterInfo_Send.isRecvCheck = FALSE;
+
+	hiderInfo_Send.x = 0;
+	hiderInfo_Send.y = 0;
+	hiderInfo_Send.passFlg = FALSE;
+	hiderInfo_Send.isRecvCheck = FALSE;
+
+	shooterInfo_Post.angle = 0;
+	shooterInfo_Post.shotFlg = FALSE;
+	shooterInfo_Post.passFlg = FALSE;
+	shooterInfo_Post.isRecvCheck = FALSE;
+
+	hiderInfo_Post.x = 0;
+	hiderInfo_Post.y = 0;
+	hiderInfo_Post.passFlg = FALSE;
+	hiderInfo_Post.isRecvCheck = FALSE;
 }
 
 ////////////////////////////////////////////////
