@@ -13,7 +13,7 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 	
 	if (num == GameManager::RED) {
 		// 受け取った番号がREDだったら、角度の初期値を右になるようにする
-		angle = 0;
+		angle = 66;
 	} else if (num == GameManager::BLUE) {
 		// BLUEだったら、初期値は左
 		angle = 180;
@@ -126,6 +126,18 @@ void Player::ShooterPlayerControll(void) {
 void Player::ShooterPlayerControll_Net() {
 	int shooter = gameMain->gameManager->GetNowShooter();
 	if (shooter == net->GetConnectType()) {
+		net->PostHiderInfo();
+		Network::HiderInfo hiderInfo = net->GetHiderInfo();
+		x = hiderInfo.x;
+		y = hiderInfo.y;
+		if (hiderInfo.passFlg) {
+			gameMain->gameManager->ToShotPhase();
+		}
+
+		// 受信したことの応答が必要な場合の処理
+		if (hiderInfo.isRecvCheck) {
+
+		}
 		// 角度変更
 	// コントローラーのスティック
 		if (abs(inputManager->GetPadInput()[0].in_Stick_LX) + abs(inputManager->GetPadInput()[0].in_Stick_LY) >= 0.97f) {
@@ -272,6 +284,21 @@ void Player::HidingPlayerControll(void) {
 void Player::HidingPlayerControll_Net() {
 	int hider = gameMain->gameManager->GetNowHider();
 	if (hider == net->GetConnectType()) {
+		net->PostShooterInfo();
+		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
+		angle = shooterInfo.angle;
+		if (shooterInfo.passFlg) {
+			gameMain->gameManager->ToHidePhase();
+		}
+		else if (shooterInfo.shotFlg) {
+			CreateBullet();
+			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
+		}
+
+		// 受信したことの応答が必要な場合の処理
+		if (shooterInfo.isRecvCheck) {
+
+		}
 		// 移動前の座標を記憶しておく
 		preX = x;
 		preY = y;
