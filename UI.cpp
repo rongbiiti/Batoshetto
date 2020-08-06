@@ -20,7 +20,7 @@ bool UI::TransitionAnimationWaiting() {
 	if (++animationWaitingTime == 0) {
 		gameMain->network->BufferClear();
 	}
-	if (++animationWaitingTime <= 40) {
+	if (animationWaitingTime <= 40) {
 		transitionX += 500 / 40;
 		return false;
 	}
