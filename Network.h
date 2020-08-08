@@ -10,16 +10,19 @@
 const static int PORT_NUMBER = 9876;
 class Network {
 public:
+	// ホストとして通信するか、ゲストとして通信するか。
 	enum CONNECT_TYPE {
 		HOST,
 		GEST
 	};
 
+	// ホストのマッチング中のフェーズ
 	enum HOST_WAIT_PHASE {
 		HOST_GEST_WAITING,
 		HOST_GEST_REPTY_WAITING
 	};
 
+	// ゲストのマッチング中のフェーズ
 	enum GEST_WAIT_PHASE {
 		GEST_HOST_SEARCHING,
 		GEST_MATCH_START
@@ -63,6 +66,9 @@ public:
 	void ConnectionWait_TypeGEST();		// 通信待機：ゲスト側
 	void DrawConnectionWait();			// 通信待機中の描画
 
+	void BufferClear();		// バッファークリア
+	void StructsReset();	// 試合用送受信構造体初期化！
+
 	int GetConnectType() { return ConnectType; }	// コネクトタイプを取得する
 
 	// 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
@@ -83,11 +89,6 @@ public:
 	// 受信した隠れる側の情報の構造体を取得
 	HiderInfo GetHiderInfo() { return hiderInfo_Post; }
 
-	// バッファークリア
-	void BufferClear();
-
-	void StructsReset();	// 試合用送受信構造体初期化！
-
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
 private:
@@ -102,10 +103,12 @@ private:
 		int seed;		// 乱数のシード値
 	}MatchingInfo;
 
-	MatchingInfo matchInfo_Send;	// 構造体生成
-	MatchingInfo matchInfo_Post;	// 受信用構造体
+	MatchingInfo matchInfo_Send;	// 構造体生成・マッチング時に使う送信用
+	MatchingInfo matchInfo_Post;	// マッチングデータ受信用構造体
+
 	ShooterInfo shooterInfo_Send;	// 撃つ側の送信データ
 	HiderInfo hiderInfo_Send;	// 隠れる側の送信データ
+
 	ShooterInfo shooterInfo_Post;	// 撃つ側の受信データ
 	HiderInfo hiderInfo_Post;	// 隠れる側の受信データ
 
@@ -140,7 +143,7 @@ private:
 	IPDATA send_IP;		// 送信相手のIP
 	IPDATA All_IP[ALL_IP_LENGTH];	// 複数のネットワークアダプターがあると思うので全部受け取る。最大6個。
 
-	int selectNum;
+	int selectNum;		// 選択してる項目の番号
 
 	int randSeedNum;	// 乱数のシード値
 	int recvCheckTime;	// 受信できたかの応答待ち時間　既定値に達するとタイムアウトでエラーとする

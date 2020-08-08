@@ -56,7 +56,7 @@ void Network::VariableInit() {
 
 	selectNum = 0;
 
-	StructsReset();
+	StructsReset();	// 構造体初期化
 }
 
 ////////////////////////////////////////////////
@@ -88,6 +88,7 @@ void Network::StructsReset() {
 // 受信データ加算
 ////////////////////////////////////////////////
 void Network::RecvDataAddition() {
+	// 受信データサイズを足す
 	if (recvSize >= 0) {
 		totalRecvSize += recvSize;
 		totalpost += matchInfo_Post.num;
@@ -98,6 +99,7 @@ void Network::RecvDataAddition() {
 // 送信データ加算
 ////////////////////////////////////////////////
 void Network::SendDataAddition() {
+	// 送信データサイズを足す
 	if (sendSize >= 0) {
 		totalSendSize += sendSize;
 		totalsend += matchInfo_Send.num;
@@ -235,22 +237,25 @@ void Network::CommunicationMethodSelect() {
 
 	// いずれかの決定ボタンが押されていたらマッチング画面へ遷移
 	if (dicideFlg) {
-		if (selectNum == HOST) {
-			randSeedNum = GetRand(10000);
-			SRand(randSeedNum);
-			matchInfo_Send.seed = randSeedNum;
-		}
 		ConnectType = selectNum;
+
+		// ホストとして通信することを選択していた場合、乱数の初期値を生成する。自分の乱数の初期値も、その値に設定する。
+		if (ConnectType == HOST) {
+			randSeedNum = GetRand(10000);	// 乱数を生成
+			SRand(randSeedNum);		// 生成した値で乱数初期値を設定
+			matchInfo_Send.seed = randSeedNum;	// 相手に送るデータに代入
+		}
+
+		// 受信用構造体を初期化
 		matchInfo_Post.num = 0;
 		matchInfo_Post.difficulty = 0;
 		matchInfo_Post.seed = 0;
-		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
-		selectNum = 0;
-		NetWorkRecvBufferClear(UDPNetHandle);
-		while (NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE) >= 0)
-		{
 
-		}
+		// 通信待機フェーズに遷移する
+		gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
+
+		// バッファをクリアしておく
+		BufferClear();
 	}
 }
 
@@ -272,27 +277,40 @@ void Network::ConnectionWait() {
 // 通信待機：ホスト
 ////////////////////////////////////////////////
 void Network::ConnectionWait_TypeHOST() {
-	if (HOST_phaseNum == HOST_GEST_WAITING) {
-		++HOST_gestSerchWaitTime;
-		matchInfo_Post.num = 0;
-		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
 
-		RecvDataAddition();
+	//////////// ホストがゲストからの応答待ち ////////////
+	if (HOST_phaseNum == HOST_GEST_WAITING) {
+		++HOST_gestSerchWaitTime;	// ホストの待ち時間インクリメント
+		matchInfo_Post.num = 0;		// 受信した値0にリセット
+
+		// 受信。受信相手のIPアドレスを同時に取得している。
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
+		RecvDataAddition();		// 総受信量増分
+
+		// 受信したデータのnumが1なら、ゲストがホストを探していることがわかる。ゲスト発見。
+		// ゲストに、発見したことを伝えるフェーズに移行
 		if (matchInfo_Post.num == 1 && matchInfo_Post.difficulty == gameManager->GetDifficulty()) {
 			HOST_phaseNum = HOST_GEST_REPTY_WAITING;
 			matchInfo_Send.num = 2;
 		}
 	}
+
+	//////////// ホストがゲストを発見。ゲストに発見できたことを伝え、その返信待ち ////////////
 	else if (HOST_phaseNum == HOST_GEST_REPTY_WAITING) {
-		++HOST_gestReplyWaitTime;
-		if (HOST_gestReplyWaitTime % 30 == 0) {
-			matchInfo_Send.num = 2;
+		// 0.5秒に1回、ゲストに発見したことを伝える。
+		if (++HOST_gestReplyWaitTime % 30 == 0) {
+			matchInfo_Send.num = 2;	// 送信numに2を入れる。2は、ホストがゲストを見つけたことを伝えている。
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
 			SendDataAddition();
 		}
+
+		// 受信。ゲストからの返事を待つ
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
-		RecvDataAddition();
+		RecvDataAddition();		// 総受信量増分
+
+		// ゲストからの返事が返ってきたら、ゲーム開始！！！！
 		if (matchInfo_Post.num == 3 && sendSize >= 0) {
+			// 初期処理フェーズに飛ぶ
 			gameManager->gameMain->Init();
 		}
 	}
@@ -302,30 +320,47 @@ void Network::ConnectionWait_TypeHOST() {
 // 通信待機：ゲスト
 ////////////////////////////////////////////////
 void Network::ConnectionWait_TypeGEST() {
+
+	//////////// ゲストがホストを探している ////////////
 	if (GEST_phaseNum == GEST_HOST_SEARCHING) {
-		++GEST_hostSerchWaitTime;
-		matchInfo_Post.num = 0;
-		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
-		RecvDataAddition();
-		if (GEST_hostSerchWaitTime % 30 == 0) {
-			matchInfo_Send.num = 1;
+
+		// 0.5秒に1回、ブロードキャストIPを使ってホストがいないか信号を送る。
+		if (++GEST_hostSerchWaitTime % 30 == 0) {
+			matchInfo_Send.num = 1;		// 1の値は、ゲストがホストを探している。
+
+			// 送信。ホストのIPがわからないので、ブロードキャストIPを使ってLANの全パソコンに送信
 			sendSize = NetWorkSendUDP(UDPNetHandle, broadCast_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
-			SendDataAddition();
+			SendDataAddition();		// 総送信量増分。
 		}
+
+		matchInfo_Post.num = 0;		// 受信した値0にリセット
+
+		// 受信。ホストからの発見報告待ち。ホストのIPも受け取る
+		recvSize = NetWorkRecvUDP(UDPNetHandle, &send_IP, NULL, &matchInfo_Post, sizeof(matchInfo_Post), FALSE);
+		RecvDataAddition();		// 総受信量増分
+
+		// ホストからの発見報告が来ていたら、その返事をするフェーズに移行。
 		if (matchInfo_Post.num == 2) {
 			GEST_phaseNum = GEST_MATCH_START;
 			GEST_hostSerchWaitTime = 0;
 		}
 	}
+
+	//////////// ホストがゲストを発見したことがわかった。返事をする ////////////
 	else if (GEST_phaseNum == GEST_MATCH_START) {
-		++GEST_hostSerchWaitTime;
-		if (GEST_hostSerchWaitTime % 30 == 0) {
-			matchInfo_Send.num = 3;
+
+		// 0.5秒に1回、ホストに発見報告への返事をする。
+		if (++GEST_hostSerchWaitTime % 30 == 0) {
+			matchInfo_Send.num = 3;		// 送信する値は3
+
+			// 送信。ホストのIPがわかっているので、それを直接指定している
 			sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &matchInfo_Send, sizeof(matchInfo_Send));
-			SendDataAddition();
+			SendDataAddition();		// 総送信量増分
+
+			// 送信サイズが0以上なら、正しく送信できたことにして、ゲームを開始する
 			if (sendSize >= 0) {
-				SRand(matchInfo_Post.seed);
-				gameManager->gameMain->Init();
+				SRand(matchInfo_Post.seed);		// ホストから送られてきた値で乱数初期値を設定。
+				gameManager->gameMain->Init();	// 初期処理フェーズに飛ぶ
 			}
 		}
 		
@@ -333,54 +368,124 @@ void Network::ConnectionWait_TypeGEST() {
 }
 
 ////////////////////////////////////////////////
-// 通信待機中の画面
+// 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
 ////////////////////////////////////////////////
-void Network::DrawConnectionWait() {
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
+void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
+	shooterInfo_Send.angle = ang;
+	shooterInfo_Send.shotFlg = isShot;
+	shooterInfo_Send.passFlg = isPass;
 
-	// ホスト////////////////////////////////////////////
-	if (ConnectType == HOST) {
-		if (HOST_phaseNum == HOST_GEST_WAITING) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストを待っています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストを待っています...");
-
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", HOST_gestSerchWaitTime / 60);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", HOST_gestSerchWaitTime / 60);
-
-		}
-		else if (HOST_phaseNum == HOST_GEST_REPTY_WAITING) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストが見つかりました。");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "応答を待っています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "応答を待っています...");
-
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", HOST_gestReplyWaitTime / 60);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", HOST_gestReplyWaitTime / 60);
-		}
-		
+	// 撃ったフラグとパスしたフラグ、どちらかがTRUEなら、返信が必要なデータとして送信する
+	if (isShot || isPass) {
+		shooterInfo_Send.isRecvCheck = TRUE;
+	}
+	else {
+		shooterInfo_Send.isRecvCheck = FALSE;
 	}
 
-
-	// ゲスト/////////////////////////////////////////////
-	else if (ConnectType == GEST) {
-		if (GEST_phaseNum == GEST_HOST_SEARCHING) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストを探しています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストを探しています...");
-
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", GEST_hostSerchWaitTime / 60);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", GEST_hostSerchWaitTime / 60);
-		}
-		else if (GEST_phaseNum == GEST_MATCH_START) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストが見つかりました。");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "対戦を開始します！");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "対戦を開始します！");
-		}
-		
-	}
-	
+	// 送信
+	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &shooterInfo_Send, sizeof(shooterInfo_Send));
+	SendDataAddition();		// 総送信量増分
 }
+
+////////////////////////////////////////////////
+// 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
+////////////////////////////////////////////////
+void Network::SendHiderInfo(int px, int py, bool isPass) {
+	hiderInfo_Send.x = px;
+	hiderInfo_Send.y = py;
+	hiderInfo_Send.passFlg = isPass;
+
+	// パスしたフラグがTRUEなら、返信が必要なデータとして送信する
+	if (isPass) {
+		hiderInfo_Send.isRecvCheck = TRUE;
+	}
+	else {
+		hiderInfo_Send.isRecvCheck = FALSE;
+	}
+
+	// 送信
+	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &hiderInfo_Send, sizeof(hiderInfo_Send));
+	SendDataAddition();		// 総送信量増分
+}
+
+////////////////////////////////////////////////
+// 撃つ側の情報を受信する。バッファが0になったらtrueが返る
+////////////////////////////////////////////////
+bool Network::PostShooterInfo() {
+	// 無限ループ
+	while (1)
+	{
+		// 受信バッファをすべて見る。
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE);
+		if (recvSize == -3) {
+			// -3は、受信データ無しを意味する。-3なら、ループを抜ける。
+			RecvDataAddition();		// 総受信量増分
+			break;
+		}
+		else {
+			RecvDataAddition();		// 総受信量増分
+		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
+	}
+	return true;
+}
+
+////////////////////////////////////////////////
+// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
+////////////////////////////////////////////////
+bool Network::PostHiderInfo() {
+	// 無限ループ
+	while (1)
+	{
+		// 受信バッファをすべて見る。
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE);
+		if (recvSize == -3) {
+			// -3は、受信データ無しを意味する。-3なら、ループを抜ける。
+			RecvDataAddition();		// 総受信量増分
+			break;
+		}
+		else {
+			RecvDataAddition();		// 総受信量増分
+		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
+	}
+	return true;
+}
+
+////////////////////////////////////////////////
+// バッファークリア
+////////////////////////////////////////////////
+void Network::BufferClear() {
+	// 無限ループ
+	while (1)
+	{
+		// 受信バッファをすべて見る。
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE);
+		if (recvSize == -3) {
+			// -3は、受信データ無しを意味する。-3なら、ループを抜ける。
+			RecvDataAddition();		// 総受信量増分
+			break;
+		}
+		else {
+			RecvDataAddition();		// 総受信量増分
+		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
+	}
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////		ここから下は描画処理			//////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 ////////////////////////////////////////////////
 // ホストになるかゲストになるかを選択させる画面の描画
@@ -424,99 +529,53 @@ void Network::DrawIPAddressSelect() {
 }
 
 ////////////////////////////////////////////////
-// 撃つ側の情報を送信する。角度、発射したかどうか、パスしたかどうかを引数に入れる
+// 通信待機中の画面
 ////////////////////////////////////////////////
-void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
-	NetWorkRecvBufferClear(UDPNetHandle);
+void Network::DrawConnectionWait() {
+	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
-	shooterInfo_Send.angle = ang;
-	shooterInfo_Send.shotFlg = isShot;
-	shooterInfo_Send.passFlg = isPass;
-	if (isShot || isPass) {
-		shooterInfo_Send.isRecvCheck = TRUE;
-	}
-	else {
-		shooterInfo_Send.isRecvCheck = FALSE;
-	}
-	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &shooterInfo_Send, sizeof(shooterInfo_Send));
-	SendDataAddition();
-}
+	// ホスト////////////////////////////////////////////
+	if (ConnectType == HOST) {
+		if (HOST_phaseNum == HOST_GEST_WAITING) {
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストを待っています...");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストを待っています...");
 
-////////////////////////////////////////////////
-// 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
-////////////////////////////////////////////////
-void Network::SendHiderInfo(int px, int py, bool isPass) {
-	NetWorkRecvBufferClear(UDPNetHandle);
-	hiderInfo_Send.x = px;
-	hiderInfo_Send.y = py;
-	hiderInfo_Send.passFlg = isPass;
-	if (isPass) {
-		hiderInfo_Send.isRecvCheck = TRUE;
-	}
-	else {
-		hiderInfo_Send.isRecvCheck = FALSE;
-	}
-	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &hiderInfo_Send, sizeof(hiderInfo_Send));
-	SendDataAddition();
-}
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", HOST_gestSerchWaitTime / 60);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", HOST_gestSerchWaitTime / 60);
 
-////////////////////////////////////////////////
-// 撃つ側の情報を受信する。バッファが0になったらtrueが返る
-////////////////////////////////////////////////
-bool Network::PostShooterInfo() {
-	while (1)
-	{
-		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &shooterInfo_Post, sizeof(shooterInfo_Post), FALSE);
-		if (recvSize == -3) {
-			RecvDataAddition();
-			break;
 		}
-		else {
-			RecvDataAddition();
-		}
-		// ウインドウズメッセージ処理
-		if (ProcessMessage() < 0) break;
-	}
-	return true;
-}
+		else if (HOST_phaseNum == HOST_GEST_REPTY_WAITING) {
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストが見つかりました。");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "応答を待っています...");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "応答を待っています...");
 
-////////////////////////////////////////////////
-// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
-////////////////////////////////////////////////
-bool Network::PostHiderInfo() {
-	while (1)
-	{
-		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE);
-		if (recvSize == -3) {
-			RecvDataAddition();
-			break;
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", HOST_gestReplyWaitTime / 60);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", HOST_gestReplyWaitTime / 60);
 		}
-		else {
-			RecvDataAddition();
-		}
-		// ウインドウズメッセージ処理
-		if (ProcessMessage() < 0) break;
-	}
-	return true;
-}
 
-////////////////////////////////////////////////
-// バッファークリア
-////////////////////////////////////////////////
-void Network::BufferClear() {
-	while (1)
-	{
-		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, NULL, NULL, FALSE);
-		if (recvSize == -3) {
-			RecvDataAddition();
-			break;
-		}
-		else {
-			RecvDataAddition();
-		}
-		// ウインドウズメッセージ処理
-		if (ProcessMessage() < 0) break;
 	}
+
+
+	// ゲスト/////////////////////////////////////////////
+	else if (ConnectType == GEST) {
+		if (GEST_phaseNum == GEST_HOST_SEARCHING) {
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストを探しています...");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストを探しています...");
+
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", GEST_hostSerchWaitTime / 60);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", GEST_hostSerchWaitTime / 60);
+		}
+		else if (GEST_phaseNum == GEST_MATCH_START) {
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストが見つかりました。");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "対戦を開始します！");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "対戦を開始します！");
+		}
+
+	}
+
 }
 
 ////////////////////////////////////////////////

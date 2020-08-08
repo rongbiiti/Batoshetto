@@ -13,6 +13,7 @@ DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font
 	for (int i = 0; i < 2; i++) {
 		dicideNumFlg[i] = false;
 	}
+
 }
 
 // 難易度選択画面の処理
@@ -46,7 +47,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
+	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
@@ -54,7 +55,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 		}
 	}
 
-	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
+	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
@@ -62,7 +63,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 		}
 	}
 
-	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::BLUE] = true;
 		return;
@@ -101,10 +102,10 @@ void DifficultySelectScene::DifficultySelectControll() {
 	}
 }
 
-// 難易度選択画面の処理
+// 難易度選択画面の処理・ネット対戦用
 void DifficultySelectScene::DifficultySelectControll_Net() {
 
-	if (inputManager->GetButtonDown(PAD_UP, GameManager::RED) || inputManager->GetButtonHold(PAD_UP, GameManager::RED, 4)) {
+	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetButtonDown(PAD_UP, GameManager::RED) || inputManager->GetButtonHold(PAD_UP, GameManager::RED, 4))) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::RED] < 0) {
@@ -112,7 +113,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		}
 	}
 
-	if (inputManager->GetButtonDown(PAD_DOWN, GameManager::RED) || inputManager->GetButtonHold(PAD_DOWN, GameManager::RED, 4)) {
+	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetButtonDown(PAD_DOWN, GameManager::RED) || inputManager->GetButtonHold(PAD_DOWN, GameManager::RED, 4))) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
@@ -120,16 +121,15 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		}
 	}
 
-	if (inputManager->GetButtonDown(B, GameManager::RED)) {
+	if (!dicideNumFlg[GameManager::RED] && inputManager->GetButtonDown(B, GameManager::RED)) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
-
 	}
 	
 
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
+	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::RED] < 0) {
@@ -137,7 +137,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		}
 	}
 
-	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
+	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
@@ -145,7 +145,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		}
 	}
 
-	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
+	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
 		return;
@@ -165,11 +165,12 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 			gameMangaer->SetDifficulty(GameManager::EXPERT);
 			break;
 		}
+
+		// ネット対戦用なので、難易度決定後、IPアドレス選択画面へ遷移する
 		gameMangaer->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
-		gameMangaer->gameMain->network->VariableInit();
-		gameMangaer->gameMain->diffiSelectScene = NULL;
-		this->~DifficultySelectScene();
-		
+		gameMangaer->gameMain->network->VariableInit();	// ネットワークの変数初期化
+		gameMangaer->gameMain->diffiSelectScene = NULL;	// gameMainのポインタ0に
+		this->~DifficultySelectScene();		// 自殺
 	}
 }
 
