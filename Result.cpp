@@ -17,6 +17,21 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	}
 }
 
+// 通信対戦で、タイムアウトが起きたとき
+Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
+	fontData = font;
+	inputManager = input;
+	gameManager = gameMNG;
+	waitTime = 0;
+	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		selectNum[i] = 0;
+	}
+
+	for (int i = 0; i < 2; i++) {
+		dicideNumFlg[i] = false;
+	}
+}
+
 void Result::ResultControll(void) {
 	for (int i = 0; i < 2; i++) {
 		
@@ -156,6 +171,36 @@ void Result::DrawResult() {
 			DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
 		}
 
+	}
+
+	// 各項目名描画
+	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+	}
+}
+
+// 描画用
+void Result::DrawTimeOut() {
+	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+
+	// Pauseの文字描画
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "相手からの応答が10秒間ありませんでした");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "相手からの応答が10秒間ありませんでした");
+
+	// 項目を決定していたら、長い四角を表示する
+	if (dicideNumFlg[0]) {
+		if (0 == GameManager::RED) {
+			DrawBox(0, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
+		}
+		else {
+			DrawBox(GameMain::SCREEN_WIDTH, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
+		}
+	}
+	else {
+		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
+		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 10, COLOR_VALUE_PLAYER[0], 1, 1);
 	}
 
 	// 各項目名描画

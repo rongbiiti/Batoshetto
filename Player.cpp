@@ -37,6 +37,9 @@ Player::Player(int num, unsigned int color, bool shooter, GameMain* main) {
 
 	LoadImages();	//画像読み込み
 
+	shotFlg = FALSE;
+	passFlg = FALSE;
+
 	net = gameMain->network;
 }
 
@@ -129,6 +132,26 @@ void Player::ShooterPlayerControll(void) {
 void Player::ShooterPlayerControll_Net() {
 	int shooter = gameMain->gameManager->GetNowShooter();
 	if (shooter == net->GetConnectType()) {
+
+		// 受信確認待ち中の処理
+		if (net->GetIsWaitRecvCheck()) {
+			// 相手の受信確認を待つ
+			net->PostRecvCheck();
+
+			// 受信確認ができたら、フェーズをすすめる
+			if (net->GetRecvCheck()) {
+				CreateBullet();
+				gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
+			}
+			// 0.5秒ごとに再送
+			else if(gameMain->gameManager->GetShotTime() % 30 == 0){
+				if(shotFlg) net->SendShooterInfo(angle, TRUE, FALSE);
+				else if(passFlg) net->SendShooterInfo(angle, FALSE, TRUE);
+				
+			}
+			return;
+		}
+
 		net->PostHiderInfo();
 		Network::HiderInfo hiderInfo = net->GetHiderInfo();
 		// 角度変更
@@ -197,8 +220,9 @@ void Player::ShooterPlayerControll_Net() {
 
 		// PASSして隠れる側フェーズに
 		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
-			gameMain->gameManager->ToHidePhase();
+			//gameMain->gameManager->ToHidePhase();
 			net->SendShooterInfo(angle, FALSE, TRUE);
+			passFlg = TRUE;
 			return;
 		}
 
@@ -206,9 +230,10 @@ void Player::ShooterPlayerControll_Net() {
 		// または、制限時間になったら勝手に発射する
 		if (inputManager->GetPadInput()[0].in_Button[B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
 			// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
-			CreateBullet();
-			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
+			//CreateBullet();
+			//gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 			net->SendShooterInfo(angle, TRUE, FALSE);
+			shotFlg;
 			return;
 		}
 
@@ -241,7 +266,7 @@ void Player::ShooterPlayerControll_Net() {
 
 		// 受信したことの応答が必要な場合の処理
 		if (shooterInfo.isRecvCheck) {
-
+			net->SendRecvCheck();
 		}
 
 	}
@@ -290,6 +315,21 @@ void Player::HidingPlayerControll(void) {
 void Player::HidingPlayerControll_Net() {
 	int hider = gameMain->gameManager->GetNowHider();
 	if (hider == net->GetConnectType()) {
+		// 受信確認待ち中の処理
+		if (net->GetIsWaitRecvCheck()) {
+			// 相手の受信確認を待つ
+			net->PostRecvCheck();
+
+			// 受信確認ができたら、フェーズをすすめる
+			if (net->GetRecvCheck()) {
+				gameMain->gameManager->ToShotPhase();
+			}
+			// 0.5秒ごとに再送
+			else if (gameMain->gameManager->GetHideTime() % 30 == 0) {
+				net->SendHiderInfo(x, y, TRUE);
+			}
+			return;
+		}
 		net->PostShooterInfo();
 		Network::ShooterInfo shooterInfo = net->GetShooterInfo();
 
@@ -328,7 +368,7 @@ void Player::HidingPlayerControll_Net() {
 		// PASSして撃つ側フェーズに
 		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
 			net->SendHiderInfo(x, y, TRUE);
-			gameMain->gameManager->ToShotPhase();
+			//gameMain->gameManager->ToShotPhase();
 			return;
 		
 		}
@@ -345,7 +385,7 @@ void Player::HidingPlayerControll_Net() {
 
 		// 受信したことの応答が必要な場合の処理
 		if (hiderInfo.isRecvCheck) {
-
+			net->SendRecvCheck();
 		}
 	}
 }

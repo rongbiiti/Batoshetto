@@ -69,6 +69,7 @@ public:
 	void CreateUIObj();							// UI管理クラスを生成し、ポインタを保存しておく
 	void CreateOptionObj(int pushPLnum, int prescreennum);						// オプション画面クラスを生成し、ポインタを保存しておく
 	void CreateNetworkObj();					// 通信対戦用クラスを生成し、ポインタを保存しておく
+	void CreateResultObj_TimeOut();
 
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
 	FontData* fontData;				// 生成したフォントデータ管理クラスのポインタ

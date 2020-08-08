@@ -74,6 +74,8 @@ private:
 	float directionalKeyAng;	// 方向キーで角度操作するときの角度変化量
 	int blocknumber;
 	int i_Playerimage[2];	// ゲージの画像
+	bool shotFlg;
+	bool passFlg;
 };
 
 #endif // !_PLAYER_H_

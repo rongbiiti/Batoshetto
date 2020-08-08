@@ -17,7 +17,7 @@ void UI::UIControll() {
 // 隠れる・撃つの切替時のアニメーション
 // 処理が終わっていたらtrue、まだならfalseが返る
 bool UI::TransitionAnimationWaiting() {
-	if (++animationWaitingTime <= 100) {
+	if (++animationWaitingTime <= 1) {
 		gameMain->network->BufferClear();
 		gameMain->network->StructsReset();
 	}

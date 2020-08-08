@@ -55,7 +55,7 @@ void Bullet::BulletControll(void) {
 	x += moveX;
 	y += moveY;
 
-	if (IsScreenOutside()) return;	// 画面外にいってないかチェック
+	IsScreenOutside();	// 画面外にいってないかチェック
 	if (IsHitPlayer() && !isPlayerHit) return;		// プレイヤーと当たり判定
 
 	// ブロックと連続で当たり判定しないように、前のフレームでブロックと当たっていたら
@@ -68,7 +68,7 @@ void Bullet::BulletControll(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
 	if (RemainingRicochetTimesCheck()) return;
 
-	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[PAD_RIGHT] != 0)return;
+	if (gameMain->inputManager->GetPadInput()[gameMain->gameManager->GetNowShooter()].in_Button[PAD_RIGHT] != 0 && gameMain->GetNetBallteFlg())return;
 
 	if (IsHitBlock()) return;		// ブロックと当たり判定
 }
@@ -115,8 +115,8 @@ bool Bullet::IsScreenOutside(void) {
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;
 		y = preY;
-		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedX / 2);	// 狙っている方向のX座標
-		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedY / 2);	// 狙っている方向のY座標
+		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedX / 2.5f);	// 狙っている方向のX座標
+		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedY / 2.5f);	// 狙っている方向のY座標
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
 		RemainingRicochetTimesCheck();	// 跳弾回数0未満なら隠れる側フェーズに移行
 		return true;
@@ -129,8 +129,8 @@ bool Bullet::IsScreenOutside(void) {
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;					
 		y = preY;
-		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedX / 2);	// 狙っている方向のX座標
-		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedY / 2);	// 狙っている方向のY座標
+		x = x + cosf(angle * DX_PI_F / 180.0f) * (movespeedX / 2.5f);	// 狙っている方向のX座標
+		y = y + sinf(angle * DX_PI_F / 180.0f) * (movespeedY / 2.5f);	// 狙っている方向のY座標
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
 		RemainingRicochetTimesCheck();	// 跳弾回数0未満なら隠れる側フェーズに移行
 		return true;					

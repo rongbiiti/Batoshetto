@@ -64,6 +64,9 @@ public:
 	void HideTimerControll(void);					// 隠れる側の残り時間を管理している関数。
 	void ShotTimerControll(void);					// 撃つ側の残り時間を管理している関数。
 
+	void HideTimerControll_Net(void);					// 隠れる側の残り時間を管理している関数。ネット用
+	void ShotTimerControll_Net(void);					// 撃つ側の残り時間を管理している関数。ネット用
+
 	void ToHidePhase(void);							// 隠れる側のフェーズに移行する処理がまとめてある。
 	void ToShotPhase(void);							// 撃つ側のフェーズに移行する処理がまとめてある。
 

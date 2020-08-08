@@ -56,6 +56,8 @@ void Network::VariableInit() {
 
 	selectNum = 0;
 
+	isWaitRecvCheck = FALSE;
+
 	StructsReset();	// 構造体初期化
 }
 
@@ -82,6 +84,9 @@ void Network::StructsReset() {
 	hiderInfo_Post.y = 0;
 	hiderInfo_Post.passFlg = FALSE;
 	hiderInfo_Post.isRecvCheck = FALSE;
+
+	recvCheck_Post = FALSE;
+
 }
 
 ////////////////////////////////////////////////
@@ -378,9 +383,11 @@ void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
 	// 撃ったフラグとパスしたフラグ、どちらかがTRUEなら、返信が必要なデータとして送信する
 	if (isShot || isPass) {
 		shooterInfo_Send.isRecvCheck = TRUE;
+		isWaitRecvCheck = TRUE;
 	}
 	else {
 		shooterInfo_Send.isRecvCheck = FALSE;
+		isWaitRecvCheck = FALSE;
 	}
 
 	// 送信
@@ -399,14 +406,36 @@ void Network::SendHiderInfo(int px, int py, bool isPass) {
 	// パスしたフラグがTRUEなら、返信が必要なデータとして送信する
 	if (isPass) {
 		hiderInfo_Send.isRecvCheck = TRUE;
+		isWaitRecvCheck = TRUE;
 	}
 	else {
 		hiderInfo_Send.isRecvCheck = FALSE;
+		isWaitRecvCheck = FALSE;
 	}
 
 	// 送信
 	sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &hiderInfo_Send, sizeof(hiderInfo_Send));
 	SendDataAddition();		// 総送信量増分
+}
+
+////////////////////////////////////////////////
+// 返信できたことを送信する。
+////////////////////////////////////////////////
+void Network::SendRecvCheck() {
+	bool recvCheck_Send = TRUE;
+	// 無限ループ
+	while (1)
+	{
+		// TRUEを送る
+		sendSize = NetWorkSendUDP(UDPNetHandle, send_IP, PORT_NUMBER, &recvCheck_Send, sizeof(recvCheck_Send));
+		if (sendSize >= 0) {
+			// 送信成功していたら、ループを抜ける
+			SendDataAddition();
+			break;
+		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
+	}
 }
 
 ////////////////////////////////////////////////
@@ -441,6 +470,29 @@ bool Network::PostHiderInfo() {
 	{
 		// 受信バッファをすべて見る。
 		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &hiderInfo_Post, sizeof(hiderInfo_Post), FALSE);
+		if (recvSize == -3) {
+			// -3は、受信データ無しを意味する。-3なら、ループを抜ける。
+			RecvDataAddition();		// 総受信量増分
+			break;
+		}
+		else {
+			RecvDataAddition();		// 総受信量増分
+		}
+		// ウインドウズメッセージ処理
+		if (ProcessMessage() < 0) break;
+	}
+	return true;
+}
+
+////////////////////////////////////////////////
+// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
+////////////////////////////////////////////////
+bool Network::PostRecvCheck() {
+	// 無限ループ
+	while (1)
+	{
+		// 受信バッファをすべて見る。
+		recvSize = NetWorkRecvUDP(UDPNetHandle, NULL, NULL, &recvCheck_Post, sizeof(recvCheck_Post), FALSE);
 		if (recvSize == -3) {
 			// -3は、受信データ無しを意味する。-3なら、ループを抜ける。
 			RecvDataAddition();		// 総受信量増分

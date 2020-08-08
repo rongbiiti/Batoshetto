@@ -77,17 +77,28 @@ public:
 	// 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
 	void SendHiderInfo(int px, int py, bool isPass);
 
+	// 返信できたことを送信する。
+	void SendRecvCheck();
+
 	// 撃つ側の情報を受信する。バッファが0になったらtrueが返る
 	bool PostShooterInfo();
 
 	// 隠れる側の情報を受信する。バッファが0になったらtrueが返る
 	bool PostHiderInfo();
 
+	// 受信確認を取得
+	bool PostRecvCheck();
+
 	// 受信した撃つ側の情報の構造体を取得
 	ShooterInfo GetShooterInfo() { return shooterInfo_Post; }
 
 	// 受信した隠れる側の情報の構造体を取得
 	HiderInfo GetHiderInfo() { return hiderInfo_Post; }
+
+	// 受信した、返信確認の構造体を取得
+	bool GetRecvCheck() { return recvCheck_Post; }
+
+	bool GetIsWaitRecvCheck() { return isWaitRecvCheck; }	// 受信確認待ちか取得
 
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 
@@ -111,6 +122,9 @@ private:
 
 	ShooterInfo shooterInfo_Post;	// 撃つ側の受信データ
 	HiderInfo hiderInfo_Post;	// 隠れる側の受信データ
+
+	bool recvCheck_Post;	// 返信できたかの受信データ
+	bool isWaitRecvCheck;	// 相手の受信確認待ちフラグ
 
 	const static int ALL_IP_LENGTH = 6;	// All_IP配列の要素数
 

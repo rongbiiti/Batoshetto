@@ -101,6 +101,26 @@ void GameManager::ShotTimerControll(void) {
 	}
 }
 
+// 隠れる側の残り時間を管理している関数。ネット用
+void GameManager::HideTimerControll_Net(void) {
+	// 隠れる側残り時間を減らす
+	--t_HideTime;
+
+	if (t_HideTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
+		gameMain->CreateResultObj_TimeOut();
+	}
+}
+
+// 撃つ側の残り時間を管理している関数。ネット用
+void GameManager::ShotTimerControll_Net(void) {
+	// 撃つ側残り時間を減らす
+	--t_ShotTime;
+
+	if (t_ShotTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
+		gameMain->CreateResultObj_TimeOut();
+	}
+}
+
 // 隠れる側のフェーズに移行する処理がまとめてある。
 void GameManager::ToHidePhase(void) {
 	SetHideTime();

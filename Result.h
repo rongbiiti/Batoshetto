@@ -12,10 +12,13 @@ class Result {
 public:
 	// フォントデータ管理オブジェクトのポインタ、入力管理オブジェクトのポインタ、
 	// ゲーム進行管理オブジェクトのポインタ、ヒットしたプレイヤーがREDかBLUEかを受け取る。
+	Result(FontData* font, InputManager* input, GameManager* gameMNG);
 	Result(FontData* font, InputManager* input, GameManager* gameMNG, int hitplayernum);
 	~Result();					// デストラクタ
 	void ResultControll(void);	// 処理
+	void ResultControll_Net(void);	// ネット対戦用のリザルト処理
 	void DrawResult(void);		// 描画
+	void DrawTimeOut(void);		// タイムアウトしたことを描画
 private:
 	FontData* fontData;			// フォントデータ管理オブジェクトのポインタ
 	InputManager* inputManager;	// 入力管理オブジェクトのポインタ

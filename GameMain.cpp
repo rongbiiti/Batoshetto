@@ -208,11 +208,13 @@ void GameMain::Update(void) {
 
 	case GameManager::HIDE:
 		// 隠れる側フェーズ
+		// 通信対戦中
 		if (netBattleFlg) {
 			if (!ui->TransitionAnimationWaiting()) return;
-			gameManager->HideTimerControll();
+			gameManager->HideTimerControll_Net();
 			player[gameManager->GetNowHider()]->HidingPlayerControll_Net();
 		}
+		// 1台のパソコンで対戦中
 		else {
 			if (!ui->TransitionAnimationWaiting()) return;
 			if (PauseProcess()) return;
@@ -225,11 +227,13 @@ void GameMain::Update(void) {
 
 	case GameManager::SHOT:
 		// 撃つ側フェーズ
+		// 通信対戦中
 		if (netBattleFlg) {
 			if (!ui->TransitionAnimationWaiting()) return;
-			gameManager->ShotTimerControll();
+			gameManager->ShotTimerControll_Net();
 			player[gameManager->GetNowShooter()]->ShooterPlayerControll_Net();
 		}
+		// 1台のパソコンで対戦中
 		else {
 			if (!ui->TransitionAnimationWaiting()) return;
 			if (PauseProcess()) return;
@@ -248,7 +252,12 @@ void GameMain::Update(void) {
 
 	case GameManager::RESULT:
 		// リザルト画面
-		result->ResultControll();
+		if (netBattleFlg) {
+			result->ResultControll_Net();
+		}
+		else {
+			result->ResultControll();
+		}
 		return;
 		break;
 	case GameManager::OPTION:
@@ -365,7 +374,13 @@ void GameMain::Output(void) {
 
 	case GameManager::RESULT:
 		// リザルト画面描画
-		result->DrawResult();
+		if (netBattleFlg) {
+			result->DrawTimeOut();
+		}
+		else {
+			result->DrawResult();
+		}
+		
 		return;
 		break;
 	case GameManager::OPTION:
@@ -519,4 +534,8 @@ void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
 
 void GameMain::CreateNetworkObj() {
 	network = new Network(fontData, inputManager, gameManager);
+}
+
+void GameMain::CreateResultObj_TimeOut() {
+	result = new Result(fontData, inputManager, gameManager);
 }
