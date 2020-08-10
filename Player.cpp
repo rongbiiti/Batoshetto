@@ -142,6 +142,8 @@ void Player::ShooterPlayerControll_Net() {
 			if (net->GetRecvCheck()) {
 				if (shotFlg) {
 					CreateBullet();
+					effect->InitEffectCount();	// エフェクトのフレームカウント初期化
+					effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
 					gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 					shotFlg = FALSE;
 				}
@@ -263,17 +265,18 @@ void Player::ShooterPlayerControll_Net() {
 		}
 		if (shooterInfo.passFlg) {
 			gameMain->gameManager->ToHidePhase();
-			net->SetIsWaitRecvCheck(FALSE);
 		}
 		else if (shooterInfo.shotFlg) {
 			CreateBullet();
+			effect->InitEffectCount();	// エフェクトのフレームカウント初期化
+			effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
 			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
-			net->SetIsWaitRecvCheck(FALSE);
 		}
 
 		// 受信したことの応答が必要な場合の処理
 		if (shooterInfo.isRecvCheck) {
 			net->SendRecvCheck();
+			net->SetIsWaitRecvCheck(FALSE);
 		}
 
 	}
@@ -386,12 +389,13 @@ void Player::HidingPlayerControll_Net() {
 		y = hiderInfo.y;
 		if (hiderInfo.passFlg) {
 			gameMain->gameManager->ToShotPhase();
-			net->SetIsWaitRecvCheck(FALSE);
+			
 		}
 
 		// 受信したことの応答が必要な場合の処理
 		if (hiderInfo.isRecvCheck) {
 			net->SendRecvCheck();
+			net->SetIsWaitRecvCheck(FALSE);
 		}
 	}
 }
