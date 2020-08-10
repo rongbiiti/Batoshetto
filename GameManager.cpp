@@ -67,6 +67,7 @@ void GameManager::ShooterFlgChange(bool allchangeflg) {
 
 // ゲームのフェーズをセットする。引数に、PHASE列挙体を使ってくれ。
 void GameManager::SetPhaseStatus(int value) {
+
 	PhaseStatus = value;
 }
 
@@ -95,10 +96,7 @@ void GameManager::ShotTimerControll(void) {
 	// 撃つ側残り時間を減らす
 	--t_ShotTime;
 
-	//残り時間0以下になったら隠れる側のフェーズに移行する。
-	if (t_ShotTime < 1) {
-		ToHidePhase();
-	}
+	
 }
 
 // 隠れる側の残り時間を管理している関数。ネット用

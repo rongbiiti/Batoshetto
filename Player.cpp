@@ -118,7 +118,7 @@ void Player::ShooterPlayerControll(void) {
 
 	// 発射ボタンを押すと、弾オブジェクトの初期化関数に値を入れて、フェーズを進める。
 	// または、制限時間になったら勝手に発射する
-	if (inputManager->GetPadInput()[shooter].in_Button[B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() <= 1) {
+	if (inputManager->GetPadInput()[shooter].in_Button[B] == 1 || inputManager->In_Key()[KEY_INPUT_F] == 1 || gameMain->gameManager->GetShotTime() < 1) {
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
 		CreateBullet();
 		effect->InitEffectCount();	// エフェクトのフレームカウント初期化
@@ -493,8 +493,8 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	blockY = gameMain->block[blocknum]->GetBlockY();
 	blockSize = gameMain->block[blocknum]->GetBlockSize();
 
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X() / 2.8f;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y() / 2.8f;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X();	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y();	// 狙っている方向のY座標
 
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (collision->IsHitWicth((int)prex, blockX, blockSize)) {
@@ -580,8 +580,8 @@ bool Player::TrajectoryPrecalculation_ToBlock(int* blocknum) {
 
 // ウィンドウのどの端と衝突しているか判断して角度を変更する
 void Player::CalcHitAfterAngle_ToWindow(int num) {
-	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X() / 2.5f;	// 狙っている方向のX座標
-	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y() / 2.5f;	// 狙っている方向のY座標
+	float prex = targetx - cosf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_X();	// 狙っている方向のX座標
+	float prey = targety - sinf(angle * DX_PI_F / 180.0f) * gameMain->bullet->GetBulletSPD_Y();	// 狙っている方向のY座標
 	// ターゲットの移動前X座標が幅の中にいたら、Y座標のみを戻して、X座標は変化させる
 	if (num % 2 == 0) {
 		// 移動前座標が幅の中なら、向きの上下を変える
