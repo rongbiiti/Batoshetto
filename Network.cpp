@@ -21,6 +21,8 @@ Network::Network(FontData* font, InputManager* input, GameManager* gameMNG) {
 	errorCode = 0;		// エラーコード
 	IPsNumber = 0;		// IPアドレスの個数
 
+	ConnectType = HOST;	// ホストかゲストか
+
 	// UDPハンドルの作成
 	UDPNetHandle = MakeUDPSocket(PORT_NUMBER);
 	VariableInit();
@@ -32,7 +34,7 @@ Network::Network(FontData* font, InputManager* input, GameManager* gameMNG) {
 // 普通の変数の初期化
 ////////////////////////////////////////////////
 void Network::VariableInit() {
-	ConnectType = HOST;	// ホストかゲストか
+	
 	HOST_gestSerchWaitTime = 0;
 	GEST_hostSerchWaitTime = 0;
 	HOST_gestReplyWaitTime = 0;
@@ -245,11 +247,7 @@ void Network::CommunicationMethodSelect() {
 		ConnectType = selectNum;
 
 		// ホストとして通信することを選択していた場合、乱数の初期値を生成する。自分の乱数の初期値も、その値に設定する。
-		if (ConnectType == HOST) {
-			randSeedNum = GetRand(10000);	// 乱数を生成
-			SRand(randSeedNum);		// 生成した値で乱数初期値を設定
-			matchInfo_Send.seed = randSeedNum;	// 相手に送るデータに代入
-		}
+		SetSendRand();
 
 		// 受信用構造体を初期化
 		matchInfo_Post.num = 0;
@@ -261,6 +259,18 @@ void Network::CommunicationMethodSelect() {
 
 		// バッファをクリアしておく
 		BufferClear();
+	}
+}
+
+////////////////////////////////////////////////
+// 乱数を生成
+////////////////////////////////////////////////
+void Network::SetSendRand() {
+	// ホストとして通信することを選択していた場合、乱数の初期値を生成する。自分の乱数の初期値も、その値に設定する。
+	if (ConnectType == HOST) {
+		randSeedNum = GetRand(10000);	// 乱数を生成
+		SRand(randSeedNum);		// 生成した値で乱数初期値を設定
+		matchInfo_Send.seed = randSeedNum;	// 相手に送るデータに代入
 	}
 }
 

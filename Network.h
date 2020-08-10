@@ -68,6 +68,7 @@ public:
 
 	void BufferClear();		// バッファークリア
 	void StructsReset();	// 試合用送受信構造体初期化！
+	void SetSendRand();		// 乱数を生成
 
 	int GetConnectType() { return ConnectType; }	// コネクトタイプを取得する
 
@@ -99,6 +100,7 @@ public:
 	bool GetRecvCheck() { return recvCheck_Post; }
 
 	bool GetIsWaitRecvCheck() { return isWaitRecvCheck; }	// 受信確認待ちか取得
+	void SetIsWaitRecvCheck(bool value) { isWaitRecvCheck = value; }
 
 	int GetErrorCode() { return errorCode; }	// エラーコードを返す
 

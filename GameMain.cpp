@@ -375,7 +375,7 @@ void GameMain::Output(void) {
 	case GameManager::RESULT:
 		// ƒŠƒUƒ‹ƒg‰æ–Ê•`‰æ
 		if (netBattleFlg) {
-			result->DrawTimeOut();
+			result->DrawResult_Net();
 		}
 		else {
 			result->DrawResult();

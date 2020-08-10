@@ -106,7 +106,12 @@ void GameManager::HideTimerControll_Net(void) {
 	// ‰B‚ê‚é‘¤Žc‚èŽžŠÔ‚ðŒ¸‚ç‚·
 	--t_HideTime;
 
+	if (!gameMain->network->GetIsWaitRecvCheck() && t_HideTime < 0) {
+		gameMain->network->SetIsWaitRecvCheck(TRUE);
+	}
+
 	if (t_HideTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
+		SetPhaseStatus(RESULT);
 		gameMain->CreateResultObj_TimeOut();
 	}
 }
@@ -116,7 +121,12 @@ void GameManager::ShotTimerControll_Net(void) {
 	// Œ‚‚Â‘¤Žc‚èŽžŠÔ‚ðŒ¸‚ç‚·
 	--t_ShotTime;
 
+	if (!gameMain->network->GetIsWaitRecvCheck() && t_ShotTime < 0) {
+		gameMain->network->SetIsWaitRecvCheck(TRUE);
+	}
+
 	if (t_ShotTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
+		SetPhaseStatus(RESULT);
 		gameMain->CreateResultObj_TimeOut();
 	}
 }
