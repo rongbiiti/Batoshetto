@@ -67,6 +67,7 @@ void GameManager::ShooterFlgChange(bool allchangeflg) {
 
 // ゲームのフェーズをセットする。引数に、PHASE列挙体を使ってくれ。
 void GameManager::SetPhaseStatus(int value) {
+
 	PhaseStatus = value;
 }
 
@@ -95,9 +96,36 @@ void GameManager::ShotTimerControll(void) {
 	// 撃つ側残り時間を減らす
 	--t_ShotTime;
 
-	//残り時間0以下になったら隠れる側のフェーズに移行する。
-	if (t_ShotTime < 1) {
-		ToHidePhase();
+	
+}
+
+// 隠れる側の残り時間を管理している関数。ネット用
+void GameManager::HideTimerControll_Net(void) {
+	// 隠れる側残り時間を減らす
+	--t_HideTime;
+
+	if (!gameMain->network->GetIsWaitRecvCheck() && t_HideTime < 0) {
+		gameMain->network->SetIsWaitRecvCheck(TRUE);
+	}
+
+	if (t_HideTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
+		SetPhaseStatus(RESULT);
+		gameMain->CreateResultObj_TimeOut();
+	}
+}
+
+// 撃つ側の残り時間を管理している関数。ネット用
+void GameManager::ShotTimerControll_Net(void) {
+	// 撃つ側残り時間を減らす
+	--t_ShotTime;
+
+	if (!gameMain->network->GetIsWaitRecvCheck() && t_ShotTime < 0) {
+		gameMain->network->SetIsWaitRecvCheck(TRUE);
+	}
+
+	if (t_ShotTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
+		SetPhaseStatus(RESULT);
+		gameMain->CreateResultObj_TimeOut();
 	}
 }
 

@@ -12,17 +12,24 @@ class Result {
 public:
 	// フォントデータ管理オブジェクトのポインタ、入力管理オブジェクトのポインタ、
 	// ゲーム進行管理オブジェクトのポインタ、ヒットしたプレイヤーがREDかBLUEかを受け取る。
+	Result(FontData* font, InputManager* input, GameManager* gameMNG);
 	Result(FontData* font, InputManager* input, GameManager* gameMNG, int hitplayernum);
 	~Result();					// デストラクタ
 	void ResultControll(void);	// 処理
+	void ResultControll_Net(void);	// ネット対戦用のリザルト処理
 	void DrawResult(void);		// 描画
+	void DrawResult_Net(void);	// 描画・ネット対戦用
+	void DrawTimeOut(void);		// タイムアウトしたことを描画
 private:
 	FontData* fontData;			// フォントデータ管理オブジェクトのポインタ
 	InputManager* inputManager;	// 入力管理オブジェクトのポインタ
 	GameManager* gameManager;	// ゲーム進行管理オブジェクトのポインタ
 	int hitPlayerNumber;		// ヒットしたプレイヤーがREDかBLUEかの引数を保存しておく変数。
 
+	void SceneTransition();		// シーン遷移
+
 	void Return_to_Game();		// ポーズ画面を抜けて試合を再開する
+	void ReMatch();				// ネット対戦で、同じ条件で相手と再戦する
 	void Return_to_Title();		// 試合を中断してタイトル画面へ戻る
 
 	const static int SELECT_NUM_MAX = 1;
@@ -34,6 +41,8 @@ private:
 	int waitTime;
 	int selectNum[SELECT_NUM_MAX + 1];	// 選択中のボタン番号
 	bool dicideNumFlg[2];				// 番号を決定したかのフラグ
+
+	bool timeOutFlg;
 };
 
 #endif // !_RESULT_H_

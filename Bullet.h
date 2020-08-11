@@ -26,8 +26,8 @@ public:
 private:
 	Collision* collision;					// コンストラクタで生成した衝突判定をするオブジェクトを保存しておく変数
 	GameMain* gameMain;						// 弾発射時にPlayerから受け取ったGameMainクラスのポインタを保存しておく変数
-	const float BulletMoveSpeed_X = 17.0f;			// 弾の速度_X
-	const float BulletMoveSpeed_Y = 17.0f;			// 弾の速度_Y
+	const float BulletMoveSpeed_X = 16.0f;			// 弾の速度_X
+	const float BulletMoveSpeed_Y = 16.0f;			// 弾の速度_Y
 	const int BulletRicochetCount = 5;		// 弾の跳弾回数の初期値
 	const int Size = 4;						// 弾の大きさ（直径）
 	const unsigned int color = 0xFFFFFF;	// 弾の色
