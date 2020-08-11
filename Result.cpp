@@ -246,7 +246,7 @@ void Result::DrawResult() {
 		}
 		else {
 			// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-			DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
+			DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 1.0f, 0, gameManager->gameMain->GetCursorImage(i), TRUE);
 		}
 
 	}
@@ -295,7 +295,7 @@ void Result::DrawResult_Net() {
 	}
 	else {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 10, COLOR_VALUE_PLAYER[0], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 1.0f, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 	}
 
 	// 各項目名描画
@@ -327,7 +327,7 @@ void Result::DrawTimeOut() {
 	}
 	else {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 10, COLOR_VALUE_PLAYER[0], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 1.0f, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 	}
 
 	// 各項目名描画

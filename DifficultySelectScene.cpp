@@ -179,6 +179,10 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60-waitTime));
+	}
+
 	// DIFFICULTYSELECTの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
@@ -201,7 +205,7 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 		}
 		else {
 			// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-			DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
+			DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 1.0f, 0, gameMangaer->gameMain->GetCursorImage(i), TRUE);
 		}
 
 	}
@@ -211,9 +215,13 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
+
+	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	}
 }
 
-// 難易度選択画面の描画処理
+// 難易度選択画面の描画処理・ネット用
 void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
@@ -232,7 +240,7 @@ void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 	}
 	else {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * GameManager::RED), starty + y * selectNum[GameManager::RED], 10, COLOR_VALUE_PLAYER[GameManager::RED], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 1.0f, 0, gameMangaer->gameMain->GetCursorImage(0), TRUE);
 	}
 
 	// 各項目名描画

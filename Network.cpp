@@ -567,7 +567,7 @@ void Network::DrawCommunicationMethodSelect() {
 
 
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-	DrawCircle(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 10, COLOR_VALUE_PLAYER[0], 1, 1);
+	DrawRotaGraph(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 1, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 }
 
 ////////////////////////////////////////////////
@@ -587,7 +587,7 @@ void Network::DrawIPAddressSelect() {
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xeeff14, fontData->f_FontData[1], "%d.%d.%d.%d", All_IP[i].d1, All_IP[i].d2, All_IP[i].d3, All_IP[i].d4);
 	}
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-	DrawCircle(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 10, COLOR_VALUE_PLAYER[0], 1, 1);
+	DrawRotaGraph(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 1, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 }
 
 ////////////////////////////////////////////////

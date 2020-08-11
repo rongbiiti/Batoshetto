@@ -112,10 +112,10 @@ void PauseScreen::DrawPauseScreen() {
 	// ポーズ画面押したのがコントローラーなら赤か青を、キーボードなら必ず青を表示させる
 	if (pausePushPLNum <= GameManager::BLUE) {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * pausePushPLNum), starty + y * selectNum[pausePushPLNum], 10, COLOR_VALUE_PLAYER[pausePushPLNum], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * pausePushPLNum), starty + y * selectNum[pausePushPLNum], 1, 0, gameMain->GetCursorImage(pausePushPLNum), TRUE);
 	}
 	else if (pausePushPLNum == GameManager::BLUE + 1) {
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * GameManager::BLUE), starty + y * selectNum[GameManager::BLUE], 10, COLOR_VALUE_PLAYER[GameManager::BLUE], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * GameManager::BLUE), starty + y * selectNum[GameManager::BLUE], 1, 0, gameMain->GetCursorImage(GameManager::BLUE), TRUE);
 	}
 }
 

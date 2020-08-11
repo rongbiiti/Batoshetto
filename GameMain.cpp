@@ -50,6 +50,8 @@ int GameMain::FirstInit(void) {
 	offscreen_handle = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
 	SetDrawScreen(offscreen_handle);
 
+	LoadCursorImages();
+
 	// 入力管理クラスを生成
 	CreateInputManagerObj();
 
@@ -452,6 +454,11 @@ void GameMain::LoadBlockImages() {
 	if (!(i_BlockImages[0] = LoadGraph("Image/Block03.png"))) return;
 	if (!(i_BlockImages[1] = LoadGraph("Image/Block02.png"))) return;
 	if (!(i_BlockImages[2] = LoadGraph("Image/Block01.png"))) return;
+}
+
+void GameMain::LoadCursorImages() {
+	if (!(i_CursorImage[0] = LoadGraph("Image/PlayerCursor01.png"))) return;
+	if (!(i_CursorImage[1] = LoadGraph("Image/PlayerCursor02.png"))) return;
 }
 
 void GameMain::DeleteBlockImages() {
