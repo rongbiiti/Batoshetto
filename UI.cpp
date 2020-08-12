@@ -7,6 +7,11 @@ UI::UI(GameMain* main) {
 	fontData = gameMain->fontData;
 	LoadImages();
 	TransitionParameterReset();
+	isBattleStart = TRUE;
+	firstAnimWaitTime = 0;
+	firstAnimX = 500;
+	firstAnimY = 0;
+	firstAnimAlpha = 90;
 }
 
 // パラメータを変更処理
@@ -14,9 +19,38 @@ void UI::UIControll() {
 
 }
 
+// 試合開始時のアニメ。演出が終わっていたらFALSEを返す
+bool UI::BattleStartAnim() {
+	// 試合開始直後で無ければ処理を終わる
+	if (!isBattleStart) return false;
+
+	// 規定の秒数を過ぎていたら処理を終わる
+	if (210 < ++firstAnimWaitTime) {
+		isBattleStart = FALSE;
+		return false;
+	}
+	
+	if (firstAnimWaitTime <= 60) {
+		firstAnimY += 500 / 60;
+		return true;
+	}
+	if (firstAnimWaitTime <= 120) {
+		return true;
+	}
+	if (firstAnimWaitTime <= 210) {
+		--firstAnimAlpha;
+		return true;
+	}
+
+	return false;
+
+}
+
 // 隠れる・撃つの切替時のアニメーション
 // 処理が終わっていたらtrue、まだならfalseが返る
 bool UI::TransitionAnimationWaiting() {
+	if (BattleStartAnim()) return false;
+
 	if (++animationWaitingTime <= 1) {
 		gameMain->network->BufferClear();
 		gameMain->network->StructsReset();
@@ -47,12 +81,33 @@ bool UI::TransitionAnimationWaiting() {
 }
 
 void UI::DrawTransitionAnimation() {
+	// 試合開始直後で無ければ処理を終わる
+	if (isBattleStart) {
+		DrawBattleStartAnim();
+		return;
+	}
+
 	if (gameManager->GetPhaseStatus() == GameManager::HIDE) {
 		DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
 	}
 	else {
 		DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
 	}
+}
+
+// 試合開始時のアニメ描画
+void UI::DrawBattleStartAnim() {
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * firstAnimAlpha / 90);
+	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "あ");
+	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 70), 0xFFFFFF, gameMain->fontData->f_FontData[2], "勝");
+	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 200), 0xFFFFFF, gameMain->fontData->f_FontData[2], "負");
+	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 330), 0xFFFFFF, gameMain->fontData->f_FontData[2], "開");
+	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 460), 0xFFFFFF, gameMain->fontData->f_FontData[2], "始");
+
+	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "Battle Start");
+	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 560), 0xFFFFFF, gameMain->fontData->f_FontData[1], "Battle Start");
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 }
 
 void UI::TransitionParameterReset() {

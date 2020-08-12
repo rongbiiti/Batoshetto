@@ -28,6 +28,15 @@ private:
 	GameManager* gameManager;	// ゲーム進行管理クラスのポインタ
 	FontData* fontData;
 
+	bool isBattleStart;	// 試合を開始した直後か
+	int firstAnimWaitTime;	// 試合開始時のアニメの待ち時間
+	int firstAnimX;
+	int firstAnimY;
+	int firstAnimAlpha;
+
+	bool BattleStartAnim();	// 試合開始時のアニメ。演出が終わっていたらFALSEを返す
+	void DrawBattleStartAnim();	// 試合開始時のアニメ描画
+
 	int animationWaitingTime;	// アニメ待ち時間
 	int transitionX;	// 遷移用X座標
 	int transitionY;	// 遷移用Y座標

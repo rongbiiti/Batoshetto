@@ -51,6 +51,7 @@ public:
 
 	void SetPauseFlg(bool value) { pauseFlg = value; }	// ポーズ画面を開いているかのフラグを切り替え
 	int GetBlockImage(int num) { return i_BlockImages[num]; }	// ブロックの画像を渡す
+	int GetCursorImage(int num) { return i_CursorImage[num]; }	// カーソル画像を渡す
 
 	void SetNetBallteFlg(bool value) { netBattleFlg = value; }	// 通信モードがONかOFFかをセットする
 	bool GetNetBallteFlg() { return netBattleFlg; }				// 通信モードがONかOFFか取得する
@@ -99,6 +100,7 @@ private:
 	void DrawDebugInfo(void);	// デバッグ情報を描画するための関数
 
 	void LoadBlockImages();			// ブロック画像読み込み
+	void LoadCursorImages();	// カーソル画像読込み
 	void DeleteBlockImages();	// ブロックの画像消去
 
 	const static int DRAW_SCREEN_WIDTH = 1280;	// 描画時のウィンドウの幅
@@ -118,6 +120,7 @@ private:
 	bool netBattleFlg;
 
 	int i_BlockImages[3];	// ブロックの画像
+	int i_CursorImage[2];	// プレイヤーカーソルの画像
 
 };
 #endif // !_GAMEMAIN_H_

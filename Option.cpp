@@ -350,10 +350,10 @@ void Option::DrawVolumeMenu() {
 	// ポーズ画面押したのがコントローラーなら赤か青を、キーボードなら必ず青を表示させる
 	if (optionPushPLNum <= GameManager::BLUE && !(selectNum[optionPushPLNum] < VOLUME_SELECT_NUM_MAX)) {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * optionPushPLNum), starty - 100 + y * selectNum[optionPushPLNum], 10, COLOR_VALUE_PLAYER[optionPushPLNum], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * optionPushPLNum), starty - 100 + y * selectNum[optionPushPLNum], 1.0f, 0, gameMain->GetCursorImage(optionPushPLNum), TRUE);
 	}
 	else if (optionPushPLNum == GameManager::BLUE + 1 && !(selectNum[GameManager::BLUE] < VOLUME_SELECT_NUM_MAX)) {
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * GameManager::BLUE), starty - 100 + y * selectNum[GameManager::BLUE], 10, COLOR_VALUE_PLAYER[GameManager::BLUE], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * GameManager::BLUE), starty - 100 + y * selectNum[GameManager::BLUE], 1.0f, 0, gameMain->GetCursorImage(GameManager::BLUE), TRUE);
 	}
 	else if (optionPushPLNum <= GameManager::BLUE) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", VolumeMenuName[selectNum[optionPushPLNum]].c_str());

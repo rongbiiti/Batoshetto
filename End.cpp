@@ -114,7 +114,7 @@ void End::DrawEnd() {
 
 	for (int i = 0; i < 2; i++) {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 1.0f, 0, gameManager->gameMain->GetCursorImage(i), TRUE);
 	}
 }
 

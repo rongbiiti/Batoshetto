@@ -160,6 +160,7 @@ private:
 	IPDATA All_IP[ALL_IP_LENGTH];	// 複数のネットワークアダプターがあると思うので全部受け取る。最大6個。
 
 	int selectNum;		// 選択してる項目の番号
+	int fadeWaitTime;	// フェードアウト用の待ち時間
 
 	int randSeedNum;	// 乱数のシード値
 	int recvCheckTime;	// 受信できたかの応答待ち時間　既定値に達するとタイムアウトでエラーとする
