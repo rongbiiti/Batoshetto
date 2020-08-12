@@ -40,12 +40,14 @@ private:
 	int animationWaitingTime;	// アニメ待ち時間
 	int transitionX;	// 遷移用X座標
 	int transitionY;	// 遷移用Y座標
+	double transitionExRate;	// 指示画像の大きさ
 	bool transitionFlg;	// 遷移アニメ中か
 
 	void LoadImages();	// 画像読み込み
 	
 	int i_PlayerGuage[2];	// ゲージの画像
 	int i_BackGroundImage;	// 背景画像
+	int i_OrderImage[2][2];	// 動け！などの指示画像
 };
 
 #endif // !_UI_H_

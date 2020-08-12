@@ -25,15 +25,23 @@ private:
 	//void Start();		// 試合を再開する
 	//void OpenOptionScreen();	// オプション画面を開く
 	//void EndSocreen();					// ゲームを終了する
+	void HelpScreenControll();	// ヘルプ画面操作
+	void DrawHelpScreen();		// ヘルプ画面描画
 
-	const static int SELECT_NUM_MAX = 3;
+	void LoadImages();		// 画像読み込み
+
+	const static int SELECT_NUM_MAX = 4;
 	const std::string MenuName[SELECT_NUM_MAX + 1] = { "Start",
 													   "Online",
 													   "Option",
+													   "Help",
 													   "End"
 	};
 
 	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
+	bool isOpenHelpScreen;		// ヘルプ画面を開いているか
+
+	int i_helpImage;	// ヘルプ画像
 };
 
 #endif // !_TITLE_H_

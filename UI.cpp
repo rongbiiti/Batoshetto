@@ -57,7 +57,7 @@ bool UI::TransitionAnimationWaiting() {
 	}
 	
 	if (animationWaitingTime <= 40) {
-		transitionX += 500 / 40;
+		transitionX += ( gameMain->SCREEN_WIDTH_HALF + 50 ) / 40;
 		return false;
 	}
 	if (animationWaitingTime <= 60) {
@@ -66,6 +66,7 @@ bool UI::TransitionAnimationWaiting() {
 	}
 	if (animationWaitingTime <= 100) {
 		transitionY -= 270 / 40;
+		transitionExRate -= 1.0 / 40.0;
 		return false;
 	}
 
@@ -88,11 +89,14 @@ void UI::DrawTransitionAnimation() {
 	}
 
 	if (gameManager->GetPhaseStatus() == GameManager::HIDE) {
-		DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
+		//DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
+		DrawRotaGraph(transitionX, transitionY, transitionExRate, 0, i_OrderImage[gameManager->GetNowHider()][gameManager->GetPhaseStatus() - GameManager::HIDE], TRUE);
 	}
 	else {
-		DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+		//DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+		DrawRotaGraph(transitionX, transitionY, transitionExRate, 0, i_OrderImage[gameManager->GetNowShooter()][gameManager->GetPhaseStatus() - GameManager::HIDE], TRUE);
 	}
+
 }
 
 // 試合開始時のアニメ描画
@@ -112,6 +116,7 @@ void UI::DrawBattleStartAnim() {
 
 void UI::TransitionParameterReset() {
 	animationWaitingTime = 0;
+	transitionExRate = 2.0;
 	transitionX = 0;
 	transitionY = 330;
 	transitionFlg = true;
@@ -133,17 +138,21 @@ void UI::LoadImages() {
 	if (!(i_PlayerGuage[0] = LoadGraph("Image/Gauge.png"))) return;
 	if (!(i_PlayerGuage[1] = LoadGraph("Image/Gauge2.png"))) return;
 	if (!(i_BackGroundImage = LoadGraph("Image/BackImage.png"))) return;
-	
+	if (!(i_OrderImage[0][0] = LoadGraph("Image/Order_Move_RED.png"))) return;
+	if (!(i_OrderImage[0][1] = LoadGraph("Image/Order_Shot_RED.png"))) return;
+	if (!(i_OrderImage[1][0] = LoadGraph("Image/Order_Move_BLUE.png"))) return;
+	if (!(i_OrderImage[1][1] = LoadGraph("Image/Order_Shot_BLUE.png"))) return;
 }
 
 // 画像消去
 void UI::DeleteImages() {
-	DeleteGraph(i_PlayerGuage[0]);
-	DeleteGraph(i_PlayerGuage[1]);
-	DeleteGraph(i_BackGroundImage);
-	i_PlayerGuage[0] = NULL;
-	i_PlayerGuage[1] = NULL;
-	i_BackGroundImage = NULL;
+	i_PlayerGuage[0] = DeleteGraph(i_PlayerGuage[0]);
+	i_PlayerGuage[1] = DeleteGraph(i_PlayerGuage[1]);
+	i_BackGroundImage = DeleteGraph(i_BackGroundImage);
+	i_OrderImage[0][0] = DeleteGraph(i_OrderImage[0][0]);
+	i_OrderImage[0][1] = DeleteGraph(i_OrderImage[0][1]);
+	i_OrderImage[1][0] = DeleteGraph(i_OrderImage[1][0]);
+	i_OrderImage[1][1] = DeleteGraph(i_OrderImage[1][1]);
 }
 
 UI::~UI() {

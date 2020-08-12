@@ -9,9 +9,15 @@ Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	// カーソル位置初期化
 	selectNum[0] = 0;
 	selectNum[1] = 0;
+	LoadImages();
 }
 
 void Title::TitleControll() {
+	if (isOpenHelpScreen) {
+		HelpScreenControll();
+		return;
+	}
+
 	for (int i = 0; i < 2; i++) {
 		if (inputManager->GetButtonDown(PAD_UP, i) || inputManager->GetButtonHold(PAD_UP, i, 4)) {
 			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
@@ -36,31 +42,26 @@ void Title::TitleControll() {
 			{
 			case 0:
 				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
 				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
-
 				this->~Title();
 				break;
 			case 1:
 				gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
 				gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
-
 				gameMain->SetNetBallteFlg(TRUE);
 				this->~Title();
 				break;
 			case 2:
 				gameManager->SetPhaseStatus(GameManager::OPTION);
-
 				gameMain->CreateOptionObj(i, Option::TITLE);
-
 				this->~Title();
 				break;
 			case 3:
+				isOpenHelpScreen = true;
+				break;
+			case 4:
 				gameManager->SetPhaseStatus(GameManager::END);
-
 				gameMain->CreateEndObj();
-
 				this->~Title();
 				break;
 			}
@@ -91,39 +92,61 @@ void Title::TitleControll() {
 		{
 		case 0:
 			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
 			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
-
 			this->~Title();
 			break;
 		case 1:
 			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
-
 			gameManager->gameMain->diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
-
 			gameMain->SetNetBallteFlg(TRUE);
 			this->~Title();
 			break;
 		case 2:
 			gameManager->SetPhaseStatus(GameManager::OPTION);
-
 			gameMain->CreateOptionObj(GameManager::BLUE + 1, Option::TITLE);
-
 			this->~Title();
 			break;
 		case 3:
+			isOpenHelpScreen = true;
+			break;
+		case 4:
 			gameManager->SetPhaseStatus(GameManager::END);
-
 			gameMain->CreateEndObj();
-
 			this->~Title();
 			break;
 		}
 	}
 }
 
+void Title::HelpScreenControll() {
+	for (int i = 0; i < 2; i++) {
+		if (inputManager->GetButtonDown(B, i) ||
+			inputManager->GetButtonDown(A, i)) {
+
+			// パッドAボタンかBボタンが押されていたらヘルプ画面終了
+			isOpenHelpScreen = false;
+			return;
+		}
+	}
+
+	if (inputManager->GetKeyDown(KEY_INPUT_ESCAPE) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
+		// キーボードESCかRETURNが押されていたらヘルプ画面終了
+		isOpenHelpScreen = false;
+		return;
+	}
+}
+
+void Title::DrawHelpScreen() {
+	DrawGraph(0, 0, i_helpImage, TRUE);
+}
+
 void Title::DrawTitle() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
+
+	if (isOpenHelpScreen) {
+		DrawHelpScreen();
+		return;
+	}
 
 	// ビルドした日
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/08/10");
@@ -142,17 +165,17 @@ void Title::DrawTitle() {
 
 	for (int i = 0; i < 2; i++) {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		//DrawCircle(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 10, COLOR_VALUE_PLAYER[i], 1, 1);
 		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 1.0f, 0, gameMain->GetCursorImage(i), TRUE);
 	}
-	/*if (inputManager->GetPadInput()[GameManager::RED].in_Button[InputManager::B] == 1 ||
-		inputManager->GetPadInput()[GameManager::BLUE].in_Button[InputManager::B] == 1 ||
-		inputManager->In_Key()[KEY_INPUT_F] == 1) {
-		gameManager->SetPhaseStatus(GameManager::INIT);
-		this->~Title();
-	}*/
+	
+}
+
+void Title::LoadImages() {
+	if (!(i_helpImage = LoadGraph("Image/ShotEffect01.png"))) return;
 }
 
 Title::~Title() {
+	DeleteGraph(i_helpImage);
+	i_helpImage = NULL;
 	gameMain->title = NULL;
 }

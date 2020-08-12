@@ -88,8 +88,7 @@ void Result::ResultControll(void) {
 		return;
 	}
 
-	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
-		inputManager->In_Key()[KEY_INPUT_DOWN] = 0;
+	if (inputManager->GetKeyHold(KEY_INPUT_RETURN, 18)) {
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
