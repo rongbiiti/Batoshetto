@@ -122,7 +122,7 @@ void Player::ShooterPlayerControll(void) {
 		// 弾の初期化。生存フラグをtrue、X進行方向、Y進行方向、角度、GameMainオブジェクトのポインタを渡す
 		CreateBullet();
 		effect->InitEffectCount();	// エフェクトのフレームカウント初期化
-		effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
+		effect->MuzzleFlashEffectFlg = TRUE;	// マズルフラッシュエフェクトをTRUEに
 		gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 		return;
 	}
@@ -143,7 +143,7 @@ void Player::ShooterPlayerControll_Net() {
 				if (shotFlg) {
 					CreateBullet();
 					effect->InitEffectCount();	// エフェクトのフレームカウント初期化
-					effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
+					effect->MuzzleFlashEffectFlg = TRUE;	// マズルフラッシュエフェクトの添え字を入れる
 					gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 					shotFlg = FALSE;
 				}
@@ -269,7 +269,7 @@ void Player::ShooterPlayerControll_Net() {
 		else if (shooterInfo.shotFlg) {
 			CreateBullet();
 			effect->InitEffectCount();	// エフェクトのフレームカウント初期化
-			effect->EffectStatus = 1;	// マズルフラッシュエフェクトの添え字を入れる
+			effect->MuzzleFlashEffectFlg = TRUE;	// マズルフラッシュエフェクトの添え字を入れる
 			gameMain->gameManager->SetPhaseStatus(GameManager::RECOCHETWAIT);	// フェーズを進める
 		}
 
@@ -404,7 +404,7 @@ void Player::HidingPlayerControll_Net() {
 void Player::DrawPlayer(void) {
 	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[isShooter], TRUE);
 
-	if(effect->EffectStatus != 0){		//０以外の数字が入ってる時にエフェクト関数に移行
+	if(effect->MuzzleFlashEffectFlg == TRUE){		//TRUE時にエフェクト関数に移行
 		effect->DrawEffect(x, y,angle);		// エフェクト描画
 	}
 }
