@@ -5,7 +5,8 @@
 #include "DxLib.h"
 #include "Collision.h"
 #include "GameMain.h"
-
+#include "Effect.h"
+class Effect;
 class Bullet {
 public:
 	Bullet(void);				// コンストラクタ。メンバ変数の初期化をする。衝突判定をしてくれるクラスも生成する。
@@ -22,6 +23,7 @@ public:
 	float GetBulletSPD_Y() { return BulletMoveSpeed_Y; }	// 弾のY方向の移動速度を返す
 
 	void ChangeVolume(float persent);	// 音量変更
+	Effect* effect;		//エフェクトオブジェクトのポインタ
 
 private:
 	Collision* collision;					// コンストラクタで生成した衝突判定をするオブジェクトを保存しておく変数

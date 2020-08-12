@@ -14,6 +14,7 @@ Bullet::Bullet(void)
 	angle = 0;				// 角度
 	hitFlg = false;
 	collision = new Collision;	// 衝突判定してくれるオブジェクトを生成し、ポインタを保存しておく
+	effect = new Effect;	// エフェクトオブジェクトの生成
 	gameMain = NULL;
 	isPlayerHit = false;
 	waitingTimeAfterPlayerHit = 0;
@@ -83,6 +84,8 @@ void Bullet::DrawBullet(void) {
 
 	DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
 	DrawCircle(dx, dy, Size, color);
+
+	effect->DrawRicochetEffect();		// エフェクト描画
 }
 
 // 跳弾回数が0未満になっていないかチェックする
@@ -274,10 +277,10 @@ bool Bullet::IsHitBlock(void) {
 		preX = x;
 		preY = y;
 		RemainingRicochetTimesCheck();
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount + 1, crossPosition.x, crossPosition.y,angle);
+
 		return true;
 	}
-
-	
 	return false;
 }
 
@@ -308,6 +311,7 @@ void Bullet::DrawSHINOBIEXECUTION() {
 
 Bullet::~Bullet() {
 	delete collision;
+	delete effect;
 	DeleteSoundMem(s_Fire);
 	DeleteSoundMem(s_Ricochet);
 	DeleteSoundMem(s_BlockBreak);
