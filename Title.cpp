@@ -171,7 +171,7 @@ void Title::DrawTitle() {
 }
 
 void Title::LoadImages() {
-	if (!(i_helpImage = LoadGraph("Image/ShotEffect01.png"))) return;
+	if (!(i_helpImage = LoadGraph("Image/Help.png"))) return;
 }
 
 Title::~Title() {

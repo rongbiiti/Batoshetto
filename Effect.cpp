@@ -37,6 +37,7 @@ void Effect::DrawRicochetEffect() {
 	for(int i = 0; i<6; i++){
 		if (RicochetEffectCount[i] <= 12 && RicochetEffectFlg[i]) {
 			DrawRotaGraph(rico_x[i], rico_y[i], 1.0f, rico_angle[i], i_RicochetEffect[++RicochetEffectCount[i] / 3], TRUE);
+			
 		}
 		else {
 			RicochetEffectFlg[i] = FALSE;		// flg‚ð‚O‚É–ß‚·

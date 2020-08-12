@@ -54,6 +54,7 @@ private:
 	bool isPlayerHit;		// trueだとヒットした
 	int waitingTimeAfterPlayerHit;	// プレイヤーヒット後の余韻時間
 	int HitPlayerNum;		// ヒットしたプレイヤーの番号
+	int toHidePhaseTransitionWaitTime;	// 隠れる側フェーズに遷移する前のちょっとした待ち時間
 
 	void LoadSounds(void);	// 音データ読み込み
 

@@ -20,6 +20,7 @@ Bullet::Bullet(void)
 	waitingTimeAfterPlayerHit = 0;
 	HitPlayerNum = 0;
 	LoadSounds();
+	toHidePhaseTransitionWaitTime = 0;
 }
 
 // 初期化用関数
@@ -45,6 +46,15 @@ void Bullet::BulletControll(void) {
 	if (isPlayerHit && ResultTransitionWaiting()) {
 		gameMain->gameManager->SetPhaseStatus(GameManager::RESULT, gameMain->player[HitPlayerNum]->GetPlayerNum());
 	}
+
+	if (0 < toHidePhaseTransitionWaitTime--) {
+		if (0 == toHidePhaseTransitionWaitTime) {
+			isAlive = false;
+			gameMain->gameManager->ToHidePhase();
+		}
+		return;
+	}
+
 	// もし跳弾回数が0未満なら処理を抜ける
 	if (RemainingRicochetTimesCheck()) return;
 
@@ -77,7 +87,7 @@ void Bullet::BulletControll(void) {
 // 描画
 void Bullet::DrawBullet(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
-	if (RemainingRicochetTimesCheck()) return;
+	//if (RemainingRicochetTimesCheck()) return;
 
 	int dx = (int)x;
 	int dy = (int)y;
@@ -86,15 +96,17 @@ void Bullet::DrawBullet(void) {
 	DrawCircle(dx, dy, Size, color);
 
 	effect->DrawRicochetEffect();		// エフェクト描画
+
+	DrawFormatString(0, 40 + 20 * (BulletRicochetCount - ricochetCount), 0xFFFFFF, "%d", BulletRicochetCount - ricochetCount - 1);
 }
 
 // 跳弾回数が0未満になっていないかチェックする
 bool Bullet::RemainingRicochetTimesCheck(void) {
 	if (ricochetCount < 0) {
-		isAlive = false;
+		
 		// もし0未満なら生存フラグをfalseにして隠れる側フェーズに移行する
 		if (!isPlayerHit) { 
-			gameMain->gameManager->ToHidePhase(); 			
+			toHidePhaseTransitionWaitTime = 12;
 		}
 		return true;
 	}
@@ -123,6 +135,7 @@ bool Bullet::IsScreenOutside(void) {
 		preX = x;
 		preY = y;
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, angle);
 		return true;
 	}
 
@@ -138,6 +151,7 @@ bool Bullet::IsScreenOutside(void) {
 		preX = x;
 		preY = y;
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, angle);
 		return true;					
 	}
 
@@ -277,7 +291,7 @@ bool Bullet::IsHitBlock(void) {
 		preX = x;
 		preY = y;
 		RemainingRicochetTimesCheck();
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount + 1, crossPosition.x, crossPosition.y,angle);
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, crossPosition.x, crossPosition.y,angle);
 
 		return true;
 	}
