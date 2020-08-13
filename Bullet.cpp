@@ -96,6 +96,7 @@ void Bullet::DrawBullet(void) {
 	DrawCircle(dx, dy, Size, color);
 
 	effect->DrawRicochetEffect();		// エフェクト描画
+	effect->DrawHitEffect();
 
 	DrawFormatString(0, 40 + 20 * (BulletRicochetCount - ricochetCount), 0xFFFFFF, "%d", BulletRicochetCount - ricochetCount - 1);
 }
@@ -178,6 +179,7 @@ bool Bullet::IsHitPlayer(void) {
 			PlaySoundMem(s_PlayerHit[HitPlayerNum], DX_PLAYTYPE_BACK);
 			PlaySoundMem(s_Blood, DX_PLAYTYPE_BACK);
 			ricochetCount = -1;
+			effect->InitHitEffectCount(playerX,playerY);
 			return true;
 		}
 	}

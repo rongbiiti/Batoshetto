@@ -407,6 +407,7 @@ void Player::DrawPlayer(void) {
 	if(effect->MuzzleFlashEffectFlg == TRUE){		//TRUE時にエフェクト関数に移行
 		effect->DrawEffect(x, y,angle);		// エフェクト描画
 	}
+
 }
 
 // 撃つ側時に狙っている方向に線を引いて描画する

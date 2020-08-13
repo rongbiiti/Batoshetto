@@ -10,6 +10,9 @@ Effect::Effect() {
 		RicochetEffectCount[i] = 0;
 		RicochetEffectFlg[i] = FALSE;
 	}
+	hit_effect_x = 0;
+	hit_effect_y = 0;
+	HitEffectcount = 0;
 }
 
 void Effect::InitRicochetCount(int num, int x, int y, float angle) {
@@ -18,6 +21,13 @@ void Effect::InitRicochetCount(int num, int x, int y, float angle) {
 	rico_angle[num] = angle;
 	RicochetEffectCount[num] = 0;
 	RicochetEffectFlg[num] = TRUE;
+}
+
+void Effect::InitHitEffectCount(int x, int y) {
+	hit_effect_x = x;
+	hit_effect_y = y;
+	HitEffectcount = 0;
+
 }
 
 //マズルフラッシュエフェクトを描画する
@@ -45,6 +55,17 @@ void Effect::DrawRicochetEffect() {
 	}
 }
 
+//ヒット時エフェクトを描画
+void Effect::DrawHitEffect() {
+	if (HitEffectcount <= 18) {
+		DrawRotaGraph(hit_effect_x , hit_effect_y , 1.0f, 180.0f, i_HitEffect[HitEffectcount / 3], TRUE);
+		HitEffectcount++;
+	}
+	else {
+		HitEffectFlg = FALSE;		// flgを０に戻す
+	}
+}
+
 // 画像読み込み
 void Effect::LoadImages() {
 
@@ -57,6 +78,13 @@ void Effect::LoadImages() {
 	if (!(i_RicochetEffect[1] = LoadGraph("Image/ShotEffect02.png"))) return;
 	if (!(i_RicochetEffect[2] = LoadGraph("Image/ShotEffect03.png"))) return;
 	if (!(i_RicochetEffect[3] = LoadGraph("Image/ShotEffect04.png"))) return;
+
+	if (!(i_HitEffect[0] = LoadGraph("Image/HitEffect01.png"))) return;
+	if (!(i_HitEffect[1] = LoadGraph("Image/HitEffect02.png"))) return;
+	if (!(i_HitEffect[2] = LoadGraph("Image/HitEffect03.png"))) return;
+	if (!(i_HitEffect[3] = LoadGraph("Image/HitEffect04.png"))) return;
+	if (!(i_HitEffect[4] = LoadGraph("Image/HitEffect05.png"))) return;
+	if (!(i_HitEffect[5] = LoadGraph("Image/HitEffect06.png"))) return;
 
 }
 
