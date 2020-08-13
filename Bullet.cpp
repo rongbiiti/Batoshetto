@@ -88,16 +88,17 @@ void Bullet::BulletControll(void) {
 void Bullet::DrawBullet(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
 	//if (RemainingRicochetTimesCheck()) return;
+	if (isPlayerHit) return;
 
 	int dx = (int)x;
 	int dy = (int)y;
 
-	DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
-	DrawCircle(dx, dy, Size, color);
+	if (0 <= ricochetCount) {
+		DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
+		DrawCircle(dx, dy, Size, color);
+	}
 
 	effect->DrawRicochetEffect();		// エフェクト描画
-
-	DrawFormatString(0, 40 + 20 * (BulletRicochetCount - ricochetCount), 0xFFFFFF, "%d", BulletRicochetCount - ricochetCount - 1);
 }
 
 // 跳弾回数が0未満になっていないかチェックする
@@ -299,7 +300,7 @@ bool Bullet::IsHitBlock(void) {
 }
 
 bool Bullet::ResultTransitionWaiting(void) {
-	if (++waitingTimeAfterPlayerHit <= 480) {
+	if (++waitingTimeAfterPlayerHit <= 360) {
 		return false;
 	}
 	return true;
@@ -307,7 +308,7 @@ bool Bullet::ResultTransitionWaiting(void) {
 
 void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
-	if (waitingTimeAfterPlayerHit >= 210) {
+	if (waitingTimeAfterPlayerHit >= 180) {
 		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "あ");
 		DrawFormatStringToHandle(x - fontwidth / 2, 70,  0xdc143c, gameMain->fontData->f_FontData[2], "勝");
 		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xdc143c, gameMain->fontData->f_FontData[2], "負");
@@ -317,10 +318,6 @@ void Bullet::DrawSHINOBIEXECUTION() {
 		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "The Match Has Finished");
 		DrawFormatStringToHandle(x - fontwidth / 2, 560, 0xdc143c, gameMain->fontData->f_FontData[1], "The Match Has Finished");
 	}
-	if (waitingTimeAfterPlayerHit <= 480) {
-		return;
-	}
-	return;
 }
 
 Bullet::~Bullet() {

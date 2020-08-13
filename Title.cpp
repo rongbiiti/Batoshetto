@@ -143,10 +143,13 @@ void Title::DrawHelpScreen() {
 void Title::DrawTitle() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
 
+	// ヘルプを開いていたらヘルプ画像表示
 	if (isOpenHelpScreen) {
 		DrawHelpScreen();
 		return;
 	}
+
+	DrawGraph(0, 0, i_BGImage, TRUE);	// 背景画像
 
 	// ビルドした日
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/08/10");
@@ -154,28 +157,39 @@ void Title::DrawTitle() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[2], "バトシェット");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[2], "バトシェット");
+	DrawRotaGraph(x, starty - 200, 1, 0, i_LogoImage, TRUE);	// タイトルロゴ
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xeeff14, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i], TRUE);	// 各項目画像
 	}
 
 	for (int i = 0; i < 2; i++) {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * i), starty + y * selectNum[i], 1.0f, 0, gameMain->GetCursorImage(i), TRUE);
+		DrawRotaGraph(GameMain::SCREEN_WIDTH / 3 + (GameMain::SCREEN_WIDTH / 3 * i), starty + y * selectNum[i], 1.0f, 0, gameMain->GetCursorImage(i), TRUE);
 	}
 	
 }
 
 void Title::LoadImages() {
 	if (!(i_helpImage = LoadGraph("Image/Help.png"))) return;
+	if (!(i_LogoImage = LoadGraph("Image/TitleLogo.png"))) return;
+	if (!(i_BGImage = LoadGraph("Image/BackImage.png"))) return;
+	if (!(i_MenuImage[0] = LoadGraph("Image/StartButton.png"))) return;
+	if (!(i_MenuImage[1] = LoadGraph("Image/OnlineButton.png"))) return;
+	if (!(i_MenuImage[2] = LoadGraph("Image/OptionButton.png"))) return;
+	if (!(i_MenuImage[3] = LoadGraph("Image/OptionButton.png"))) return;
+	if (!(i_MenuImage[4] = LoadGraph("Image/EndButton.png"))) return;
 }
 
 Title::~Title() {
-	DeleteGraph(i_helpImage);
-	i_helpImage = NULL;
+	i_helpImage = DeleteGraph(i_helpImage);
+	i_LogoImage = DeleteGraph(i_LogoImage);
+	i_BGImage = DeleteGraph(i_BGImage);
+	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
+	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
+	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
+	i_MenuImage[3] = DeleteGraph(i_MenuImage[3]);
+	i_MenuImage[4] = DeleteGraph(i_MenuImage[4]);
 	gameMain->title = NULL;
 }

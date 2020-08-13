@@ -98,8 +98,8 @@ void End::DrawEnd() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
 	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "End？");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "End？");
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "終了しますか？");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "終了しますか？");
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {

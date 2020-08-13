@@ -88,17 +88,11 @@ void Result::ResultControll(void) {
 		return;
 	}
 
-	if (inputManager->GetKeyHold(KEY_INPUT_RETURN, 18)) {
-		switch (selectNum[GameManager::BLUE])
-		{
-		case 0:
-			Return_to_Game();
-			break;
-		case 1:
-			Return_to_Title();
-			break;
-		}
-		return;
+	// キーボードを押し続けていた場合、REDとBLUEを強制的に同じ項目を選択したことにして、処理を進める
+	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
+		inputManager->In_Key()[KEY_INPUT_RETURN] = 0;
+		selectNum[GameManager::RED] = selectNum[GameManager::BLUE];
+		dicideNumFlg[GameManager::RED] = true;
 	}
 
 	// どちらも項目を決定していたら、シーン遷移をする
@@ -285,12 +279,7 @@ void Result::DrawResult_Net() {
 
 	// 項目を決定していたら、長い四角を表示する
 	if (dicideNumFlg[0]) {
-		if (0 == GameManager::RED) {
-			DrawBox(0, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
-		}
-		else {
-			DrawBox(GameMain::SCREEN_WIDTH, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
-		}
+		DrawBox(0, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
 	}
 	else {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画

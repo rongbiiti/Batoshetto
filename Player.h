@@ -57,6 +57,7 @@ private:
 	void CalcHitAfterAngle_ToBlock(int blocknum);	// ブロックのどの辺と衝突しているか判断して角度を変更する
 	void CalcHitAfterAngle_ToWindow(int num);		// ウィンドウのどの端と衝突しているか判断して角度を変更する
 	void ChangeDirectionalKeyAng(void);				// 方向キーで角度変更操作したとき、現在の角度によって角度を足すか引くかを変える
+	void DrawWaitRecvCheck();		// 通信待機中を表示
 	void LoadImages();	// 画像読み込み
 	
 

@@ -23,8 +23,8 @@ private:
 	GameMain* gameMain;
 
 	const static int SELECT_NUM_MAX = 1;
-	const std::string MenuName[SELECT_NUM_MAX + 1] = { "Yes",
-													   "No"
+	const std::string MenuName[SELECT_NUM_MAX + 1] = { "終了",
+													   "いいえ"
 	};
 
 	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
