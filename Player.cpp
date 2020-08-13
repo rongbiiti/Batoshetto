@@ -402,12 +402,16 @@ void Player::HidingPlayerControll_Net() {
 
 // 描画用
 void Player::DrawPlayer(void) {
-	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f,i_Playerimage[isShooter], TRUE);
+	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f, i_Playerimage[isShooter], TRUE);
 
 	if(effect->MuzzleFlashEffectFlg == TRUE){		//TRUE時にエフェクト関数に移行
 		effect->DrawEffect(x, y,angle);		// エフェクト描画
 	}
 
+	// 受信確認待ち中の処理
+	if (net->GetIsWaitRecvCheck()) {
+		DrawWaitRecvCheck();
+	}
 }
 
 // 撃つ側時に狙っている方向に線を引いて描画する
@@ -415,6 +419,25 @@ void Player::DrawTargetAngle(void) {
 	DrawLine(x, y, (int)targetx, (int)targety, color, 3);
 	DrawLine((int)targetx, (int)targety, (int)targetx2, (int)targety2, color, 3);
 	DrawCircle((int)targetx, (int)targety, 4, 0xFFFFFF);
+}
+
+// 通信待機中を表示
+void Player::DrawWaitRecvCheck() {
+	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
+	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "通信待機中です...");
+	DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[1], "通信待機中です...");
+
+	int time = 0;
+
+	if (gameMain->gameManager->GetPhaseStatus() == GameManager::HIDE) {
+		time = gameMain->gameManager->GetHideTime();
+	}
+	else if (gameMain->gameManager->GetPhaseStatus() == GameManager::SHOT) {
+		time = gameMain->gameManager->GetShotTime();
+	}
+
+	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
+	DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
 }
 
 // ブロックと当たり判定

@@ -192,11 +192,9 @@ void GameMain::Update(void) {
 	case GameManager::DIFFICULTYSELECT:
 		if(netBattleFlg) diffiSelectScene->DifficultySelectControll_Net();
 		else diffiSelectScene->DifficultySelectControll();
-		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
+		if (diffiSelectScene->GetReturnFlg()) {
 			delete diffiSelectScene;
 			diffiSelectScene = NULL;
-			CreateTitleObj();
-			netBattleFlg = false;
 		}
 
 		return;
@@ -513,6 +511,7 @@ void GameMain::CreateTitleObj() {
 		ui = NULL;
 	}
 	gameManager->SetPhaseStatus(GameManager::TITLE);
+	netBattleFlg = FALSE;
 }
 
 void GameMain::CreateEndObj() {

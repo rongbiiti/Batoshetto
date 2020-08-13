@@ -19,8 +19,20 @@ DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font
 // 難易度選択画面の処理
 void DifficultySelectScene::DifficultySelectControll() {
 	for (int i = 0; i < 2; i++) {
+		
+		// Aボタンを押した時、すでに難易度を決定していたら解除する
+		if (dicideNumFlg[i]) {
+			if (inputManager->GetButtonDown(A, i)) {
+				dicideNumFlg[i] = false;
+			}
+			continue;
+		}
 
-		if (dicideNumFlg[i]) continue;
+		// 難易度未決定の場合は、タイトル画面へ戻る
+		if (inputManager->GetButtonDown(A, i)) {
+			returnFlg = true;		// このフラグは、gameMainが参照している。trueなら、難易度選択画面クラスがdeleteされる。
+			gameMangaer->gameMain->CreateTitleObj();		// タイトル画面を作り、Phaseもタイトルにする
+		}
 
 		if (inputManager->GetButtonDown(PAD_UP, i) || inputManager->GetButtonHold(PAD_UP, i, 4)) {
 			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
@@ -41,8 +53,18 @@ void DifficultySelectScene::DifficultySelectControll() {
 		if (inputManager->GetButtonDown(B, i)) {
 			// ゲームパッド1のBボタン入力。
 			dicideNumFlg[i] = true;
-
 		}
+	}
+
+	// キーボードのESCを押した時、難易度を決定していなかったらタイトル画面へ戻る
+	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
+		returnFlg = true;
+		gameMangaer->gameMain->CreateTitleObj();
+	}
+
+	// キーボードのESCを押した時、難易度を決定していたら、その決定をキャンセルする
+	if (dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
+		dicideNumFlg[GameManager::BLUE] = false;
 	}
 
 
@@ -69,13 +91,11 @@ void DifficultySelectScene::DifficultySelectControll() {
 		return;
 	}
 
+	// キーボードを押し続けていた場合、REDとBLUEを強制的に同じ項目を選択したことにして、処理を進める
 	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
-		inputManager->In_Key()[KEY_INPUT_DOWN] = 0;
-		SetDifficulty();
-		gameMangaer->gameMain->Init();
-		gameMangaer->gameMain->diffiSelectScene = NULL;
-		this->~DifficultySelectScene();
-		return;
+		inputManager->In_Key()[KEY_INPUT_RETURN] = 0;
+		selectNum[GameManager::RED] = selectNum[GameManager::BLUE];
+		dicideNumFlg[GameManager::RED] = true;
 	}
 
 	// どちらも項目を決定していたら、シーン遷移をする
@@ -96,14 +116,20 @@ void DifficultySelectScene::DifficultySelectControll() {
 			waitTime = 0;
 			SetDifficulty();
 			gameMangaer->gameMain->Init();
-			gameMangaer->gameMain->diffiSelectScene = NULL;
-			this->~DifficultySelectScene();
+			returnFlg = true;
 		}
 	}
 }
 
 // 難易度選択画面の処理・ネット対戦用
 void DifficultySelectScene::DifficultySelectControll_Net() {
+
+	if (!dicideNumFlg[GameManager::RED] && inputManager->GetButtonDown(A, GameManager::RED)) {
+		// ゲームパッド1のBボタン入力。
+		returnFlg = true;
+		gameMangaer->gameMain->CreateTitleObj();
+		return;
+	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetButtonDown(PAD_UP, GameManager::RED) || inputManager->GetButtonHold(PAD_UP, GameManager::RED, 4))) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
@@ -125,8 +151,13 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
 	}
-	
 
+	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_ESCAPE))) {
+		// ゲームパッド1のBボタン入力。
+		returnFlg = true;
+		gameMangaer->gameMain->CreateTitleObj();
+		return;
+	}
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
@@ -169,8 +200,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		// ネット対戦用なので、難易度決定後、IPアドレス選択画面へ遷移する
 		gameMangaer->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
 		gameMangaer->gameMain->network->VariableInit();	// ネットワークの変数初期化
-		gameMangaer->gameMain->diffiSelectScene = NULL;	// gameMainのポインタ0に
-		this->~DifficultySelectScene();		// 自殺
+		returnFlg = true;
 	}
 }
 
@@ -234,9 +264,13 @@ void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "難易度を選んでください");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "難易度を選んでください");
 
+	// ネット対戦のみ。
+	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "同じ難易度を選択した人同士で遊びます");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 135, 0xFFFFFF, fontData->f_FontData[1], "同じ難易度を選択した人同士で遊びます");
+
 	// 項目を決定していたら、長い四角を表示する
 	if (dicideNumFlg[GameManager::RED]) {
-		DrawBox(0, starty + y * selectNum[GameManager::RED] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[GameManager::RED] + 15, COLOR_VALUE_PLAYER[GameManager::RED], 1);
+		DrawBox(0, starty + y * selectNum[GameManager::RED] - 15, GameMain::SCREEN_WIDTH, starty + y * selectNum[GameManager::RED] + 15, COLOR_VALUE_PLAYER[GameManager::RED], 1);
 	}
 	else {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画

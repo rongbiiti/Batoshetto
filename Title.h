@@ -42,6 +42,9 @@ private:
 	bool isOpenHelpScreen;		// ヘルプ画面を開いているか
 
 	int i_helpImage;	// ヘルプ画像
+	int i_LogoImage;	// タイトルロゴ画像
+	int i_BGImage;		// 背景画像
+	int i_MenuImage[5];	// 項目名画像
 };
 
 #endif // !_TITLE_H_

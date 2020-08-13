@@ -557,13 +557,13 @@ void Network::DrawCommunicationMethodSelect() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストになるかゲストになるか");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストになるかゲストになるか");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ホストになるかゲストになるか");
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "選択してください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "選択してください");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xFFFFFF, fontData->f_FontData[1], "選択してください");
 
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストになる");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30, 0xeeff14, fontData->f_FontData[1], "ホストになる");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y, 0xeeff14, fontData->f_FontData[1], "ゲストになる");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30, 0xFFFFFF, fontData->f_FontData[1], "ホストになる");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y, 0xFFFFFF, fontData->f_FontData[1], "ゲストになる");
 
 
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
@@ -578,13 +578,13 @@ void Network::DrawIPAddressSelect() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "お使いになる");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "お使いになる");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "お使いになる");
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "IPアドレスを選択してください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "IPアドレスを選択してください");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xFFFFFF, fontData->f_FontData[1], "IPアドレスを選択してください");
 	// 各項目名描画
 	for (int i = 0; i < IPsNumber; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d.%d.%d.%d", All_IP[i].d1, All_IP[i].d2, All_IP[i].d3, All_IP[i].d4);
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xeeff14, fontData->f_FontData[1], "%d.%d.%d.%d", All_IP[i].d1, All_IP[i].d2, All_IP[i].d3, All_IP[i].d4);
+		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%d.%d.%d.%d", All_IP[i].d1, All_IP[i].d2, All_IP[i].d3, All_IP[i].d4);
 	}
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 	DrawRotaGraph(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 1, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
@@ -596,25 +596,34 @@ void Network::DrawIPAddressSelect() {
 void Network::DrawConnectionWait() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
+	int min = 0, sec = 0;
 
 	// ホスト////////////////////////////////////////////
 	if (ConnectType == HOST) {
 		if (HOST_phaseNum == HOST_GEST_WAITING) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストを待っています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストを待っています...");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ゲストを待っています...");
 
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", HOST_gestSerchWaitTime / 60);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", HOST_gestSerchWaitTime / 60);
+			sec = HOST_gestSerchWaitTime / 60;
+			min = sec / 60;
+			if (60 <= sec) sec -= 60;
+
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xFFFFFF, fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
 
 		}
 		else if (HOST_phaseNum == HOST_GEST_REPTY_WAITING) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストが見つかりました。");
 			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "応答を待っています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "応答を待っています...");
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "返答を待っています...");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "返答を待っています...");
 
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", HOST_gestReplyWaitTime / 60);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", HOST_gestReplyWaitTime / 60);
+			sec = HOST_gestReplyWaitTime / 60;
+			min = sec / 60;
+			if (60 <= sec) sec -= 60;
+
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
 		}
 
 	}
@@ -624,10 +633,14 @@ void Network::DrawConnectionWait() {
 	else if (ConnectType == GEST) {
 		if (GEST_phaseNum == GEST_HOST_SEARCHING) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストを探しています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストを探しています...");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ホストを探しています...");
 
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d秒経過", GEST_hostSerchWaitTime / 60);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d秒経過", GEST_hostSerchWaitTime / 60);
+			sec = GEST_hostSerchWaitTime / 60;
+			min = sec / 60;
+			if (60 <= sec) sec -= 60;
+
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xFFFFFF, fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
 		}
 		else if (GEST_phaseNum == GEST_MATCH_START) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストが見つかりました。");
