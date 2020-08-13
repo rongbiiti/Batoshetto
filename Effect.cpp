@@ -13,6 +13,7 @@ Effect::Effect() {
 	hit_effect_x = 0;
 	hit_effect_y = 0;
 	HitEffectcount = 0;
+	HitEffectFlg = FALSE;		// flgを０に戻す
 }
 
 void Effect::InitRicochetCount(int num, int x, int y, float angle) {
@@ -27,7 +28,7 @@ void Effect::InitHitEffectCount(int x, int y) {
 	hit_effect_x = x;
 	hit_effect_y = y;
 	HitEffectcount = 0;
-
+	HitEffectFlg = TRUE;		// flgを０に戻す
 }
 
 //マズルフラッシュエフェクトを描画する
@@ -57,7 +58,7 @@ void Effect::DrawRicochetEffect() {
 
 //ヒット時エフェクトを描画
 void Effect::DrawHitEffect() {
-	if (HitEffectcount <= 18) {
+	if (HitEffectcount <= 18 && HitEffectFlg) {
 		DrawRotaGraph(hit_effect_x , hit_effect_y , 1.0f, 180.0f, i_HitEffect[HitEffectcount / 3], TRUE);
 		HitEffectcount++;
 	}

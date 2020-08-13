@@ -86,19 +86,15 @@ void Bullet::BulletControll(void) {
 
 // 描画
 void Bullet::DrawBullet(void) {
-	// もし跳弾回数が0未満なら処理を抜ける
-	//if (RemainingRicochetTimesCheck()) return;
-
-	int dx = (int)x;
-	int dy = (int)y;
-
-	DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
-	DrawCircle(dx, dy, Size, color);
+	if (0 <= ricochetCount) {
+		int dx = (int)x;
+		int dy = (int)y;
+		DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
+		DrawCircle(dx, dy, Size, color);
+	}
 
 	effect->DrawRicochetEffect();		// エフェクト描画
 	effect->DrawHitEffect();
-
-	DrawFormatString(0, 40 + 20 * (BulletRicochetCount - ricochetCount), 0xFFFFFF, "%d", BulletRicochetCount - ricochetCount - 1);
 }
 
 // 跳弾回数が0未満になっていないかチェックする
