@@ -475,8 +475,8 @@ void Player::DrawWaitRecvCheck() {
 		time = gameMain->gameManager->GetShotTime();
 	}
 
-	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
-	DrawFormatStringToHandle(x - fontwidth / 2, 260, 0xFFFFFF, gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
+	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "残り%d秒", (-600 + -time) / -60);
+	DrawFormatStringToHandle(x - fontwidth / 2, 260, 0xFFFFFF, gameMain->fontData->f_FontData[1], "残り%d秒", (-600 + -time) / -60);
 }
 
 // ブロックと当たり判定
