@@ -178,7 +178,7 @@ void Title::LoadImages() {
 	if (!(i_MenuImage[0] = LoadGraph("Image/StartButton.png"))) return;
 	if (!(i_MenuImage[1] = LoadGraph("Image/OnlineButton.png"))) return;
 	if (!(i_MenuImage[2] = LoadGraph("Image/OptionButton.png"))) return;
-	if (!(i_MenuImage[3] = LoadGraph("Image/OptionButton.png"))) return;
+	if (!(i_MenuImage[3] = LoadGraph("Image/HelpButton.png"))) return;
 	if (!(i_MenuImage[4] = LoadGraph("Image/EndButton.png"))) return;
 }
 
