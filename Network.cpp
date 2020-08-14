@@ -74,6 +74,7 @@ void Network::StructsReset() {
 
 	hiderInfo_Send.x = 0;
 	hiderInfo_Send.y = 0;
+	hiderInfo_Send.angle = 0;
 	hiderInfo_Send.passFlg = FALSE;
 	hiderInfo_Send.isRecvCheck = FALSE;
 
@@ -84,6 +85,7 @@ void Network::StructsReset() {
 
 	hiderInfo_Post.x = 0;
 	hiderInfo_Post.y = 0;
+	hiderInfo_Post.angle = 0;
 	hiderInfo_Post.passFlg = FALSE;
 	hiderInfo_Post.isRecvCheck = FALSE;
 
@@ -408,9 +410,10 @@ void Network::SendShooterInfo(float ang, bool isShot, bool isPass) {
 ////////////////////////////////////////////////
 // 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
 ////////////////////////////////////////////////
-void Network::SendHiderInfo(int px, int py, bool isPass) {
+void Network::SendHiderInfo(int px, int py, float angle, bool isPass) {
 	hiderInfo_Send.x = px;
 	hiderInfo_Send.y = py;
+	hiderInfo_Send.angle = angle;
 	hiderInfo_Send.passFlg = isPass;
 
 	// パスしたフラグがTRUEなら、返信が必要なデータとして送信する
@@ -685,8 +688,9 @@ void Network::DrawNetWorkData() {
 	DrawFormatStringToHandle(0, 440, c, handle, "shooterInfo_Post.isRecvCheck:%d", shooterInfo_Post.isRecvCheck);
 	DrawFormatStringToHandle(0, 460, c, handle, "hiderInfo_Post.x:%d", hiderInfo_Post.x);
 	DrawFormatStringToHandle(0, 480, c, handle, "hiderInfo_Post.y:%d", hiderInfo_Post.y);
-	DrawFormatStringToHandle(0, 500, c, handle, "hiderInfo_Post.passFlg:%d", hiderInfo_Post.passFlg);
-	DrawFormatStringToHandle(0, 520, c, handle, "hiderInfo_Post.isRecvCheck:%d", hiderInfo_Post.isRecvCheck);
+	DrawFormatStringToHandle(0, 500, c, handle, "hiderInfo_Post.angle:%d", hiderInfo_Post.angle);
+	DrawFormatStringToHandle(0, 520, c, handle, "hiderInfo_Post.passFlg:%d", hiderInfo_Post.passFlg);
+	DrawFormatStringToHandle(0, 540, c, handle, "hiderInfo_Post.isRecvCheck:%d", hiderInfo_Post.isRecvCheck);
 }
 
 ////////////////////////////////////////////////

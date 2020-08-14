@@ -40,6 +40,7 @@ public:
 	{
 		int x;			// X座標
 		int y;			// Y座標
+		float angle;	// 角度
 		bool passFlg;	// パスしたかのフラグ
 		bool isRecvCheck;	// 受信確認が必要なデータか
 	}HiderInfo;
@@ -76,7 +77,7 @@ public:
 	void SendShooterInfo(float ang, bool isShot, bool isPass);
 
 	// 隠れる側の情報を送信する。X座標、Y座標、パスしたかどうかを引数に入れる
-	void SendHiderInfo(int px, int py, bool isPass);
+	void SendHiderInfo(int px, int py, float angle, bool isPass);
 
 	// 返信できたことを送信する。
 	void SendRecvCheck();

@@ -357,7 +357,7 @@ void Player::HidingPlayerControll_Net() {
 			}
 			// 0.5秒ごとに再送
 			else if (gameMain->gameManager->GetHideTime() % 30 == 0) {
-				net->SendHiderInfo(x, y, TRUE);
+				net->SendHiderInfo(x, y, angle, TRUE);
 			}
 			return;
 		}
@@ -369,8 +369,6 @@ void Player::HidingPlayerControll_Net() {
 		// 移動前の座標を記憶しておく
 		preX = x;
 		preY = y;
-
-		angle = 0;
 
 		// 移動処理
 		if (inputManager->GetPadInput()[0].in_Stick_LY >= 0.45f || inputManager->In_Key()[KEY_INPUT_UP] != 0) {
@@ -418,10 +416,10 @@ void Player::HidingPlayerControll_Net() {
 
 		// PASSして撃つ側フェーズに
 		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1 || gameMain->gameManager->GetHideTime() <= 1) {
-			net->SendHiderInfo(x, y, TRUE);
+			net->SendHiderInfo(x, y, angle, TRUE);
 			return;
 		}
-		net->SendHiderInfo(x, y, FALSE);
+		net->SendHiderInfo(x, y, angle, FALSE);
 	}
 	else {
 
@@ -429,6 +427,7 @@ void Player::HidingPlayerControll_Net() {
 		Network::HiderInfo hiderInfo = net->GetHiderInfo();
 		x = hiderInfo.x;
 		y = hiderInfo.y;
+		angle = hiderInfo.angle;
 		if (hiderInfo.passFlg) {
 			gameMain->gameManager->ToShotPhase();
 			
@@ -449,8 +448,6 @@ void Player::DrawPlayer(void) {
 	if(effect->MuzzleFlashEffectFlg == TRUE){		//TRUE時にエフェクト関数に移行
 		effect->DrawEffect(x, y,angle);		// エフェクト描画
 	}
-
-	
 }
 
 // 撃つ側時に狙っている方向に線を引いて描画する
