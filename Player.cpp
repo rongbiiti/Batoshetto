@@ -294,18 +294,38 @@ void Player::HidingPlayerControll(void) {
 	if (inputManager->GetPadInput()[hider].in_Stick_LY >= 0.45f || inputManager->In_Key()[KEY_INPUT_UP] != 0) {
 		// 左スティックが上に傾けられていたら上に移動する
 		y -= moveSpeed;
+		angle = 270;
 	}
 	if (inputManager->GetPadInput()[hider].in_Stick_LY <= -0.45f || inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
 		// 左スティックが下に傾けられていたら下に移動する
 		y += moveSpeed;
+		angle = 90;
 	}
 	if (inputManager->GetPadInput()[hider].in_Stick_LX <= -0.45f || inputManager->In_Key()[KEY_INPUT_LEFT] != 0) {
 		// 左スティックが左に傾けられていたら左に移動する
 		x -= moveSpeed;
+		if (angle == 270) {
+			angle = 225;
+		}
+		else if (angle == 90) {
+			angle = 135;
+		}
+		else {
+			angle = 180;
+		}
 	}
-	if (inputManager->GetPadInput()[hider].in_Stick_LX >= 0.45f || inputManager->In_Key()[KEY_INPUT_RIGHT] != 0) {
+	else if (inputManager->GetPadInput()[hider].in_Stick_LX >= 0.45f || inputManager->In_Key()[KEY_INPUT_RIGHT] != 0) {
 		// 左スティックが右に傾けられていたら右に移動する
 		x += moveSpeed;
+		if (angle == 270) {
+			angle = 315;
+		}
+		else if (angle == 90) {
+			angle = 45;
+		}
+		else {
+			angle = 0;
+		}
 	}
 
 	x = XCoordinateCorrection(x, num, size);
@@ -350,22 +370,44 @@ void Player::HidingPlayerControll_Net() {
 		preX = x;
 		preY = y;
 
+		angle = 0;
+
 		// 移動処理
 		if (inputManager->GetPadInput()[0].in_Stick_LY >= 0.45f || inputManager->In_Key()[KEY_INPUT_UP] != 0) {
 			// 左スティックが上に傾けられていたら上に移動する
 			y -= moveSpeed;
+			angle = 270;
 		}
 		if (inputManager->GetPadInput()[0].in_Stick_LY <= -0.45f || inputManager->In_Key()[KEY_INPUT_DOWN] != 0) {
 			// 左スティックが下に傾けられていたら下に移動する
 			y += moveSpeed;
+			angle = 90;
 		}
 		if (inputManager->GetPadInput()[0].in_Stick_LX <= -0.45f || inputManager->In_Key()[KEY_INPUT_LEFT] != 0) {
 			// 左スティックが左に傾けられていたら左に移動する
 			x -= moveSpeed;
+			if (angle == 270) {
+				angle = 225;
+			}
+			else if (angle == 90) {
+				angle = 135;
+			}
+			else {
+				angle = 180;
+			}
 		}
-		if (inputManager->GetPadInput()[0].in_Stick_LX >= 0.45f || inputManager->In_Key()[KEY_INPUT_RIGHT] != 0) {
+		else if (inputManager->GetPadInput()[0].in_Stick_LX >= 0.45f || inputManager->In_Key()[KEY_INPUT_RIGHT] != 0) {
 			// 左スティックが右に傾けられていたら右に移動する
 			x += moveSpeed;
+			if (angle == 270) {
+				angle = 315;
+			}
+			else if (angle == 90) {
+				angle = 45;
+			}
+			else {
+				angle = 0;
+			}
 		}
 
 		x = XCoordinateCorrection(x, num, size);
@@ -408,10 +450,7 @@ void Player::DrawPlayer(void) {
 		effect->DrawEffect(x, y,angle);		// エフェクト描画
 	}
 
-	// 受信確認待ち中の処理
-	if (net->GetIsWaitRecvCheck()) {
-		DrawWaitRecvCheck();
-	}
+	
 }
 
 // 撃つ側時に狙っている方向に線を引いて描画する
@@ -437,7 +476,7 @@ void Player::DrawWaitRecvCheck() {
 	}
 
 	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
-	DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xFFFFFF, gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
+	DrawFormatStringToHandle(x - fontwidth / 2, 260, 0xFFFFFF, gameMain->fontData->f_FontData[1], "残り%d秒", (-600 - -time) / -60);
 }
 
 // ブロックと当たり判定
@@ -468,20 +507,8 @@ void Player::BlockHitCheck(void) {
 			}
 			// ブロックの角っこだったら、XYどちらも戻す。
 			else {
-				// 角に当たった場合、左右のブロックの幅の中にいないかもう一度確かめる
-				if ((collision->IsHitWicth(preX, gameMain->block[i - 1]->GetBlockX(), gameMain->block[i - 1]->GetBlockSize()) && gameMain->block[i - 1]->IsAlive()) ||
-					(collision->IsHitWicth(preX, gameMain->block[i + 1]->GetBlockX(), gameMain->block[i + 1]->GetBlockSize()) && gameMain->block[i + 1]->IsAlive())) {
-					y = preY;
-				}
-				// 上下のブロックの高さの中にいないかもう一度確かめる
-				else if ((collision->IsHitHeight(preY, gameMain->block[i - 3]->GetBlockY(), gameMain->block[i - 3]->GetBlockSize()) && gameMain->block[i - 3]->IsAlive()) ||
-						 (collision->IsHitHeight(preY, gameMain->block[i + 3]->GetBlockY(), gameMain->block[i + 3]->GetBlockSize()) && gameMain->block[i + 3]->IsAlive())) {
-					x = preX;
-				}
-				else {
-					y = preY;
-					x = preX;
-				}			
+				y = preY;
+				x = preX;
 			}
 		}
 	}

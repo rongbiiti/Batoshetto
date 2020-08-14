@@ -122,7 +122,7 @@ void GameMain::GameLoop(void) {
 		Update();	// オブジェクトの処理を進めて値を更新する
 		Output();	// オブジェクトの描画系関数を呼び出す
 
-		//network->DrawNetWorkData();
+		network->DrawNetWorkData();
 
 		SetDrawScreen(DX_SCREEN_BACK);
 		// 画面を描画用の大きさに引き伸ばして描画する
@@ -329,6 +329,11 @@ void GameMain::Output(void) {
 		
 		ui->DrawPlayerGuage(player[nowhider]->GetPlayerX(), player[nowhider]->GetPlayerY(), float(gameManager->HidePhaseTime), float(gameManager->GetHideTime()), nowhider);
 
+		// 受信確認待ち中の処理
+		if (network->GetIsWaitRecvCheck()) {
+			player[network->GetConnectType()]->DrawWaitRecvCheck();
+		}
+
 		break;
 
 	case GameManager::SHOT:
@@ -349,6 +354,11 @@ void GameMain::Output(void) {
 		player[gameManager->GetNowShooter()]->DrawTargetAngle();
 
 		ui->DrawPlayerGuage(player[nowshooter]->GetPlayerX(), player[nowshooter]->GetPlayerY(), float(gameManager->ShotPhaseTime), float(gameManager->GetShotTime()), nowshooter);
+
+		// 受信確認待ち中の処理
+		if (network->GetIsWaitRecvCheck()) {
+			player[network->GetConnectType()]->DrawWaitRecvCheck();
+		}
 		break;
 
 	case GameManager::RECOCHETWAIT:
