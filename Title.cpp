@@ -25,15 +25,16 @@ void Title::TitleControll() {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
 			// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 			// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 			if (++selectNum[i] > SELECT_NUM_MAX) {
-				selectNum[i] = 0;
+				selectNum[i] = 0;	
 			}
-			
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
@@ -65,6 +66,7 @@ void Title::TitleControll() {
 				this->~Title();
 				break;
 			}
+			gameMain->PlayDicideSE();
 			return;
 		}
 	}
@@ -76,6 +78,7 @@ void Title::TitleControll() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
@@ -84,6 +87,7 @@ void Title::TitleControll() {
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
@@ -115,6 +119,7 @@ void Title::TitleControll() {
 			this->~Title();
 			break;
 		}
+		gameMain->PlayDicideSE();
 	}
 }
 

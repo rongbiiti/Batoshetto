@@ -4,7 +4,9 @@
 #include "Bullet.h"
 #include "Result.h"
 
+////////////////////////////////////////////////
 // コンストラクタ
+////////////////////////////////////////////////
 GameMain::GameMain(void) {	
 	SCREEN_WIDTH_HALF = SCREEN_WIDTH / 2;		// 計算に使う画面の横幅の半分の数値を初期化しておく
 	SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;		// 計算に使う画面の高さの半分の数値を初期化しておく
@@ -14,9 +16,12 @@ GameMain::GameMain(void) {
 	pauseFlg = false;
 	pausePushPLNum = 0;
 	netBattleFlg = false;
+	
 }
 
+////////////////////////////////////////////////
 // FPSを固定するための関数
+////////////////////////////////////////////////
 bool GameMain::FPSUpdate(void) {
 	if (mCount == 0) { //1フレーム目なら時刻を記憶
 		mStartTime = GetNowCount();
@@ -31,7 +36,9 @@ bool GameMain::FPSUpdate(void) {
 	return true;
 }
 
+////////////////////////////////////////////////
 // FPSを固定するための関数
+////////////////////////////////////////////////
 void GameMain::UpdateWait(void) {
 	int tookTime = GetNowCount() - mStartTime;	//かかった時間
 	int waitTime = mCount * 1000 / FPS - tookTime;	//待つべき時間
@@ -51,6 +58,12 @@ int GameMain::FirstInit(void) {
 	SetDrawScreen(offscreen_handle);
 
 	LoadCursorImages();
+	// 音の音量変更
+	LoadSounds();
+	CreateOptionObj(0, 0);
+	ChangeVolume(option->GetSEVolume());
+	delete option;
+	option = NULL;
 
 	// 入力管理クラスを生成
 	CreateInputManagerObj();
@@ -70,7 +83,9 @@ int GameMain::FirstInit(void) {
 	return 1;
 }
 
+////////////////////////////////////////////////
 // ゲームリプレイ時などにクラスを生成しなおす
+////////////////////////////////////////////////
 void GameMain::Init() {
 	gameManager->Init();	
 	CreateOptionObj(0, 0);
@@ -78,6 +93,8 @@ void GameMain::Init() {
 	CreateBlockObj();
 	CreateBulletObj();	
 	CreatePlayerObj();
+	delete option;
+	option = NULL;
 }
 
 void GameMain::MainObjDelete() {	
@@ -105,7 +122,9 @@ void GameMain::MainObjDelete() {
 	
 }
 
+////////////////////////////////////////////////
 // ゲームループ
+////////////////////////////////////////////////
 void GameMain::GameLoop(void) {
 	inputManager->InputKey();	// 入力を受け取る
 
@@ -133,7 +152,9 @@ void GameMain::GameLoop(void) {
 	}
 }
 
+////////////////////////////////////////////////
 // オブジェクトの処理を進めて値を更新する
+////////////////////////////////////////////////
 void GameMain::Update(void) {
 
 	switch (gameManager->GetPhaseStatus())
@@ -157,6 +178,7 @@ void GameMain::Update(void) {
 			network->VariableInit();
 			CreateDifficultySelectSceneObj();
 			gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
+			PlayCanselSE();
 		}
 		return;
 		break;
@@ -166,6 +188,7 @@ void GameMain::Update(void) {
 			network->VariableInit();
 			network->InitIPAddress();
 			gameManager->SetPhaseStatus(GameManager::IPADDRESS_SELECT);
+			PlayCanselSE();
 		}
 		return;
 		break;
@@ -174,6 +197,7 @@ void GameMain::Update(void) {
 		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			network->VariableInit();
 			gameManager->SetPhaseStatus(GameManager::CONNECT_TYPE_SELECT);
+			PlayCanselSE();
 		}
 		return;
 		break;
@@ -264,6 +288,9 @@ void GameMain::Update(void) {
 		option->OptionControll();
 		if (inputManager->GetButtonDown(A, 0) || inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 			CreateTitleObj();
+			PlayCanselSE();
+			delete option;
+			option = NULL;
 		}
 		break;
 	case GameManager::QUIT:
@@ -273,7 +300,9 @@ void GameMain::Update(void) {
 	
 }
 
+////////////////////////////////////////////////
 // オブジェクトの描画系関数を呼び出す
+////////////////////////////////////////////////
 void GameMain::Output(void) {
 	float x1 = 0;
 	float x2 = 0;
@@ -410,12 +439,16 @@ void GameMain::Output(void) {
 	DrawDebugInfo();	// デバッグ情報描画
 }
 
+////////////////////////////////////////////////
 // デバッグ情報を描画するための関数
+////////////////////////////////////////////////
 void GameMain::DrawDebugInfo(void) {
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "%.1fFPS", mFps);
 }
 
+////////////////////////////////////////////////
 // ポーズ画面を開閉するボタンが押されたかチェック
+////////////////////////////////////////////////
 bool GameMain::IsPushPauseButton() {
 	if (inputManager->GetButtonDown(START, GameManager::RED)) {
 		// ポーズ画面が開かれているとき、ポーズボタンを押した人と今押した人が一致しなければ無視する
@@ -472,6 +505,21 @@ void GameMain::LoadBlockImages() {
 void GameMain::LoadCursorImages() {
 	if (!(i_CursorImage[0] = LoadGraph("Image/PlayerCursor01.png"))) return;
 	if (!(i_CursorImage[1] = LoadGraph("Image/PlayerCursor02.png"))) return;
+}
+
+void GameMain::LoadSounds() {
+	if ((s_DicideSE = LoadSoundMem("sounds/Dicide.mp3")) == -1) return;
+	if ((s_CanselSE = LoadSoundMem("sounds/Cansel.mp3")) == -1) return;
+	if ((s_CursorSE = LoadSoundMem("sounds/Cursor.mp3")) == -1) return;
+}
+
+// 音量変更
+void GameMain::ChangeVolume(float persent) {
+	int volume = 255.0f * persent;
+
+	ChangeVolumeSoundMem(volume, s_DicideSE);
+	ChangeVolumeSoundMem(volume, s_CanselSE);
+	ChangeVolumeSoundMem(volume, s_CursorSE);
 }
 
 void GameMain::DeleteBlockImages() {

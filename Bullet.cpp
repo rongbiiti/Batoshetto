@@ -2,7 +2,9 @@
 #include "GameMain.h"
 #include <math.h>
 
+////////////////////////////////////////////////
 // コンストラクタ
+////////////////////////////////////////////////
 Bullet::Bullet(void)
 {
 	isAlive = false;			// 弾が生きているか
@@ -23,7 +25,9 @@ Bullet::Bullet(void)
 	toHidePhaseTransitionWaitTime = 0;
 }
 
+////////////////////////////////////////////////
 // 初期化用関数
+////////////////////////////////////////////////
 void Bullet::BulletInit(bool alive, float rx, float ry, float ang, GameMain* main) {
 	isAlive = alive;					// 弾の存在フラグ
 	x = rx;								// 弾のX座標
@@ -41,7 +45,9 @@ void Bullet::BulletInit(bool alive, float rx, float ry, float ang, GameMain* mai
 	PlaySoundMem(s_Fire, DX_PLAYTYPE_BACK);
 }
 
+////////////////////////////////////////////////
 // 弾が実際に動くときの処理
+////////////////////////////////////////////////
 void Bullet::BulletControll(void) {
 	if (isPlayerHit && ResultTransitionWaiting()) {
 		gameMain->gameManager->SetPhaseStatus(GameManager::RESULT, gameMain->player[HitPlayerNum]->GetPlayerNum());
@@ -84,7 +90,9 @@ void Bullet::BulletControll(void) {
 	if (IsHitBlock()) return;		// ブロックと当たり判定
 }
 
+////////////////////////////////////////////////
 // 描画
+////////////////////////////////////////////////
 void Bullet::DrawBullet(void) {
 	if (0 <= ricochetCount) {
 		int dx = (int)x;
@@ -97,7 +105,9 @@ void Bullet::DrawBullet(void) {
 	effect->DrawHitEffect();
 }
 
+////////////////////////////////////////////////
 // 跳弾回数が0未満になっていないかチェックする
+////////////////////////////////////////////////
 bool Bullet::RemainingRicochetTimesCheck(void) {
 	if (ricochetCount < 0) {
 		
@@ -110,14 +120,18 @@ bool Bullet::RemainingRicochetTimesCheck(void) {
 	return false;
 }
 
+////////////////////////////////////////////////
 // 角度をもとに進行方向変更
+////////////////////////////////////////////////
 void Bullet::ChangeAngle(void) {
 	float rad = (angle / 360) * DX_PI_F * 2;	// ラジアンに変換する
 	moveX = (movespeedX * cosf(rad));
 	moveY = (movespeedY * sinf(rad));
 }
 
+////////////////////////////////////////////////
 // 画面外に出ていないかチェックする
+////////////////////////////////////////////////
 bool Bullet::IsScreenOutside(void) {
 	if (x >= GameMain::SCREEN_WIDTH || x <= 0) {
 		--ricochetCount;				// 跳弾回数減らす
@@ -127,8 +141,6 @@ bool Bullet::IsScreenOutside(void) {
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;
 		y = preY;
-		x += moveX;
-		y += moveY;
 		preX = x;
 		preY = y;
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
@@ -143,8 +155,6 @@ bool Bullet::IsScreenOutside(void) {
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;					
 		y = preY;
-		x += moveX;
-		y += moveY;
 		preX = x;
 		preY = y;
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
@@ -155,7 +165,9 @@ bool Bullet::IsScreenOutside(void) {
 	return false;
 }
 
+////////////////////////////////////////////////
 // プレイヤーと当たり判定
+////////////////////////////////////////////////
 bool Bullet::IsHitPlayer(void) {
 	if (isPlayerHit) return false;
 	// プレイヤーのX、Y、直径サイズ
@@ -183,7 +195,9 @@ bool Bullet::IsHitPlayer(void) {
 	return false;
 }
 
+////////////////////////////////////////////////
 // ブロックと当たり判定
+////////////////////////////////////////////////
 bool Bullet::IsHitBlock(void) {
 	// もし跳弾回数が0未満なら処理を抜ける
 	if (RemainingRicochetTimesCheck()) return true;
@@ -284,8 +298,6 @@ bool Bullet::IsHitBlock(void) {
 		ChangeAngle();	// 角度をもとに進行方向変更
 		x = lastHitPointX;
 		y = lastHitPointY;
-		x += moveX;
-		y += moveY;
 		preX = x;
 		preY = y;
 		RemainingRicochetTimesCheck();
@@ -307,14 +319,12 @@ void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
 	if (waitingTimeAfterPlayerHit >= 210) {
 		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "あ");
-		DrawFormatStringToHandle(x - fontwidth / 2, 70,  0xdc143c, gameMain->fontData->f_FontData[2], "勝");
-		DrawFormatStringToHandle(x - fontwidth / 2, 200, 0xdc143c, gameMain->fontData->f_FontData[2], "負");
-		DrawFormatStringToHandle(x - fontwidth / 2, 330, 0xdc143c, gameMain->fontData->f_FontData[2], "あ");
-		DrawFormatStringToHandle(x - fontwidth / 2, 460, 0xdc143c, gameMain->fontData->f_FontData[2], "り");
-
-		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "The Match Has Finished");
-		DrawFormatStringToHandle(x - fontwidth / 2, 560, 0xdc143c, gameMain->fontData->f_FontData[1], "The Match Has Finished");
+		DrawFormatStringToHandle(x - fontwidth / 2, 100, 0xdc143c, gameMain->fontData->f_FontData[2], "勝");
+		DrawFormatStringToHandle(x - fontwidth / 2, 230, 0xdc143c, gameMain->fontData->f_FontData[2], "負");
+		DrawFormatStringToHandle(x - fontwidth / 2, 360, 0xdc143c, gameMain->fontData->f_FontData[2], "あ");
+		DrawFormatStringToHandle(x - fontwidth / 2, 490, 0xdc143c, gameMain->fontData->f_FontData[2], "り");
 	}
+
 	if (waitingTimeAfterPlayerHit <= 480) {
 		return;
 	}

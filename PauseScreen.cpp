@@ -1,6 +1,8 @@
 #include "PauseScreen.h"
 
+////////////////////////////////////////////////
 // コンストラクタ
+////////////////////////////////////////////////
 PauseScreen::PauseScreen(FontData* font, InputManager* input, GameMain* main, int pushPLnum) {
 	// 引数で受け取ったポインタをローカル変数にコピー
 	fontData = font;
@@ -13,7 +15,9 @@ PauseScreen::PauseScreen(FontData* font, InputManager* input, GameMain* main, in
 	selectNum[1] = 0;
 }
 
+////////////////////////////////////////////////
 // ポーズ画面処理
+////////////////////////////////////////////////
 void PauseScreen::PauseScreenControll() {
 	for (int i = 0; i < 2; i++) {
 		if (pausePushPLNum == GameManager::BLUE + 1) break;	// ポーズボタンを押したのがキーボードのキーからなら、コントローラーの操作を受け付けない。
@@ -24,6 +28,7 @@ void PauseScreen::PauseScreenControll() {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
@@ -32,6 +37,7 @@ void PauseScreen::PauseScreenControll() {
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
@@ -48,6 +54,7 @@ void PauseScreen::PauseScreenControll() {
 				Return_to_Title();
 				break;
 			}
+			gameMain->PlayDicideSE();
 			return;
 		}
 	}
@@ -63,6 +70,7 @@ void PauseScreen::PauseScreenControll() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
@@ -71,6 +79,7 @@ void PauseScreen::PauseScreenControll() {
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
@@ -87,10 +96,13 @@ void PauseScreen::PauseScreenControll() {
 			Return_to_Title();
 			break;
 		}
+		gameMain->PlayDicideSE();
 	}
 }
 
+////////////////////////////////////////////////
 // ポーズ画面描画
+////////////////////////////////////////////////
 void PauseScreen::DrawPauseScreen() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
@@ -119,19 +131,25 @@ void PauseScreen::DrawPauseScreen() {
 	}
 }
 
+////////////////////////////////////////////////
 // ポーズ画面を抜けて試合を再開する
+////////////////////////////////////////////////
 void PauseScreen::Return_to_Game() {
 	gameMain->SetPauseFlg(false);
 }
 
+////////////////////////////////////////////////
 // オプション画面を開く
+////////////////////////////////////////////////
 void PauseScreen::OpenOptionScreen() {
 	gameMain->SetPauseFlg(false);
 	gameMain->CreateOptionObj(pausePushPLNum, Option::PAUSE);
 	gameMain->gameManager->SetPhaseStatus(GameManager::OPTION);
 }
 
+////////////////////////////////////////////////
 // 試合を中断してタイトル画面へ戻る
+////////////////////////////////////////////////
 void PauseScreen::Return_to_Title() {
 	gameMain->SetPauseFlg(false);
 	gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
@@ -139,7 +157,9 @@ void PauseScreen::Return_to_Title() {
 	gameMain->CreateTitleObj();
 }
 
+////////////////////////////////////////////////
 // デストラクタ
+////////////////////////////////////////////////
 PauseScreen::~PauseScreen() {
 
 }

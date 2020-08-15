@@ -1,7 +1,9 @@
 #include "Collision.h"
 #include <math.h>
 
+////////////////////////////////////////////////
 // 二つのオブジェクトのXとYの中心座標、直径の大きさを受け取り、矩形判定をし、当たっているか否かをbool型で返す関数。
+////////////////////////////////////////////////
 bool Collision::IsHit(int x1, int y1, int size1, int x2, int y2, int size2) {
 	int axLeft = x1 - size1 / 2;	// オブジェクト1の左端
 	int axRight = x1 + size1 / 2;	// オブジェクト1の右端
@@ -22,8 +24,10 @@ bool Collision::IsHit(int x1, int y1, int size1, int x2, int y2, int size2) {
 	return false;
 }
 
+////////////////////////////////////////////////
 // オブジェクト1のX中心座標が、オブジェクト2の幅の中にいるかを返す関数。
 // 弾がブロックの幅の中にいたかを判定するために使っている。
+////////////////////////////////////////////////
 bool Collision::IsHitWicth(int x1, int x2, int size2) {
 	int ax = x1;					// オブジェクト1の中心X座標
 
@@ -38,8 +42,10 @@ bool Collision::IsHitWicth(int x1, int x2, int size2) {
 	return false;
 }
 
+////////////////////////////////////////////////
 // オブジェクト1のY中心座標が、オブジェクト2の高さの中にいるかを返す関数。
 // 弾がブロックの高さの中にいたかを判定するために使っている。
+////////////////////////////////////////////////
 bool Collision::IsHitHeight(int y1, int y2, int size2) {
 	int ay = y1;					// オブジェクト1の中心Y座標
 
@@ -54,7 +60,9 @@ bool Collision::IsHitHeight(int y1, int y2, int size2) {
 	return false;
 }
 
+////////////////////////////////////////////////
 // プレイヤーの狙っている方向がブロックと衝突しているかを返す関数
+////////////////////////////////////////////////
 Collision::Vector2 Collision::IsHitTargetAndBlock(float px, float py, float tx, float ty, float bx, float by, float bsize) {
 
 	float left, right, top, bottom;	// ブロックの上下左右の座標
@@ -97,9 +105,11 @@ Collision::Vector2 Collision::IsHitTargetAndBlock(float px, float py, float tx, 
 	return position;
 }
 
+////////////////////////////////////////////////
 // IsHitTargetAndBlockでは、矩形と線分を一気に当たり判定している。
 // 実は、矩形を4つの線分として、”線分と線分”の当たり判定を4回行っているのだ。
 // IsHitTargetAndBlockの中で、この関数は4回呼ばれている。
+////////////////////////////////////////////////
 bool Collision::IsHitLineAndLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2) {
 	// B1B2×B1A1・B1B2×B1A2 <= 0 ∪ A1A2×A1B1・A1A2×A1B2 <= 0 らしい。
 
@@ -123,6 +133,7 @@ bool Collision::IsHitLineAndLine(float ax1, float ay1, float ax2, float ay2, flo
 	return true;
 }
 
+////////////////////////////////////////////////
 Collision::Vector2 Collision::GetHitLineAndLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2) {
 	Vector2 cross = { -10000, -10000, false };
 
@@ -146,7 +157,9 @@ Collision::Vector2 Collision::GetHitLineAndLine(float ax1, float ay1, float ax2,
 	return cross;
 }
 
+////////////////////////////////////////////////
 // 2点間の距離を計算して返す。
+////////////////////////////////////////////////
 float Collision::GetPointsDistance(float x1, float y1, float x2, float y2) {
 	float distance = hypotf(x2 - x1, y2 - y1);
 

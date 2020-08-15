@@ -19,6 +19,7 @@ void End::EndControll() {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
+			gameManager->gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
@@ -27,6 +28,7 @@ void End::EndControll() {
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
+			gameManager->gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
@@ -47,6 +49,7 @@ void End::EndControll() {
 				this->~End();
 				break;
 			}
+			gameManager->gameMain->PlayDicideSE();
 			return;
 		}
 	}
@@ -58,6 +61,7 @@ void End::EndControll() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
@@ -66,6 +70,7 @@ void End::EndControll() {
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
@@ -86,6 +91,7 @@ void End::EndControll() {
 			this->~End();
 			break;
 		}
+		gameManager->gameMain->PlayDicideSE();
 	}
 }
 

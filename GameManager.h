@@ -43,8 +43,8 @@ public:
 
 	const static int HidePhaseTime = 240;		// 隠れる側残り時間の初期値。
 	const static int ShotPhaseTime = 600;		// 撃つ側残り時間の初期値。
-	const static int FirstShooter = RED;		// REDとBLUE、どっちが試合の最初に撃つ方か
-	const static int FirstHider = BLUE;		// REDとBLUE、どっちが試合の最初に隠れる方か
+	const static int FirstShooter = BLUE;		// REDとBLUE、どっちが試合の最初に撃つ方か
+	const static int FirstHider = RED;		// REDとBLUE、どっちが試合の最初に隠れる方か
 
 	void ShooterChange(void);						// 撃つ側・隠れる側を交代する関数。
 	void ShooterFlgChange(bool allchangeflg);					// 撃つ側・隠れる側のフラグを変える。allchangeflgがtrueなら、REDとBLUEどちらも変える
