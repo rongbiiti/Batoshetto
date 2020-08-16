@@ -61,7 +61,7 @@ int GameMain::FirstInit(void) {
 	// 音の音量変更
 	LoadSounds();
 	CreateOptionObj(0, 0);
-	ChangeVolume(option->GetSEVolume());
+	ChangeVolume(option->GetBGMVolume(), option->GetSEVolume());
 	delete option;
 	option = NULL;
 
@@ -198,6 +198,8 @@ void GameMain::Update(void) {
 			network->VariableInit();
 			gameManager->SetPhaseStatus(GameManager::CONNECT_TYPE_SELECT);
 			PlayCanselSE();
+			PlayBattleBGM(TRUE);
+			PlayTitleBGM();
 		}
 		return;
 		break;
@@ -508,18 +510,50 @@ void GameMain::LoadCursorImages() {
 }
 
 void GameMain::LoadSounds() {
+	if ((m_TitleBGM = LoadSoundMem("sounds/BGM/魔王魂/game_maoudamashii_7_event46.mp3")) == -1) return;
+	if ((m_BattleBGM = LoadSoundMem("sounds/BGM/魔王魂/game_maoudamashii_1_battle27.mp3")) == -1) return;
 	if ((s_DicideSE = LoadSoundMem("sounds/Dicide.mp3")) == -1) return;
 	if ((s_CanselSE = LoadSoundMem("sounds/Cansel.mp3")) == -1) return;
 	if ((s_CursorSE = LoadSoundMem("sounds/Cursor.mp3")) == -1) return;
 }
 
-// 音量変更
-void GameMain::ChangeVolume(float persent) {
-	int volume = 255.0f * persent;
+// タイトルBGM再生。stopFlgにTRUEを渡すとBGMを止める
+void GameMain::PlayTitleBGM(bool stopFlg) {
+	if (stopFlg) {
+		StopSoundMem(m_TitleBGM);
+	}
+	else {
+		// タイトルBGMが再生していなかれば、再生開始する
+		if (CheckSoundMem(m_TitleBGM) == 0) {
+			PlaySoundMem(m_TitleBGM, DX_PLAYTYPE_LOOP);
+		}
+	}
+}
 
-	ChangeVolumeSoundMem(volume, s_DicideSE);
-	ChangeVolumeSoundMem(volume, s_CanselSE);
-	ChangeVolumeSoundMem(volume, s_CursorSE);
+// 試合中BGM再生。stopFlgにTRUEを渡すとBGMを止める
+void GameMain::PlayBattleBGM(bool stopFlg) {
+	if (stopFlg) {
+		StopSoundMem(m_BattleBGM);
+	}
+	else {
+		// 試合中BGMが再生していなかれば、再生開始する
+		if (CheckSoundMem(m_BattleBGM) == 0) {
+			PlaySoundMem(m_BattleBGM, DX_PLAYTYPE_LOOP);
+		}
+	}
+}
+
+// 音量変更
+void GameMain::ChangeVolume(float BGMpersent, float SEpersent) {
+	int BGMvolume = 255.0f * BGMpersent;
+	int SEvolume = 255.0f * SEpersent;
+
+	ChangeVolumeSoundMem(BGMvolume, m_TitleBGM);
+	ChangeVolumeSoundMem(BGMvolume, m_BattleBGM);
+
+	ChangeVolumeSoundMem(SEvolume, s_DicideSE);
+	ChangeVolumeSoundMem(SEvolume, s_CanselSE);
+	ChangeVolumeSoundMem(SEvolume, s_CursorSE);
 }
 
 void GameMain::DeleteBlockImages() {
@@ -570,6 +604,7 @@ void GameMain::CreateTitleObj() {
 	}
 	gameManager->SetPhaseStatus(GameManager::TITLE);
 	netBattleFlg = FALSE;
+	PlayTitleBGM();
 }
 
 void GameMain::CreateEndObj() {
@@ -591,6 +626,8 @@ void GameMain::CreatePauseScreenObj() {
 
 void GameMain::CreateUIObj() {
 	ui = new UI(this);
+	PlayTitleBGM(TRUE);
+	PlayBattleBGM();
 }
 
 void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
@@ -607,4 +644,5 @@ void GameMain::CreateNetworkObj() {
 
 void GameMain::CreateResultObj_TimeOut() {
 	result = new Result(fontData, inputManager, gameManager);
+	PlayBattleBGM(TRUE);
 }

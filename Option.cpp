@@ -210,7 +210,7 @@ void Option::ControllVolumeScreen() {
 				if (previousNum == PAUSE) {
 					ChangeBulletSoundVolume();
 				}
-				gameMain->ChangeVolume(SEVolume);
+				gameMain->ChangeVolume(BGMVolume, SEVolume);
 				SaveFile();
 				BackOptionMenu();
 				break;
@@ -293,7 +293,7 @@ void Option::ControllVolumeScreen() {
 			if (previousNum == PAUSE) {
 				ChangeBulletSoundVolume();
 			}
-			gameMain->ChangeVolume(SEVolume);
+			gameMain->ChangeVolume(BGMVolume, SEVolume);
 			SaveFile();
 			BackOptionMenu();
 			break;
@@ -441,7 +441,7 @@ void Option::BackOptionMenu() {
 ////////////////////////////////////////////////
 void Option::ChangeBulletSoundVolume() {
 	gameMain->bullet->ChangeVolume(SEVolume);
-	gameMain->ChangeVolume(SEVolume);
+	gameMain->ChangeVolume(BGMVolume, SEVolume);
 }
 
 // セーブデータ読込み
