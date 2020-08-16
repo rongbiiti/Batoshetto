@@ -177,6 +177,7 @@ void Network::IPAddressSelect() {
 		if (--selectNum < 0) {
 			selectNum = IPsNumber - 1;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	// ゲームパッド1の方向パッド下とキーボードの方向キー下の入力
@@ -189,6 +190,7 @@ void Network::IPAddressSelect() {
 		if (++selectNum > IPsNumber - 1) {
 			selectNum = 0;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	// ゲームパッドとキーボードの決定ボタンの入力
@@ -196,6 +198,7 @@ void Network::IPAddressSelect() {
 		inputManager->GetKeyDown(KEY_INPUT_F) ||
 		inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		dicideFlg = true;
+		gameManager->gameMain->PlayDicideSE();
 	}
 
 	// いずれかの決定ボタンが押されていたらブロードキャストIPを設定してホストかゲストどちらになるか選択させる画面へ遷移
@@ -224,6 +227,7 @@ void Network::CommunicationMethodSelect() {
 		if (--selectNum < 0) {
 			selectNum = 1;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	// ゲームパッド1の方向パッド下とキーボードの方向キー下の入力
@@ -235,6 +239,7 @@ void Network::CommunicationMethodSelect() {
 		if (++selectNum > 1) {
 			selectNum = 0;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	// ゲームパッドとキーボードの決定ボタンの入力
@@ -242,6 +247,7 @@ void Network::CommunicationMethodSelect() {
 		inputManager->GetKeyDown(KEY_INPUT_F) ||
 		inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		dicideFlg = true;
+		gameManager->gameMain->PlayDicideSE();
 	}
 
 	// いずれかの決定ボタンが押されていたらマッチング画面へ遷移

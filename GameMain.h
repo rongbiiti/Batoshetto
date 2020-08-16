@@ -53,6 +53,13 @@ public:
 	int GetBlockImage(int num) { return i_BlockImages[num]; }	// ブロックの画像を渡す
 	int GetCursorImage(int num) { return i_CursorImage[num]; }	// カーソル画像を渡す
 
+	void ChangeVolume(float BGMpersent, float SEpersent);	// 音量変更
+	void PlayTitleBGM(bool stopFlg = FALSE);		// タイトルBGM再生。stopFlgにTRUEを渡すとBGMを止める
+	void PlayBattleBGM(bool stopFlg = FALSE);		// 試合中BGM再生。stopFlgにTRUEを渡すとBGMを止める
+	void PlayDicideSE() { PlaySoundMem(s_DicideSE, DX_PLAYTYPE_BACK); }	// 決定音
+	void PlayCanselSE() { PlaySoundMem(s_CanselSE, DX_PLAYTYPE_BACK); }	// キャンセル音
+	void PlayCursorSE() { PlaySoundMem(s_CursorSE, DX_PLAYTYPE_BACK); }	// カーソル音
+
 	void SetNetBallteFlg(bool value) { netBattleFlg = value; }	// 通信モードがONかOFFかをセットする
 	bool GetNetBallteFlg() { return netBattleFlg; }				// 通信モードがONかOFFか取得する
 
@@ -103,6 +110,8 @@ private:
 	void LoadCursorImages();	// カーソル画像読込み
 	void DeleteBlockImages();	// ブロックの画像消去
 
+	void LoadSounds();		// ゲーム全体でよく使う音データ読み込み
+
 	const static int DRAW_SCREEN_WIDTH = 1280;	// 描画時のウィンドウの幅
 	const static int DRAW_SCREEN_HEIGHT = 720;	// 描画時のウィンドウの高さ
 
@@ -121,6 +130,12 @@ private:
 
 	int i_BlockImages[3];	// ブロックの画像
 	int i_CursorImage[2];	// プレイヤーカーソルの画像
+
+	int m_TitleBGM;		// タイトル画面BGM
+	int m_BattleBGM;	// 試合中BGM
+	int s_DicideSE;		// 決定音
+	int s_CanselSE;		// キャンセル音
+	int s_CursorSE;		// カーソル音
 
 };
 #endif // !_GAMEMAIN_H_

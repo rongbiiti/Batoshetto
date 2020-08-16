@@ -1,6 +1,8 @@
 #include "DifficultySelectScene.h"
 
+////////////////////////////////////////////////
 // コンストラクタ
+////////////////////////////////////////////////
 DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font, GameManager* gameMNG) {
 	inputManager = input;
 	fontData = font;
@@ -16,7 +18,9 @@ DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font
 
 }
 
+////////////////////////////////////////////////
 // 難易度選択画面の処理
+////////////////////////////////////////////////
 void DifficultySelectScene::DifficultySelectControll() {
 	for (int i = 0; i < 2; i++) {
 		
@@ -24,6 +28,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 		if (dicideNumFlg[i]) {
 			if (inputManager->GetButtonDown(A, i)) {
 				dicideNumFlg[i] = false;
+				gameMangaer->gameMain->PlayCanselSE();
 			}
 			continue;
 		}
@@ -32,6 +37,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 		if (inputManager->GetButtonDown(A, i)) {
 			returnFlg = true;		// このフラグは、gameMainが参照している。trueなら、難易度選択画面クラスがdeleteされる。
 			gameMangaer->gameMain->CreateTitleObj();		// タイトル画面を作り、Phaseもタイトルにする
+			gameMangaer->gameMain->PlayCanselSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_UP, i) || inputManager->GetButtonHold(PAD_UP, i, 4)) {
@@ -40,6 +46,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
+			gameMangaer->gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
@@ -48,11 +55,13 @@ void DifficultySelectScene::DifficultySelectControll() {
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
+			gameMangaer->gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
 			// ゲームパッド1のBボタン入力。
 			dicideNumFlg[i] = true;
+			gameMangaer->gameMain->PlayDicideSE();
 		}
 	}
 
@@ -60,11 +69,13 @@ void DifficultySelectScene::DifficultySelectControll() {
 	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 		returnFlg = true;
 		gameMangaer->gameMain->CreateTitleObj();
+		gameMangaer->gameMain->PlayCanselSE();
 	}
 
 	// キーボードのESCを押した時、難易度を決定していたら、その決定をキャンセルする
 	if (dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_ESCAPE)) {
 		dicideNumFlg[GameManager::BLUE] = false;
+		gameMangaer->gameMain->PlayCanselSE();
 	}
 
 
@@ -75,6 +86,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
+		gameMangaer->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
@@ -83,11 +95,13 @@ void DifficultySelectScene::DifficultySelectControll() {
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		gameMangaer->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::BLUE] = true;
+		gameMangaer->gameMain->PlayDicideSE();
 		return;
 	}
 
@@ -96,6 +110,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 		inputManager->In_Key()[KEY_INPUT_RETURN] = 0;
 		selectNum[GameManager::RED] = selectNum[GameManager::BLUE];
 		dicideNumFlg[GameManager::RED] = true;
+		gameMangaer->gameMain->PlayDicideSE();
 	}
 
 	// どちらも項目を決定していたら、シーン遷移をする
@@ -107,6 +122,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 				selectNum[i] = 0;
 				dicideNumFlg[i] = false;
 			}
+			gameMangaer->gameMain->PlayCanselSE();
 			return;
 		}
 		else {
@@ -121,13 +137,16 @@ void DifficultySelectScene::DifficultySelectControll() {
 	}
 }
 
+////////////////////////////////////////////////
 // 難易度選択画面の処理・ネット対戦用
+////////////////////////////////////////////////
 void DifficultySelectScene::DifficultySelectControll_Net() {
 
 	if (!dicideNumFlg[GameManager::RED] && inputManager->GetButtonDown(A, GameManager::RED)) {
 		// ゲームパッド1のBボタン入力。
 		returnFlg = true;
 		gameMangaer->gameMain->CreateTitleObj();
+		gameMangaer->gameMain->PlayCanselSE();
 		return;
 	}
 
@@ -137,6 +156,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		if (--selectNum[GameManager::RED] < 0) {
 			selectNum[GameManager::RED] = SELECT_NUM_MAX;
 		}
+		gameMangaer->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetButtonDown(PAD_DOWN, GameManager::RED) || inputManager->GetButtonHold(PAD_DOWN, GameManager::RED, 4))) {
@@ -145,17 +165,20 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
 			selectNum[GameManager::RED] = 0;
 		}
+		gameMangaer->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && inputManager->GetButtonDown(B, GameManager::RED)) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
+		gameMangaer->gameMain->PlayDicideSE();
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_ESCAPE))) {
 		// ゲームパッド1のBボタン入力。
 		returnFlg = true;
 		gameMangaer->gameMain->CreateTitleObj();
+		gameMangaer->gameMain->PlayCanselSE();
 		return;
 	}
 
@@ -166,6 +189,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		if (--selectNum[GameManager::RED] < 0) {
 			selectNum[GameManager::RED] = SELECT_NUM_MAX;
 		}
+		gameMangaer->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
@@ -174,11 +198,13 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
 			selectNum[GameManager::RED] = 0;
 		}
+		gameMangaer->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
+		gameMangaer->gameMain->PlayDicideSE();
 		return;
 	}
 
@@ -204,7 +230,9 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 	}
 }
 
+////////////////////////////////////////////////
 // 難易度選択画面の描画処理
+////////////////////////////////////////////////
 void DifficultySelectScene::DrawDifficultySelectScene() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
@@ -251,7 +279,9 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 	}
 }
 
+////////////////////////////////////////////////
 // 難易度選択画面の描画処理・ネット用
+////////////////////////////////////////////////
 void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
@@ -299,7 +329,9 @@ void DifficultySelectScene::SetDifficulty() {
 	
 }
 
+////////////////////////////////////////////////
 // デストラクタ
+////////////////////////////////////////////////
 DifficultySelectScene::~DifficultySelectScene() {
 
 }

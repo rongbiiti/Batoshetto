@@ -1,7 +1,9 @@
 #include "Result.h"
 
+////////////////////////////////////////////////
 // フォントデータ管理オブジェクトのポインタ、入力管理オブジェクトのポインタ、
 // ゲーム進行管理オブジェクトのポインタ、ヒットしたプレイヤーがREDかBLUEかを受け取る。
+////////////////////////////////////////////////
 Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hitplayernum) {
 	fontData = font;
 	inputManager = input;
@@ -18,7 +20,9 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	}
 }
 
+////////////////////////////////////////////////
 // 通信対戦で、タイムアウトが起きたとき
+////////////////////////////////////////////////
 Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 	fontData = font;
 	inputManager = input;
@@ -45,6 +49,7 @@ void Result::ResultControll(void) {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
+			gameManager->gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
@@ -53,12 +58,13 @@ void Result::ResultControll(void) {
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
+			gameManager->gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
 			// ゲームパッド1のBボタン入力。
 			dicideNumFlg[i] = true;
-			
+			gameManager->gameMain->PlayDicideSE();
 		}
 	}
 
@@ -70,6 +76,7 @@ void Result::ResultControll(void) {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
+		gameManager->gameMain->PlayCursorSE();
 		
 	}
 
@@ -79,12 +86,13 @@ void Result::ResultControll(void) {
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
-		
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::BLUE] = true;
+		gameManager->gameMain->PlayDicideSE();
 		return;
 	}
 
@@ -93,6 +101,7 @@ void Result::ResultControll(void) {
 		inputManager->In_Key()[KEY_INPUT_RETURN] = 0;
 		selectNum[GameManager::RED] = selectNum[GameManager::BLUE];
 		dicideNumFlg[GameManager::RED] = true;
+		gameManager->gameMain->PlayDicideSE();
 	}
 
 	// どちらも項目を決定していたら、シーン遷移をする
@@ -103,6 +112,7 @@ void Result::ResultControll(void) {
 			for (int i = 0; i < 2; i++) {
 				selectNum[i] = 0;
 				dicideNumFlg[i] = false;
+				gameManager->gameMain->PlayCanselSE();
 			}
 			return;
 		}
@@ -114,7 +124,9 @@ void Result::ResultControll(void) {
 
 }
 
+////////////////////////////////////////////////
 // リザルト画面操作：ネット用
+////////////////////////////////////////////////
 void Result::ResultControll_Net(void) {
 
 	// どちらも項目を決定していたら、シーン遷移をする
@@ -133,6 +145,7 @@ void Result::ResultControll_Net(void) {
 		if (--selectNum[GameManager::RED] < 0) {
 			selectNum[GameManager::RED] = SELECT_NUM_MAX;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetButtonDown(PAD_DOWN, 0) || inputManager->GetButtonHold(PAD_DOWN, 0, 4)) {
@@ -141,12 +154,13 @@ void Result::ResultControll_Net(void) {
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
 			selectNum[GameManager::RED] = 0;
 		}
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetButtonDown(B, GameManager::RED)) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
-
+		gameManager->gameMain->PlayDicideSE();
 	}
 
 
@@ -157,7 +171,7 @@ void Result::ResultControll_Net(void) {
 		if (--selectNum[GameManager::RED] < 0) {
 			selectNum[GameManager::RED] = SELECT_NUM_MAX;
 		}
-		
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
@@ -166,18 +180,21 @@ void Result::ResultControll_Net(void) {
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
 			selectNum[GameManager::RED] = 0;
 		}
-		
+		gameManager->gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::RED] = true;
+		gameManager->gameMain->PlayDicideSE();
 		return;
 	}
 	
 }
 
+////////////////////////////////////////////////
 // シーン遷移
+////////////////////////////////////////////////
 void Result::SceneTransition() {
 	// 少し待ってから遷移する
 	if (!(SCENE_TRANSITION_WAITING_TIME < ++waitTime))  return;
@@ -205,7 +222,9 @@ void Result::SceneTransition() {
 	}
 }
 
+////////////////////////////////////////////////
 // 描画用
+////////////////////////////////////////////////
 void Result::DrawResult() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
@@ -251,7 +270,9 @@ void Result::DrawResult() {
 	}
 }
 
+////////////////////////////////////////////////
 // 描画用：ネット対戦用
+////////////////////////////////////////////////
 void Result::DrawResult_Net() {
 	if (timeOutFlg) {
 		DrawTimeOut();
@@ -293,7 +314,9 @@ void Result::DrawResult_Net() {
 	}
 }
 
+////////////////////////////////////////////////
 // 描画用
+////////////////////////////////////////////////
 void Result::DrawTimeOut() {
 
 
@@ -325,7 +348,9 @@ void Result::DrawTimeOut() {
 	}
 }
 
+////////////////////////////////////////////////
 // 画面を抜けて難易度選択画面へ
+////////////////////////////////////////////////
 void Result::Return_to_Game() {
 	gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 	gameManager->gameMain->CreateDifficultySelectSceneObj();
@@ -333,7 +358,9 @@ void Result::Return_to_Game() {
 	this->~Result();
 }
 
+////////////////////////////////////////////////
 // ネット対戦で、同じ条件で相手と再戦する
+////////////////////////////////////////////////
 void Result::ReMatch() {
 	gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
 	gameManager->gameMain->network->VariableInit();
@@ -341,7 +368,9 @@ void Result::ReMatch() {
 	this->~Result();
 }
 
+////////////////////////////////////////////////
 // 試合を中断してタイトル画面へ戻る
+////////////////////////////////////////////////
 void Result::Return_to_Title() {
 	gameManager->SetPhaseStatus(GameManager::TITLE);
 	gameManager->gameMain->CreateTitleObj();

@@ -47,21 +47,26 @@ private:
 	const int PlayerStartPositionY[2] = { 200, 600 };	// プレイヤーの初期Y座標
 	const int PlayerSize = 60;							// プレイヤーの直径サイズ
 
+	void PlayerMove();		// プレイヤー移動
+	void AimControll();		// 狙う処理
+
 	float AngleCorrection(float ang);			// 角度を0～360度に収まるように調整
 	int XCoordinateCorrection(int posx, int pnum, int size);	// X座標が指定の範囲を超えていないか、プレイヤーの番号をもとに修正
 	int YCoordinateCorrection(int posy, int size);				// Y座標が指定の範囲を超えないように修正
 
 	void CreateBullet(void);					// 弾を生成する
 	void BlockHitCheck(void);					// ブロックと当たり判定
+
 	void TargetPointWindowHitCheck(void);		// 弾が進む方向がウィンドウを飛び出してないかチェックする
 	bool TrajectoryPrecalculation_ToBlock(int* blocknum);	// ブロックに対する弾道の事前計算。
 	int TrajectoryPrecalculation_ToWindow(void);	// ウィンドウに対する弾道の事前計算。
 	void CalcHitAfterAngle_ToBlock(int blocknum);	// ブロックのどの辺と衝突しているか判断して角度を変更する
 	void CalcHitAfterAngle_ToWindow(int num);		// ウィンドウのどの端と衝突しているか判断して角度を変更する
+
 	void ChangeDirectionalKeyAng(void);				// 方向キーで角度変更操作したとき、現在の角度によって角度を足すか引くかを変える
+
 	void LoadImages();	// 画像読み込み
 	
-
 	GameMain* gameMain;			// コンストラクタで受け取ったGameMainのポインタを保存しておく変数
 	InputManager* inputManager;	// 入力管理クラスのポインタを入れる変数
 	int x, y;					// 座標 x,y

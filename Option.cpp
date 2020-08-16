@@ -1,6 +1,8 @@
 #include "Option.h"
 
+////////////////////////////////////////////////
 // コンストラクタ
+////////////////////////////////////////////////
 Option::Option(GameMain* main, int pushPLnum, int prescreennum, int prephase) {
 	gameMain = main;
 	inputManager = gameMain->inputManager;
@@ -17,7 +19,9 @@ Option::Option(GameMain* main, int pushPLnum, int prescreennum, int prephase) {
 	
 }
 
+////////////////////////////////////////////////
 // オプション画面の処理関数
+////////////////////////////////////////////////
 void Option::OptionControll() {
 	switch (screenNum)
 	{
@@ -30,7 +34,9 @@ void Option::OptionControll() {
 	}
 }
 
+////////////////////////////////////////////////
 // オプショントップ画面の処理
+////////////////////////////////////////////////
 void Option::ControllOptionTop() {
 	for (int i = 0; i < 2; i++) {
 
@@ -43,6 +49,7 @@ void Option::ControllOptionTop() {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
 			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
@@ -51,6 +58,7 @@ void Option::ControllOptionTop() {
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
@@ -74,6 +82,7 @@ void Option::ControllOptionTop() {
 				}
 				break;
 			}
+			gameMain->PlayDicideSE();
 			return;
 		}
 	}
@@ -89,6 +98,7 @@ void Option::ControllOptionTop() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
@@ -97,6 +107,7 @@ void Option::ControllOptionTop() {
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
@@ -120,10 +131,13 @@ void Option::ControllOptionTop() {
 			}
 			break;
 		}
+		gameMain->PlayDicideSE();
 	}
 }
 
+////////////////////////////////////////////////
 // 音量調節画面の処理
+////////////////////////////////////////////////
 void Option::ControllVolumeScreen() {
 	for (int i = 0; i < 2; i++) {
 
@@ -136,7 +150,7 @@ void Option::ControllVolumeScreen() {
 			if (--selectNum[i] < 0) {
 				selectNum[i] = VOLUME_SELECT_NUM_MAX;
 			}
-			
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
@@ -145,7 +159,7 @@ void Option::ControllVolumeScreen() {
 			if (++selectNum[i] > VOLUME_SELECT_NUM_MAX) {
 				selectNum[i] = 0;
 			}
-			
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_RIGHT, i) || inputManager->GetButtonHold(PAD_RIGHT, i, 4)) {
@@ -164,7 +178,8 @@ void Option::ControllVolumeScreen() {
 					SEVolume = 1;
 				}
 				break;
-			}			
+			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(PAD_LEFT, i) || inputManager->GetButtonHold(PAD_LEFT, i, 4)) {
@@ -184,6 +199,7 @@ void Option::ControllVolumeScreen() {
 				}
 				break;
 			}
+			gameMain->PlayCursorSE();
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
@@ -194,10 +210,12 @@ void Option::ControllVolumeScreen() {
 				if (previousNum == PAUSE) {
 					ChangeBulletSoundVolume();
 				}
+				gameMain->ChangeVolume(BGMVolume, SEVolume);
 				SaveFile();
 				BackOptionMenu();
 				break;
 			}
+			gameMain->PlayDicideSE();
 			return;
 		}
 	}
@@ -213,6 +231,7 @@ void Option::ControllVolumeScreen() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = VOLUME_SELECT_NUM_MAX;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
@@ -221,6 +240,7 @@ void Option::ControllVolumeScreen() {
 		if (++selectNum[GameManager::BLUE] > VOLUME_SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_RIGHT) || inputManager->GetKeyHold(KEY_INPUT_RIGHT, 4)) {
@@ -241,6 +261,7 @@ void Option::ControllVolumeScreen() {
 			}
 			break;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_LEFT) || inputManager->GetKeyHold(KEY_INPUT_LEFT, 4)) {
@@ -261,6 +282,7 @@ void Option::ControllVolumeScreen() {
 			}
 			break;
 		}
+		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
@@ -271,28 +293,36 @@ void Option::ControllVolumeScreen() {
 			if (previousNum == PAUSE) {
 				ChangeBulletSoundVolume();
 			}
+			gameMain->ChangeVolume(BGMVolume, SEVolume);
 			SaveFile();
 			BackOptionMenu();
 			break;
 		}
+		gameMain->PlayDicideSE();
 	}
 }
 
+////////////////////////////////////////////////
 // タイトル画面へ戻る
+////////////////////////////////////////////////
 void Option::Return_to_Title() {
 	gameMain->gameManager->SetPhaseStatus(GameManager::TITLE);
 	gameMain->CreateTitleObj();
 	this->~Option();
 }
 
+////////////////////////////////////////////////
 // ポーズ画面へ戻る
+////////////////////////////////////////////////
 void Option::Return_to_PauseScreen() {
 	gameMain->gameManager->SetPhaseStatus(previousGamePhase);
 	gameMain->CreatePauseScreenObj();
 	this->~Option();
 }
 
+////////////////////////////////////////////////
 // オプション画面の描画
+////////////////////////////////////////////////
 void Option::DrawOption() {
 	switch (screenNum)
 	{
@@ -305,7 +335,9 @@ void Option::DrawOption() {
 	}
 }
 
+////////////////////////////////////////////////
 // オプション画面のトップを描画
+////////////////////////////////////////////////
 void Option::DrawOptionMain() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
@@ -334,7 +366,9 @@ void Option::DrawOptionMain() {
 	}
 }
 
+////////////////////////////////////////////////
 // 音量調節画面を描画
+////////////////////////////////////////////////
 void Option::DrawVolumeMenu() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
@@ -384,7 +418,9 @@ void Option::DrawVolumeMenu() {
 
 }
 
+////////////////////////////////////////////////
 // 各調節画面からトップに戻るための関数
+////////////////////////////////////////////////
 void Option::BackOptionMenu() {
 	switch (previousNum)
 	{
@@ -400,9 +436,12 @@ void Option::BackOptionMenu() {
 	selectNum[1] = 0;
 }
 
+////////////////////////////////////////////////
 // 弾の音量調節
+////////////////////////////////////////////////
 void Option::ChangeBulletSoundVolume() {
 	gameMain->bullet->ChangeVolume(SEVolume);
+	gameMain->ChangeVolume(BGMVolume, SEVolume);
 }
 
 // セーブデータ読込み
@@ -419,7 +458,9 @@ void Option::LoadFile() {
 	}
 }
 
+////////////////////////////////////////////////
 // セーブデータ保存
+////////////////////////////////////////////////
 void Option::SaveFile() {
 	const char *fileName = "config.txt";
 	FILE *fp;
@@ -435,7 +476,9 @@ void Option::SaveFile() {
 	}
 }
 
+////////////////////////////////////////////////
 // デストラクタ
+////////////////////////////////////////////////
 Option::~Option() {
 
 }
