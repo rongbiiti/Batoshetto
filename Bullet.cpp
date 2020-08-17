@@ -23,6 +23,7 @@ Bullet::Bullet(void)
 	HitPlayerNum = 0;
 	LoadSounds();
 	toHidePhaseTransitionWaitTime = 0;
+	bnum = 0;
 }
 
 ////////////////////////////////////////////////
@@ -100,7 +101,7 @@ void Bullet::DrawBullet(void) {
 		DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
 		DrawCircle(dx, dy, Size, color);
 	}
-
+	DrawFormatStringToHandle(640, 360, 0xFFFFFF, gameMain->fontData->f_FontData[1], "%d", bnum);
 	effect->DrawRicochetEffect();		// エフェクト描画
 	effect->DrawHitEffect();
 }
@@ -135,30 +136,45 @@ void Bullet::ChangeAngle(void) {
 bool Bullet::IsScreenOutside(void) {
 	if (x >= GameMain::SCREEN_WIDTH || x <= 0) {
 		--ricochetCount;				// 跳弾回数減らす
+		float effAng = 0;
+		if (x <= 0) {
+			effAng = 0;
+		}
+		else {
+			effAng = (180 * 3.14) / 180;
+		}
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle) + 180;	// 向きの上下を反転させる
 		if (angle > 360) angle -= 360;	// 360度におさまるようにする
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;
 		y = preY;
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, x, y, effAng);
 		preX = x;
 		preY = y;
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, angle);
+		
 		return true;
 	}
 
 	if (y >= GameMain::SCREEN_HEIGHT || y <= 0) {
 		--ricochetCount;				// 跳弾回数減らす
+		float effAng = 0;
+		if (y <= 0) {
+			effAng = (90 * 3.14) / 180;
+		}
+		else {
+			effAng = (270 * 3.14) / 180;
+		}
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle);			// 向きの左右を反転させる
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;					
 		y = preY;
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, x, y, effAng);
 		preX = x;
 		preY = y;
 		shooterHitOK = true;			// 撃つ側と当たり判定できるようにする
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, angle);
 		return true;					
 	}
 
@@ -209,6 +225,7 @@ bool Bullet::IsHitBlock(void) {
 	for (int i = 0; i < GameMain::BLOCK_MAX; i++) {
 		cross[i].x = -10000;		// 間違ってもプレイヤーと一番近い点とならないように大きい値にしておく
 		cross[i].y = -10000;
+		cross[i].num = 0;
 		cross[i].flg = false;
 	}
 
@@ -225,7 +242,7 @@ bool Bullet::IsHitBlock(void) {
 		cross[i] = collision->IsHitTargetAndBlock(preX, preY, x, y, (float)blockX, (float)blockY, (float)blockSize);
 	}
 
-	Collision::Vector2 crossPosition = { -10000, -10000, false };	// 比較用。
+	Collision::Vector2 crossPosition = { -10000, -10000, 0, false };	// 比較用。
 	float distance1 = -10000;
 	float distance2 = -10000;
 	int num = 0;
@@ -237,6 +254,7 @@ bool Bullet::IsHitBlock(void) {
 		if (distance2 < distance1) {					// 比較したほうがプレイヤーと近かったら渡す用の構造体の値を、その値に更新
 			crossPosition.x = cross[i].x;
 			crossPosition.y = cross[i].y;
+			crossPosition.num = cross[i].num;
 			crossPosition.flg = true;
 			num = i;
 		}
@@ -254,6 +272,21 @@ bool Bullet::IsHitBlock(void) {
 		x = crossPosition.x;	// 狙っている方向のX座標
 		y = crossPosition.y;	// 狙っている方向のY座標
 		--ricochetCount;		// 当たっていたら、跳弾回数を減らす
+		float effAng = 0;
+		if (crossPosition.num == 0) {
+			effAng = (270 * 3.14) / 180;
+		}
+		else if (crossPosition.num == 1) {
+			effAng = 0;
+		}
+		else if (crossPosition.num == 2) {
+			effAng = (90 * 3.14) / 180;
+		}
+		else {
+			effAng = (180 * 3.14) / 180;
+		}
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, crossPosition.x, crossPosition.y, effAng);
+		bnum = crossPosition.num;
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
@@ -301,7 +334,7 @@ bool Bullet::IsHitBlock(void) {
 		preX = x;
 		preY = y;
 		RemainingRicochetTimesCheck();
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, crossPosition.x, crossPosition.y,angle);
+		
 
 		return true;
 	}
