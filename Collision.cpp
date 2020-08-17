@@ -70,6 +70,7 @@ Collision::Vector2 Collision::IsHitTargetAndBlock(float px, float py, float tx, 
 	for (int i = 0; i < 4; i++) {
 		cross[i].x = -10000;		// 間違っても一番近い座標にならないようにする
 		cross[i].y = -10000;
+		cross[i].num = 0;
 		cross[i].flg = false;
 	}
 	left = bx - bsize / 2;
@@ -86,6 +87,7 @@ Collision::Vector2 Collision::IsHitTargetAndBlock(float px, float py, float tx, 
 	// どの点が一番プレイヤーに近いかを比較する
 	position.x = cross[0].x;	// 最初の配列の値を代入しておく
 	position.y = cross[0].y;
+	position.num = 0;
 	position.flg = cross[0].flg;
 
 	float distance1 = 0;		// 2点間の距離
@@ -98,6 +100,7 @@ Collision::Vector2 Collision::IsHitTargetAndBlock(float px, float py, float tx, 
 		if (distance2 <= distance1) {	// 比較したほうがプレイヤーと近かったら渡す用の構造体の値を、その値に更新
 			position.x = cross[i].x;
 			position.y = cross[i].y;
+			position.num = i;
 			position.flg = true;
 		}
 	}

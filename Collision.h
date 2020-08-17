@@ -10,6 +10,7 @@ public:
 	typedef struct POINT	// x座標とy座標をまとめて渡せるようにするための構造体
 	{
 		float x, y;	// 座標 x,y
+		int num;	// 辺の番号
 		bool flg;	// 有効な数値が入っているか
 	}Vector2;
 
@@ -39,7 +40,7 @@ private:
 	// 2点間の距離を計算して返す。
 	float GetPointsDistance(float x1, float y1, float x2, float y2);
 
-	Vector2 position = { 0, 0, false };	// 構造体生成
+	Vector2 position = { 0, 0, 0, false };	// 構造体生成
 
 };
 
