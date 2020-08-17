@@ -172,6 +172,7 @@
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="TitleBullet.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="TitleBullet.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>

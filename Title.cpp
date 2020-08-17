@@ -5,17 +5,30 @@ Title::Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	inputManager = inputMNG;
 	gameManager = gameMNG;
 	gameMain = gameManager->gameMain;
+	titleBullet = new TitleBullet(fontData);
 
 	// カーソル位置初期化
 	selectNum[0] = 0;
 	selectNum[1] = 0;
 	LoadImages();
+
+	backAnimWaitTime = 240;
 }
 
 void Title::TitleControll() {
 	if (isOpenHelpScreen) {
 		HelpScreenControll();
 		return;
+	}
+
+	if (!titleBullet->GetIsAlive()) {
+		if (300 <= ++backAnimWaitTime) {
+			titleBullet->BulletInit(TRUE, GetRand(1), GetRand(1));
+			backAnimWaitTime = 0;
+		}
+	}
+	else {
+		titleBullet->TitleBulletControll();
 	}
 
 	for (int i = 0; i < 2; i++) {
@@ -155,6 +168,8 @@ void Title::DrawTitle() {
 	}
 
 	DrawGraph(0, 0, i_BGImage, TRUE);	// 背景画像
+
+	titleBullet->DrawTitleBullet();
 
 	// ビルドした日
 	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/08/14");
