@@ -43,6 +43,10 @@ private:
 	bool dicideNumFlg[2];				// 番号を決定したかのフラグ
 
 	bool timeOutFlg;
+
+	void LoadImages();	// 画像読み込み
+	void DeleteImages();	// 画像データメモリから消去
+	int i_ResultImage;	// 背景画像
 };
 
 #endif // !_RESULT_H_

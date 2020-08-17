@@ -18,6 +18,8 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	for (int i = 0; i < 2; i++) {
 		dicideNumFlg[i] = false;
 	}
+
+	LoadImages();
 }
 
 ////////////////////////////////////////////////
@@ -36,6 +38,8 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 	for (int i = 0; i < 2; i++) {
 		dicideNumFlg[i] = false;
 	}
+
+	LoadImages();
 }
 
 void Result::ResultControll(void) {
@@ -229,6 +233,8 @@ void Result::DrawResult() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
+
 	// Pauseの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "GAME SET !!");
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "GAME SET !!");
@@ -282,6 +288,8 @@ void Result::DrawResult_Net() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
+
 	// Pauseの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "GAME SET !!");
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "GAME SET !!");
@@ -322,6 +330,8 @@ void Result::DrawTimeOut() {
 
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+
+	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
 	// Pauseの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "相手からの応答が10秒間ありませんでした");
@@ -378,5 +388,13 @@ void Result::Return_to_Title() {
 	this->~Result();
 }
 
+void Result::LoadImages() {
+	if (!(i_ResultImage = LoadGraph("Image/Result.png"))) return;
+}
+
+void Result::DeleteImages() {
+	i_ResultImage = DeleteGraph(i_ResultImage);
+}
 Result::~Result() {
+	DeleteImages();
 }
