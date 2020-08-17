@@ -75,10 +75,10 @@ void Effect::LoadImages() {
 	if (!(i_ShotEffect[2] = LoadGraph("Image/ShotEffect03.png"))) return;
 	if (!(i_ShotEffect[3] = LoadGraph("Image/ShotEffect04.png"))) return;
 
-	if (!(i_RicochetEffect[0] = LoadGraph("Image/ShotEffect01.png"))) return;
-	if (!(i_RicochetEffect[1] = LoadGraph("Image/ShotEffect02.png"))) return;
-	if (!(i_RicochetEffect[2] = LoadGraph("Image/ShotEffect03.png"))) return;
-	if (!(i_RicochetEffect[3] = LoadGraph("Image/ShotEffect04.png"))) return;
+	if (!(i_RicochetEffect[0] = LoadGraph("Image/RicochetEffect01.png"))) return;
+	if (!(i_RicochetEffect[1] = LoadGraph("Image/RicochetEffect02.png"))) return;
+	if (!(i_RicochetEffect[2] = LoadGraph("Image/RicochetEffect03.png"))) return;
+	if (!(i_RicochetEffect[3] = LoadGraph("Image/RicochetEffect04.png"))) return;
 
 	if (!(i_HitEffect[0] = LoadGraph("Image/HitEffect01.png"))) return;
 	if (!(i_HitEffect[1] = LoadGraph("Image/HitEffect02.png"))) return;
