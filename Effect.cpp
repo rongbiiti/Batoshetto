@@ -34,7 +34,7 @@ void Effect::InitHitEffectCount(int x, int y) {
 //マズルフラッシュエフェクトを描画する
 void Effect::DrawEffect(int x, int y, float angle) {
 	
-	if (effectcount <= 12) {
+	if (effectcount < 12) {
 		DrawRotaGraph(x + cosf(angle * DX_PI_F / 180.0f) * 65, y + sinf(angle * DX_PI_F / 180.0f) * 65, 1.5f, angle * DX_PI_F / 180.0f, i_ShotEffect[effectcount / 3], TRUE);
 		effectcount++;
 	}
@@ -46,8 +46,8 @@ void Effect::DrawEffect(int x, int y, float angle) {
 //跳弾時エフェクトを描画
 void Effect::DrawRicochetEffect() {
 	for(int i = 0; i<6; i++){
-		if (RicochetEffectCount[i] <= 12 && RicochetEffectFlg[i]) {
-			DrawRotaGraph(rico_x[i], rico_y[i], 1.0f, rico_angle[i], i_RicochetEffect[(++RicochetEffectCount[i]-2) / 3], TRUE);
+		if (RicochetEffectCount[i] < 12 && RicochetEffectFlg[i]) {
+			DrawRotaGraph(rico_x[i], rico_y[i], 1.0f, rico_angle[i], i_RicochetEffect[(++RicochetEffectCount[i]-1) / 3], TRUE);
 			
 		}
 		else {
@@ -58,7 +58,7 @@ void Effect::DrawRicochetEffect() {
 
 //ヒット時エフェクトを描画
 void Effect::DrawHitEffect() {
-	if (HitEffectcount <= 18 && HitEffectFlg) {
+	if (HitEffectcount < 18 && HitEffectFlg) {
 		DrawRotaGraph(hit_effect_x , hit_effect_y , 1.0f, 180.0f, i_HitEffect[HitEffectcount / 3], TRUE);
 		HitEffectcount++;
 	}

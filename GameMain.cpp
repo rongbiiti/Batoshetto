@@ -62,6 +62,8 @@ int GameMain::FirstInit(void) {
 	LoadSounds();
 	CreateOptionObj(0, 0);
 	ChangeVolume(option->GetBGMVolume(), option->GetSEVolume());
+	delete option;
+	option = NULL;
 
 	// 入力管理クラスを生成
 	CreateInputManagerObj();
@@ -74,13 +76,9 @@ int GameMain::FirstInit(void) {
 
 	// タイトル画面クラスを生成
 	CreateTitleObj();
-	title->titleBullet->ChangeVolume(option->GetSEVolume());
 
 	// 通信対戦用クラスを生成
 	CreateNetworkObj();
-
-	delete option;
-	option = NULL;
 
 	return 1;
 }
@@ -607,6 +605,10 @@ void GameMain::CreateTitleObj() {
 	gameManager->SetPhaseStatus(GameManager::TITLE);
 	netBattleFlg = FALSE;
 	PlayTitleBGM();
+	CreateOptionObj(0, 0);
+	title->titleBullet->ChangeVolume(option->GetSEVolume());
+	delete option;
+	option = NULL;
 }
 
 void GameMain::CreateEndObj() {

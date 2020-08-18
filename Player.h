@@ -43,8 +43,8 @@ private:
 	Network* net;	// ネットワーク管理クラスのポインタ
 
 	const int PlayerMoveSpeed = 5;						// プレイヤーの移動速度
-	const int PlayerStartPositionX[2] = { 60, 1100 };	// プレイヤーの初期X座標
-	const int PlayerStartPositionY[2] = { 200, 600 };	// プレイヤーの初期Y座標
+	const int PlayerStartPositionX[2] = { 60, 1220 };	// プレイヤーの初期X座標
+	const int PlayerStartPositionY[2] = { 200, 520 };	// プレイヤーの初期Y座標
 	const int PlayerSize = 60;							// プレイヤーの直径サイズ
 
 	void PlayerMove();		// プレイヤー移動

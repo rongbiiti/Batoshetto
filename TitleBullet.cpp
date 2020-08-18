@@ -111,6 +111,13 @@ bool TitleBullet::RemainingRicochetTimesCheck() {
 bool TitleBullet::IsScreenOutside() {
 	if (x >= GameMain::SCREEN_WIDTH || x <= 0) {
 		--ricochetCount;				// ’µ’e‰ñ”Œ¸‚ç‚·
+		float effAng = 0;
+		if (x <= 0) {
+			effAng = 0;
+		}
+		else {
+			effAng = (180 * 3.14) / 180;
+		}
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle) + 180;	// Œü‚«‚Ìã‰º‚ð”½“]‚³‚¹‚é
 		if (angle > 360) angle -= 360;	// 360“x‚É‚¨‚³‚Ü‚é‚æ‚¤‚É‚·‚é
@@ -119,12 +126,19 @@ bool TitleBullet::IsScreenOutside() {
 		y = preY;
 		preX = x;
 		preY = y;
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, angle);
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, effAng);
 		return true;
 	}
 
 	if (y >= GameMain::SCREEN_HEIGHT || y <= 0) {
 		--ricochetCount;				// ’µ’e‰ñ”Œ¸‚ç‚·
+		float effAng = 0;
+		if (y <= 0) {
+			effAng = (90 * 3.14) / 180;
+		}
+		else {
+			effAng = (270 * 3.14) / 180;
+		}
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle);			// Œü‚«‚Ì¶‰E‚ð”½“]‚³‚¹‚é
 		ChangeAngle();					// Šp“x‚ð‚à‚Æ‚Éis•ûŒü•ÏX
@@ -132,7 +146,7 @@ bool TitleBullet::IsScreenOutside() {
 		y = preY;
 		preX = x;
 		preY = y;
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, angle);
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, effAng);
 		return true;
 	}
 

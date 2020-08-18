@@ -74,7 +74,7 @@ void Result::ResultControll(void) {
 
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
-	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
+	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
 		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
@@ -84,7 +84,7 @@ void Result::ResultControll(void) {
 		
 	}
 
-	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
+	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
 		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
@@ -93,7 +93,7 @@ void Result::ResultControll(void) {
 		gameManager->gameMain->PlayCursorSE();
 	}
 
-	if (!dicideNumFlg[GameManager::BLUE] && inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
+	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
 		// ゲームパッド1のBボタン入力。
 		dicideNumFlg[GameManager::BLUE] = true;
 		gameManager->gameMain->PlayDicideSE();
@@ -101,7 +101,7 @@ void Result::ResultControll(void) {
 	}
 
 	// キーボードを押し続けていた場合、REDとBLUEを強制的に同じ項目を選択したことにして、処理を進める
-	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
+	if (!(dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) && inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
 		inputManager->In_Key()[KEY_INPUT_RETURN] = 0;
 		selectNum[GameManager::RED] = selectNum[GameManager::BLUE];
 		dicideNumFlg[GameManager::RED] = true;
@@ -385,6 +385,7 @@ void Result::Return_to_Title() {
 	gameManager->SetPhaseStatus(GameManager::TITLE);
 	gameManager->gameMain->CreateTitleObj();
 	gameManager->gameMain->MainObjDelete();
+	gameManager->gameMain->PlayBattleBGM(TRUE);
 	this->~Result();
 }
 

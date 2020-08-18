@@ -106,7 +106,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 	}
 
 	// キーボードを押し続けていた場合、REDとBLUEを強制的に同じ項目を選択したことにして、処理を進める
-	if (inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
+	if (!(dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) && inputManager->In_Key()[KEY_INPUT_RETURN] >= 30) {
 		inputManager->In_Key()[KEY_INPUT_RETURN] = 0;
 		selectNum[GameManager::RED] = selectNum[GameManager::BLUE];
 		dicideNumFlg[GameManager::RED] = true;

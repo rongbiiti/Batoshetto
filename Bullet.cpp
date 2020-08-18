@@ -101,7 +101,6 @@ void Bullet::DrawBullet(void) {
 		DrawLine(dx, dy, (int)preX, (int)preY, COLOR_VALUE_PLAYER[gameMain->gameManager->GetNowShooter()], 4);
 		DrawCircle(dx, dy, Size, color);
 	}
-	DrawFormatStringToHandle(640, 360, 0xFFFFFF, gameMain->fontData->f_FontData[1], "%d", bnum);
 	effect->DrawRicochetEffect();		// エフェクト描画
 	effect->DrawHitEffect();
 }
