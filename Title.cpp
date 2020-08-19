@@ -196,7 +196,7 @@ void Title::DrawTitle() {
 void Title::LoadImages() {
 	if (!(i_helpImage = LoadGraph("Image/Help.png"))) return;
 	if (!(i_LogoImage = LoadGraph("Image/TitleLogo.png"))) return;
-	if (!(i_BGImage = LoadGraph("Image/TitleBulletBackImage.png"))) return;
+	if (!(i_BGImage = LoadGraph("Image/TitleBulettoBackImage.png"))) return;
 	if (!(i_MenuImage[0] = LoadGraph("Image/StartButton.png"))) return;
 	if (!(i_MenuImage[1] = LoadGraph("Image/OnlineButton.png"))) return;
 	if (!(i_MenuImage[2] = LoadGraph("Image/OptionButton.png"))) return;
