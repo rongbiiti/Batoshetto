@@ -20,6 +20,9 @@ public:
 	void DrawResult(void);		// 描画
 	void DrawResult_Net(void);	// 描画・ネット対戦用
 	void DrawTimeOut(void);		// タイムアウトしたことを描画
+
+	void ChangeVolume(float SEVolume);	// 音の音量変更
+
 private:
 	FontData* fontData;			// フォントデータ管理オブジェクトのポインタ
 	InputManager* inputManager;	// 入力管理オブジェクトのポインタ
@@ -45,8 +48,16 @@ private:
 	bool timeOutFlg;
 
 	void LoadImages();	// 画像読み込み
+	void LoadSounds();	// 音データ読み込み
+
 	void DeleteImages();	// 画像データメモリから消去
+	void DeleteSounds();	// 音データ消去
+
 	int i_ResultImage;	// 背景画像
+
+	bool soundFlg;		// 勝敗SEを鳴らしたかのフラグ
+	int s_WinSE;		// 普通に勝ったときの音
+	int s_LoseSE;		// 自滅したときの音
 };
 
 #endif // !_RESULT_H_

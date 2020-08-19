@@ -11,6 +11,7 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	this->hitPlayerNumber = hitplayernum;
 	waitTime = 0;
 	timeOutFlg = FALSE;
+	soundFlg = FALSE;
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		selectNum[i] = 0;
 	}
@@ -20,6 +21,7 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	}
 
 	LoadImages();
+	LoadSounds();
 }
 
 ////////////////////////////////////////////////
@@ -31,6 +33,7 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 	gameManager = gameMNG;
 	waitTime = 0;
 	timeOutFlg = TRUE;
+	soundFlg = FALSE;
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		selectNum[i] = 0;
 	}
@@ -40,9 +43,21 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 	}
 
 	LoadImages();
+	LoadSounds();
 }
 
 void Result::ResultControll(void) {
+	if (!soundFlg) {
+		// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
+		if (hitPlayerNumber == gameManager->GetNowShooter()) {
+			PlaySoundMem(s_LoseSE, DX_PLAYTYPE_BACK);
+		}
+		else {
+			PlaySoundMem(s_WinSE, DX_PLAYTYPE_BACK);
+		}
+		soundFlg = TRUE;
+	}
+
 	for (int i = 0; i < 2; i++) {
 		
 		if (dicideNumFlg[i]) continue;
@@ -389,13 +404,50 @@ void Result::Return_to_Title() {
 	this->~Result();
 }
 
+////////////////////////////////////////////////
+// 画像読み込み
+////////////////////////////////////////////////
 void Result::LoadImages() {
 	if (!(i_ResultImage = LoadGraph("Image/Result.png"))) return;
 }
 
+////////////////////////////////////////////////
+// 画像削除
+////////////////////////////////////////////////
 void Result::DeleteImages() {
 	i_ResultImage = DeleteGraph(i_ResultImage);
 }
+
+////////////////////////////////////////////////
+// 音データ読み込み
+////////////////////////////////////////////////
+void Result::LoadSounds() {
+	if ((s_WinSE = LoadSoundMem("sounds/Result_Win.mp3")) == -1) return;
+	if ((s_LoseSE = LoadSoundMem("sounds/Result_Zimetsu.mp3")) == -1) return;
+}
+
+////////////////////////////////////////////////
+// 音データ消去
+////////////////////////////////////////////////
+void Result::DeleteSounds() {
+	s_WinSE = DeleteSoundMem(s_WinSE);
+	s_LoseSE = DeleteSoundMem(s_LoseSE);
+}
+
+////////////////////////////////////////////////
+// 音の音量変更
+////////////////////////////////////////////////
+void Result::ChangeVolume(float SEVolume) {
+	int volume = 255.0f * SEVolume;
+
+	ChangeVolumeSoundMem(volume, s_WinSE);
+	ChangeVolumeSoundMem(volume, s_LoseSE);
+}
+
+////////////////////////////////////////////////
+// デストラクタ
+////////////////////////////////////////////////
 Result::~Result() {
 	DeleteImages();
+	DeleteSounds();
 }

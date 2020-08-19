@@ -25,6 +25,7 @@ void GameManager::Init() {
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
 	PhaseStatus = HIDE;
+	PlaySoundMem(s_MatchStartSE, DX_PLAYTYPE_BACK);
 }
 
 ////////////////////////////////////////////////
@@ -200,6 +201,7 @@ void GameManager::LoadSounds() {
 	if ((s_TimeLimitSE = LoadSoundMem("sounds/limitgauge.mp3")) == -1) return;
 	if ((s_ShooterChangeSE = LoadSoundMem("sounds/ShooterChangeSE.mp3")) == -1) return;
 	if ((s_HiderChangeSE = LoadSoundMem("sounds/HiderChangeSE.mp3")) == -1) return;
+	if ((s_MatchStartSE = LoadSoundMem("sounds/MatchStart.mp3")) == -1) return;
 }
 
 ////////////////////////////////////////////////
@@ -211,6 +213,7 @@ void GameManager::ChangeVolume(float SEVolume) {
 	ChangeVolumeSoundMem(volume, s_TimeLimitSE);
 	ChangeVolumeSoundMem(volume, s_ShooterChangeSE);
 	ChangeVolumeSoundMem(volume, s_HiderChangeSE);
+	ChangeVolumeSoundMem(volume, s_MatchStartSE);
 }
 
 GameManager::~GameManager() {

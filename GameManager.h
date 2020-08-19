@@ -88,6 +88,7 @@ private:
 	int s_TimeLimitSE;	// 残り時間が迫ってきたときの音
 	int s_ShooterChangeSE;	// 撃つ側変更時SE
 	int s_HiderChangeSE;	// 隠れる側変更時SE
+	int s_MatchStartSE;		// 試合開始時SE
 
 	void LoadSounds();	// 音データ読み込み
 	

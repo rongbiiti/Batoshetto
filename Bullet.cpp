@@ -342,6 +342,10 @@ bool Bullet::IsHitBlock(void) {
 
 bool Bullet::ResultTransitionWaiting(void) {
 	if (++waitingTimeAfterPlayerHit <= 480) {
+		if (waitingTimeAfterPlayerHit == 210) {
+			gameMain->PlayBattleBGM(TRUE);
+			PlaySoundMem(s_MatchEnd, DX_PLAYTYPE_BACK);
+		}
 		return false;
 	}
 	return true;
@@ -366,18 +370,13 @@ void Bullet::DrawSHINOBIEXECUTION() {
 Bullet::~Bullet() {
 	delete collision;
 	delete effect;
-	DeleteSoundMem(s_Fire);
-	DeleteSoundMem(s_Ricochet);
-	DeleteSoundMem(s_BlockBreak);
-	DeleteSoundMem(s_PlayerHit[0]);
-	DeleteSoundMem(s_PlayerHit[1]);
-	DeleteSoundMem(s_Blood);
-	s_Fire = NULL;
-	s_Ricochet = NULL;
-	s_BlockBreak = NULL;
-	s_PlayerHit[0] = NULL;
-	s_PlayerHit[1] = NULL;
-	s_Blood = NULL;
+	s_Fire = DeleteSoundMem(s_Fire);
+	s_Ricochet = DeleteSoundMem(s_Ricochet);
+	s_BlockBreak = DeleteSoundMem(s_BlockBreak);
+	s_PlayerHit[0] = DeleteSoundMem(s_PlayerHit[0]);
+	s_PlayerHit[1] = DeleteSoundMem(s_PlayerHit[1]);
+	s_Blood = DeleteSoundMem(s_Blood);
+	s_MatchEnd = DeleteSoundMem(s_MatchEnd);
 }
 
 // 音データ読み込み
@@ -388,6 +387,7 @@ void Bullet::LoadSounds(void) {
 	if ((s_PlayerHit[0] = LoadSoundMem("sounds/PlayerHit.mp3")) == -1) return;
 	if ((s_PlayerHit[1] = LoadSoundMem("sounds/PlayerHit2.mp3")) == -1) return;
 	if ((s_Blood = LoadSoundMem("sounds/Blood_Sibuki.mp3")) == -1) return;
+	if ((s_MatchEnd = LoadSoundMem("sounds/MatchEnd.mp3")) == -1) return;
 }
 
 // 音量変更
@@ -400,4 +400,5 @@ void Bullet::ChangeVolume(float persent) {
 	ChangeVolumeSoundMem(volume, s_PlayerHit[0]);
 	ChangeVolumeSoundMem(volume, s_PlayerHit[1]);
 	ChangeVolumeSoundMem(volume, s_Blood);
+	ChangeVolumeSoundMem(volume, s_MatchEnd);
 }

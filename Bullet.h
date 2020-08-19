@@ -65,6 +65,7 @@ private:
 	int s_BlockBreak;	// ブロック破壊音
 	int s_PlayerHit[2];	// プレイヤーにヒットした音
 	int s_Blood;		// 血が出る音
+	int s_MatchEnd;		// 試合終了時SE
 };
 
 #endif // !_BULLET_H_

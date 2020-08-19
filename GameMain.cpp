@@ -596,6 +596,10 @@ void GameMain::CreateBlockObj() {
 
 void GameMain::CreateResultObj(int hitPNum) {
 	result = new Result(fontData, inputManager, gameManager, hitPNum);
+	CreateOptionObj(0, 0);
+	result->ChangeVolume(option->GetSEVolume());
+	delete option;
+	option = NULL;
 }
 
 void GameMain::CreateTitleObj() {
@@ -651,4 +655,8 @@ void GameMain::CreateNetworkObj() {
 void GameMain::CreateResultObj_TimeOut() {
 	result = new Result(fontData, inputManager, gameManager);
 	PlayBattleBGM(TRUE);
+	CreateOptionObj(0, 0);
+	result->ChangeVolume(option->GetSEVolume());
+	delete option;
+	option = NULL;
 }
