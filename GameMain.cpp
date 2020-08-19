@@ -62,8 +62,6 @@ int GameMain::FirstInit(void) {
 	LoadSounds();
 	CreateOptionObj(0, 0);
 	ChangeVolume(option->GetBGMVolume(), option->GetSEVolume());
-	delete option;
-	option = NULL;
 
 	// 入力管理クラスを生成
 	CreateInputManagerObj();
@@ -73,6 +71,10 @@ int GameMain::FirstInit(void) {
 
 	// ゲーム進行管理クラスを生成
 	CreateGameManagerObj();
+	gameManager->ChangeVolume(option->GetSEVolume());
+
+	delete option;
+	option = NULL;
 
 	// タイトル画面クラスを生成
 	CreateTitleObj();

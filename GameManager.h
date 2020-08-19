@@ -74,6 +74,8 @@ public:
 	GameMain* gameMain;					// GameMainオブジェクトのポインタを保存しておく変数。
 
 	void Init();	// 変数初期化
+
+	void ChangeVolume(float SEVolume);	// 音の音量変更
 	
 private:
 	int difficulty;		// ゲームの難易度
@@ -82,6 +84,10 @@ private:
 	int PhaseStatus;	// 現在のゲームのフェーズ
 	int NowShooter;		// 現在の撃つ側
 	int NowHider;		// 現在の隠れる側
+
+	int s_TimeLimitSE;	// 残り時間が迫ってきたときの音
+
+	void LoadSounds();	// 音データ読み込み
 	
 };
 

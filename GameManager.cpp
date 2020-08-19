@@ -12,6 +12,8 @@ GameManager::GameManager(GameMain* main) {
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
 	gameMain = main;
+
+	LoadSounds();
 }
 
 ////////////////////////////////////////////////
@@ -103,6 +105,14 @@ void GameManager::HideTimerControll(void) {
 	if (t_HideTime < 1) {
 		ToShotPhase();
 	}
+
+	// 残り時間が迫ってきたときの音
+	if (t_HideTime <= HidePhaseTime / 4) {
+		if (t_HideTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
+	else if (t_HideTime <= HidePhaseTime / 2) {
+		if (t_HideTime % 30 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
 }
 
 ////////////////////////////////////////////////
@@ -112,6 +122,13 @@ void GameManager::ShotTimerControll(void) {
 	// 撃つ側残り時間を減らす
 	--t_ShotTime;
 
+	// 残り時間が迫ってきたときの音
+	if (t_ShotTime <= ShotPhaseTime / 4) {
+		if (t_ShotTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
+	else if (t_ShotTime <= ShotPhaseTime / 2) {
+		if (t_ShotTime % 30 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
 	
 }
 
@@ -166,6 +183,22 @@ void GameManager::ToShotPhase(void) {
 	SetShotTime();
 	SetPhaseStatus(SHOT);
 	gameMain->ui->TransitionParameterReset();
+}
+
+////////////////////////////////////////////////
+// 音データ読み込み
+////////////////////////////////////////////////
+void GameManager::LoadSounds() {
+	if ((s_TimeLimitSE = LoadSoundMem("sounds/limitgauge.mp3")) == -1) return;
+}
+
+////////////////////////////////////////////////
+// 音の音量変更
+////////////////////////////////////////////////
+void GameManager::ChangeVolume(float SEVolume) {
+	int volume = 255.0f * SEVolume;
+
+	ChangeVolumeSoundMem(volume, s_TimeLimitSE);
 }
 
 GameManager::~GameManager() {
