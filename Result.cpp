@@ -46,6 +46,9 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 	LoadSounds();
 }
 
+////////////////////////////////////////////////
+// 通信対戦で、タイムアウトが起きたとき
+////////////////////////////////////////////////
 void Result::ResultControll(void) {
 	if (!soundFlg) {
 		// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
@@ -248,6 +251,10 @@ void Result::DrawResult() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE] && selectNum[GameManager::RED] == 1) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
+	}
+
 	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
 	// Pauseの文字描画
@@ -289,6 +296,10 @@ void Result::DrawResult() {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
+
+	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE] && selectNum[GameManager::RED] == 1) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	}
 }
 
 ////////////////////////////////////////////////
@@ -302,6 +313,10 @@ void Result::DrawResult_Net() {
 
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+
+	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
+	}
 
 	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
@@ -335,6 +350,10 @@ void Result::DrawResult_Net() {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
+
+	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	}
 }
 
 ////////////////////////////////////////////////
@@ -342,9 +361,12 @@ void Result::DrawResult_Net() {
 ////////////////////////////////////////////////
 void Result::DrawTimeOut() {
 
-
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+
+	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
+	}
 
 	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
@@ -370,6 +392,10 @@ void Result::DrawTimeOut() {
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+	}
+
+	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 	}
 }
 

@@ -504,6 +504,7 @@ void GameMain::LoadBlockImages() {
 	if (!(i_BlockImages[0] = LoadGraph("Image/Block03.png"))) return;
 	if (!(i_BlockImages[1] = LoadGraph("Image/Block02.png"))) return;
 	if (!(i_BlockImages[2] = LoadGraph("Image/Block01.png"))) return;
+	if (LoadDivGraph("Image/Block04.png", 4, 2, 2, 40, 40, i_BrokenBlockImages) == -1) return;
 }
 
 void GameMain::LoadCursorImages() {

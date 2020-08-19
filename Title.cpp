@@ -143,6 +143,7 @@ void Title::HelpScreenControll() {
 
 			// パッドAボタンかBボタンが押されていたらヘルプ画面終了
 			isOpenHelpScreen = false;
+			gameMain->PlayCanselSE();
 			return;
 		}
 	}
@@ -150,6 +151,7 @@ void Title::HelpScreenControll() {
 	if (inputManager->GetKeyDown(KEY_INPUT_ESCAPE) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
 		// キーボードESCかRETURNが押されていたらヘルプ画面終了
 		isOpenHelpScreen = false;
+		gameMain->PlayCanselSE();
 		return;
 	}
 }

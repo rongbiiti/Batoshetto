@@ -99,6 +99,9 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	fontData = font;		// フォントデータのポインタ
 	gamemode = main->gameManager->GetDifficulty();	// 難易度
 
+	breakAnimWaitTime = 0;
+	breakAngle = 0;
+
 	knt =  num / BLOCK_ONE_MAX;		// ブロックの初期位置を商で求める
 	rem =  num % BLOCK_ONE_MAX;		// ３×３ブロックの何番目かを余りで求める
 
@@ -162,11 +165,13 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 		if (gamemode == 2) {
 			if (BlockPosition[knt][rem] == 0) {
 				isAlive = false;
+				breakAnimWaitTime = 61;
 			}
 		}
 		else if (gamemode == 1) {
 			if (BlockPosition_Casual[knt][rem] == 0) {
 				isAlive = false;
+				breakAnimWaitTime = 61;
 			}
 		}
 		break;
@@ -174,11 +179,13 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 		if (gamemode == 2) {
 			if (BlockPosition2[knt][rem] == 0) {
 				isAlive = false;
+				breakAnimWaitTime = 61;
 			}
 		}
 		else if (gamemode == 1) {
 			if (BlockPosition_Casual2[knt][rem] == 0) {
 				isAlive = false;
+				breakAnimWaitTime = 61;
 			}
 		}
 		break;
@@ -188,6 +195,7 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 	if (gamemode == 1) {
 		if (num > 44) {
 			isAlive = false;
+			breakAnimWaitTime = 61;
 		}
 	}
 
@@ -196,18 +204,40 @@ Block::Block(int num, FontData* font ,GameMain* main) {
 
 // ブロックを描画する関数
 void Block::DrawBlocks(void) {
-	if (!isAlive) return;		// ブロックが死んでいたら処理を抜ける
-	//グリッド線描画
-	for (int i = 0; i < GameMain::SCREEN_WIDTH / BLOCK_SIZE; i++) {
-		DrawLine(BLOCK_SIZE * i, 0, BLOCK_SIZE * i, GameMain::SCREEN_HEIGHT, 0xffffff);
-		DrawLine(0, BLOCK_SIZE * i, GameMain::SCREEN_WIDTH, BLOCK_SIZE * i, 0xffffff);
+	if (isAlive) {
+		//グリッド線描画
+		for (int i = 0; i < GameMain::SCREEN_WIDTH / BLOCK_SIZE; i++) {
+			DrawLine(BLOCK_SIZE * i, 0, BLOCK_SIZE * i, GameMain::SCREEN_HEIGHT, 0xffffff);
+			DrawLine(0, BLOCK_SIZE * i, GameMain::SCREEN_WIDTH, BLOCK_SIZE * i, 0xffffff);
+		}
+
+		int dx1, dx2, dy1, dy2;		// 描画用のローカル変数
+		dx1 = x - size / 2;
+		dx2 = x + size / 2;
+		dy1 = y - size / 2;
+		dy2 = y + size / 2;
+		DrawRotaGraph(x, y, 1, 0, gamemain->GetBlockImage(HP - 1), true);
 	}
-	int dx1, dx2, dy1, dy2;		// 描画用のローカル変数
-	dx1 = x - size / 2;
-	dx2 = x + size / 2;
-	dy1 = y - size / 2;
-	dy2 = y + size / 2;
-	DrawRotaGraph(x, y, 1, 0, gamemain->GetBlockImage(HP-1), true);
+	else {
+		if (60 < breakAnimWaitTime) return;	// アニメ終わってたら描画しない
+		++breakAnimWaitTime;
+
+		int dx1, dx2, dy1, dy2;		// 描画用のローカル変数
+		dx1 = x - size / 4;
+		dx2 = x + size / 4;
+		dy1 = y - size / 4;
+		dy2 = y + size / 4;
+
+		if (breakAnimWaitTime % 10 == 0) {
+			breakAngle += (90.0f * 3.14f) / 180.0f;
+		}
+
+		DrawRotaGraph(dx1 - (breakAnimWaitTime / 1.5), dy1 - (breakAnimWaitTime / 2), 0.8f, breakAngle, gamemain->GetBreakBlockImage(0), true);	// 左上
+		DrawRotaGraph(dx2 + (breakAnimWaitTime / 1.5), dy1 - (breakAnimWaitTime / 2), 0.8f, breakAngle, gamemain->GetBreakBlockImage(1), true);		// 右上
+		DrawRotaGraph(dx1 - (breakAnimWaitTime / 1.5), dy2 + (breakAnimWaitTime / 2), 0.8f, breakAngle, gamemain->GetBreakBlockImage(2), true);		// 左下
+		DrawRotaGraph(dx2 + (breakAnimWaitTime / 1.5), dy2 + (breakAnimWaitTime / 2), 0.8f, breakAngle, gamemain->GetBreakBlockImage(3), true);		// 右下
+	}
+	
 }
 
 // ブロックのHPを減らす関数。Bulletから呼ばれる。

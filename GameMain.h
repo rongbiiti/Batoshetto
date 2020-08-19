@@ -51,6 +51,7 @@ public:
 
 	void SetPauseFlg(bool value) { pauseFlg = value; }	// ポーズ画面を開いているかのフラグを切り替え
 	int GetBlockImage(int num) { return i_BlockImages[num]; }	// ブロックの画像を渡す
+	int GetBreakBlockImage(int num) { return i_BrokenBlockImages[num]; }	// ブロックの画像を渡す
 	int GetCursorImage(int num) { return i_CursorImage[num]; }	// カーソル画像を渡す
 
 	void ChangeVolume(float BGMpersent, float SEpersent);	// 音量変更
@@ -129,6 +130,7 @@ private:
 	bool netBattleFlg;
 
 	int i_BlockImages[3];	// ブロックの画像
+	int i_BrokenBlockImages[4];	// ブロックの画像
 	int i_CursorImage[2];	// プレイヤーカーソルの画像
 
 	int m_TitleBGM;		// タイトル画面BGM

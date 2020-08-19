@@ -46,6 +46,10 @@ private:
 	int num;
 	int rnd;				// ブロックの種類
 	FILE *fp;				// ファイル用
+
+	int breakAnimWaitTime;	// 破壊アニメの待ち時間
+	float breakAngle;		// 破壊アニメの角度
+	
 };
 
 #endif // !_BLOCK_H_
