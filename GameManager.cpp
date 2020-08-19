@@ -111,6 +111,9 @@ void GameManager::HideTimerControll(void) {
 		if (t_HideTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 	else if (t_HideTime <= HidePhaseTime / 2) {
+		if (t_HideTime % 24 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
+	else if (t_HideTime <= HidePhaseTime) {
 		if (t_HideTime % 30 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 }
@@ -127,6 +130,9 @@ void GameManager::ShotTimerControll(void) {
 		if (t_ShotTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 	else if (t_ShotTime <= ShotPhaseTime / 2) {
+		if (t_ShotTime % 24 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
+	else if (t_ShotTime <= ShotPhaseTime) {
 		if (t_ShotTime % 30 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 	
@@ -174,6 +180,7 @@ void GameManager::ToHidePhase(void) {
 	SetPhaseStatus(HIDE);
 	ShooterChange();
 	gameMain->ui->TransitionParameterReset();
+	PlaySoundMem(s_HiderChangeSE, DX_PLAYTYPE_BACK);
 }
 
 ////////////////////////////////////////////////
@@ -183,6 +190,7 @@ void GameManager::ToShotPhase(void) {
 	SetShotTime();
 	SetPhaseStatus(SHOT);
 	gameMain->ui->TransitionParameterReset();
+	PlaySoundMem(s_ShooterChangeSE, DX_PLAYTYPE_BACK);
 }
 
 ////////////////////////////////////////////////
@@ -190,6 +198,8 @@ void GameManager::ToShotPhase(void) {
 ////////////////////////////////////////////////
 void GameManager::LoadSounds() {
 	if ((s_TimeLimitSE = LoadSoundMem("sounds/limitgauge.mp3")) == -1) return;
+	if ((s_ShooterChangeSE = LoadSoundMem("sounds/ShooterChangeSE.mp3")) == -1) return;
+	if ((s_HiderChangeSE = LoadSoundMem("sounds/HiderChangeSE.mp3")) == -1) return;
 }
 
 ////////////////////////////////////////////////
@@ -199,6 +209,8 @@ void GameManager::ChangeVolume(float SEVolume) {
 	int volume = 255.0f * SEVolume;
 
 	ChangeVolumeSoundMem(volume, s_TimeLimitSE);
+	ChangeVolumeSoundMem(volume, s_ShooterChangeSE);
+	ChangeVolumeSoundMem(volume, s_HiderChangeSE);
 }
 
 GameManager::~GameManager() {

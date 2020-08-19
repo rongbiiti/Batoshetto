@@ -86,6 +86,8 @@ private:
 	int NowHider;		// 現在の隠れる側
 
 	int s_TimeLimitSE;	// 残り時間が迫ってきたときの音
+	int s_ShooterChangeSE;	// 撃つ側変更時SE
+	int s_HiderChangeSE;	// 隠れる側変更時SE
 
 	void LoadSounds();	// 音データ読み込み
 	
