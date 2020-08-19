@@ -111,6 +111,9 @@ void GameManager::HideTimerControll(void) {
 		if (t_HideTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 	else if (t_HideTime <= HidePhaseTime / 2) {
+		if (t_HideTime % 24 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
+	else if (t_HideTime <= HidePhaseTime) {
 		if (t_HideTime % 30 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 }
@@ -127,6 +130,9 @@ void GameManager::ShotTimerControll(void) {
 		if (t_ShotTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 	else if (t_ShotTime <= ShotPhaseTime / 2) {
+		if (t_ShotTime % 24 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
+	}
+	else if (t_ShotTime <= ShotPhaseTime) {
 		if (t_ShotTime % 30 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
 	
