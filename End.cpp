@@ -128,7 +128,7 @@ void End::DrawEnd() {
 
 //‰æ‘œ“Ç‚İ‚İ
 void End::LoadImages() {
-	if (!(i_EndImage = LoadGraph("Image/TitleBulettoBackImage.png"))) return;
+	if (!(i_EndImage = LoadGraph("Image/TitleBulletBackImage.png"))) return;
 }
 
 void End::DeleteImages() {
