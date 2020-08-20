@@ -515,8 +515,8 @@ void Player::CalcHitAfterAngle_ToBlock(int blocknum) {
 	}
 
 	float rad = (angle2 / 360.0f) * DX_PI_F * 2;	// ラジアンに変換する
-	targetx2 = cosf(rad) * 300.0f + targetx;	// 狙っている方向のX座標
-	targety2 = sinf(rad) * 300.0f + targety;	// 狙っている方向のY座標
+	targetx2 = cosf(rad) * 300.0f + prex;	// 狙っている方向のX座標
+	targety2 = sinf(rad) * 300.0f + prey;	// 狙っている方向のY座標
 }
 
 ////////////////////////////////////////////////
