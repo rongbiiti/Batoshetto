@@ -5,6 +5,7 @@ End::End(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	inputManager = inputMNG;
 	gameManager = gameMNG;
 	gameMain = gameManager->gameMain;
+	LoadImages();
 
 	// カーソル位置初期化
 	selectNum[0] = 0;
@@ -97,7 +98,8 @@ void End::EndControll() {
 
 void End::DrawEnd() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
-	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
+	//DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
+	DrawGraph(0, 0, i_EndImage, TRUE);	// 背景描画
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
@@ -124,6 +126,14 @@ void End::DrawEnd() {
 	}
 }
 
-End::~End() {
+//画像読み込み
+void End::LoadImages() {
+	if (!(i_EndImage = LoadGraph("Image/TitleBulettoBackImage.png"))) return;
+}
 
+void End::DeleteImages() {
+	i_EndImage = DeleteGraph(i_EndImage);
+}
+End::~End() {
+	DeleteImages();
 }
