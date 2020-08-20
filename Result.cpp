@@ -264,8 +264,8 @@ void Result::DrawResult() {
 	// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
 	if (hitPlayerNumber == gameManager->GetNowShooter()) {
 		// 同じだった場合、自滅だったことを表示する。
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅！ｗ", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅！ｗ", PlayerName[gameManager->GetNowShooter()]);
+		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
+		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
 	}
 	else {
 		// 違った場合、撃つ側の勝利と表示する
@@ -327,8 +327,8 @@ void Result::DrawResult_Net() {
 	// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
 	if (hitPlayerNumber == gameManager->GetNowShooter()) {
 		// 同じだった場合、自滅だったことを表示する。
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅！ｗ", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅！ｗ", PlayerName[gameManager->GetNowShooter()]);
+		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
+		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
 	}
 	else {
 		// 違った場合、撃つ側の勝利と表示する
