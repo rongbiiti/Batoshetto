@@ -250,11 +250,11 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 
 	// DIFFICULTYSELECTの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xA0A0A0, fontData->f_FontData[1], "Mode Select");
+	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
 
 	// 難易度を選んでくださいの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "難易度を選んでください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xA0A0A0, fontData->f_FontData[1], "難易度を選んでください");
+	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "難易度を選んでください");
 	
 
 	for (int i = 0; i < 2; i++) {
@@ -278,7 +278,7 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xA0A0A0, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
 
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
