@@ -138,15 +138,16 @@ bool Bullet::IsScreenOutside(void) {
 		float effAng = 0;
 		if (x <= 0) {
 			effAng = 0;
+			x = 0;
 		}
 		else {
 			effAng = (180 * 3.14) / 180;
+			x = GameMain::SCREEN_WIDTH;
 		}
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle) + 180;	// Œü‚«‚Ìã‰º‚ð”½“]‚³‚¹‚é
 		if (angle > 360) angle -= 360;	// 360“x‚É‚¨‚³‚Ü‚é‚æ‚¤‚É‚·‚é
 		ChangeAngle();					// Šp“x‚ð‚à‚Æ‚Éis•ûŒü•ÏX
-		x = preX;
 		y = preY;
 		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, x, y, effAng);
 		preX = x;
@@ -161,15 +162,16 @@ bool Bullet::IsScreenOutside(void) {
 		float effAng = 0;
 		if (y <= 0) {
 			effAng = (90 * 3.14) / 180;
+			y = 0;
 		}
 		else {
 			effAng = (270 * 3.14) / 180;
+			y = GameMain::SCREEN_HEIGHT;
 		}
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		angle = (360 - angle);			// Œü‚«‚Ì¶‰E‚ð”½“]‚³‚¹‚é
 		ChangeAngle();					// Šp“x‚ð‚à‚Æ‚Éis•ûŒü•ÏX
 		x = preX;					
-		y = preY;
 		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, x, y, effAng);
 		preX = x;
 		preY = y;
@@ -289,7 +291,6 @@ bool Bullet::IsHitBlock(void) {
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
 		//hitFlg = true;	// ˜A‘±‚ÅƒuƒƒbƒN‚É“–‚½‚ç‚È‚¢‚æ‚¤‚Éƒtƒ‰ƒO‚ð—§‚Ä‚é
 
-
 		lastHitPointX = x - cosf(angle * DX_PI_F / 180.0f) * movespeedX;	// ‘_‚Á‚Ä‚¢‚é•ûŒü‚ÌXÀ•W
 		lastHitPointY = y - sinf(angle * DX_PI_F / 180.0f) * movespeedY;	// ‘_‚Á‚Ä‚¢‚é•ûŒü‚ÌYÀ•W
 
@@ -353,17 +354,24 @@ bool Bullet::ResultTransitionWaiting(void) {
 
 void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
-	if (waitingTimeAfterPlayerHit >= 210) {
+
+	if (210 <= waitingTimeAfterPlayerHit) {
+		// ”wŒi­‚µ•‚­‚·‚é
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 127);
+		DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+		// •¶Žš•`‰æ
 		fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "‚ ");
 		DrawFormatStringToHandle(x - fontwidth / 2, 100, 0xdc143c, gameMain->fontData->f_FontData[2], "Ÿ");
 		DrawFormatStringToHandle(x - fontwidth / 2, 230, 0xdc143c, gameMain->fontData->f_FontData[2], "•‰");
 		DrawFormatStringToHandle(x - fontwidth / 2, 360, 0xdc143c, gameMain->fontData->f_FontData[2], "‚ ");
 		DrawFormatStringToHandle(x - fontwidth / 2, 490, 0xdc143c, gameMain->fontData->f_FontData[2], "‚è");
 	}
-
-	if (waitingTimeAfterPlayerHit <= 480) {
+	else if (waitingTimeAfterPlayerHit <= 480) {
 		return;
 	}
+
 	return;
 }
 

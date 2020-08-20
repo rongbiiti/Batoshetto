@@ -17,6 +17,7 @@ Option::Option(GameMain* main, int pushPLnum, int prescreennum, int prephase) {
 	selectNum[0] = 0;
 	selectNum[1] = 0;
 	
+	LoadImages();
 }
 
 ////////////////////////////////////////////////
@@ -339,9 +340,7 @@ void Option::DrawOption() {
 // オプション画面のトップを描画
 ////////////////////////////////////////////////
 void Option::DrawOptionMain() {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
-	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DrawBackGroundImage();
 
 	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
@@ -370,9 +369,7 @@ void Option::DrawOptionMain() {
 // 音量調節画面を描画
 ////////////////////////////////////////////////
 void Option::DrawVolumeMenu() {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
-	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DrawBackGroundImage();
 
 	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400, extraX = 300, extraFlg = 1;
@@ -477,8 +474,34 @@ void Option::SaveFile() {
 }
 
 ////////////////////////////////////////////////
+// 背景画像描画
+////////////////////////////////////////////////
+void Option::DrawBackGroundImage() {
+	DrawGraph(0, 0, i_BackImage, TRUE);		// 背景画像描画
+
+	// 上から半透明の黒い四角をかぶせて明るさを下げている
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 127);
+	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+////////////////////////////////////////////////
+// 画像読み込み
+////////////////////////////////////////////////
+void Option::LoadImages() {
+	if (!(i_BackImage = LoadGraph("Image/SelectBackImage.png"))) return;
+}
+
+////////////////////////////////////////////////
+// 画像データメモリから消去
+////////////////////////////////////////////////
+void Option::DeleteImages() {
+	i_BackImage = DeleteGraph(i_BackImage);
+}
+
+////////////////////////////////////////////////
 // デストラクタ
 ////////////////////////////////////////////////
 Option::~Option() {
-
+	DeleteImages();
 }

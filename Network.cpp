@@ -1,5 +1,6 @@
 #include "Network.h"
 #include "GameMain.h"
+
 ////////////////////////////////////////////////
 // コンストラクタ
 ////////////////////////////////////////////////
@@ -27,6 +28,8 @@ Network::Network(FontData* font, InputManager* input, GameManager* gameMNG) {
 	UDPNetHandle = MakeUDPSocket(PORT_NUMBER);
 	VariableInit();
 	InitIPAddress();
+
+	LoadImages();
 	
 }
 
@@ -565,6 +568,8 @@ void Network::DrawCommunicationMethodSelect() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
+	DrawBackGroundImage();
+
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストになるかゲストになるか");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ホストになるかゲストになるか");
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "選択してください");
@@ -586,6 +591,8 @@ void Network::DrawIPAddressSelect() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
+	DrawBackGroundImage();
+
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "お使いになる");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "お使いになる");
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "IPアドレスを選択してください");
@@ -606,6 +613,8 @@ void Network::DrawConnectionWait() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 	int min = 0, sec = 0;
+
+	DrawBackGroundImage();
 
 	// ホスト////////////////////////////////////////////
 	if (ConnectType == HOST) {
@@ -700,8 +709,35 @@ void Network::DrawNetWorkData() {
 }
 
 ////////////////////////////////////////////////
+// 背景画像描画
+////////////////////////////////////////////////
+void Network::DrawBackGroundImage() {
+	DrawGraph(0, 0, i_BackImage, TRUE);		// 背景画像描画
+
+	// 上から半透明の黒い四角をかぶせて明るさを下げている
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 127);
+	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+////////////////////////////////////////////////
+// 画像読み込み
+////////////////////////////////////////////////
+void Network::LoadImages() {
+	if (!(i_BackImage = LoadGraph("Image/SelectBackImage.png"))) return;
+}
+
+////////////////////////////////////////////////
+// 画像データメモリから消去
+////////////////////////////////////////////////
+void Network::DeleteImages() {
+	i_BackImage = DeleteGraph(i_BackImage);
+}
+
+////////////////////////////////////////////////
 // デストラクタ
 ////////////////////////////////////////////////
 Network::~Network() {
 	DeleteUDPSocket(UDPNetHandle);
+	DeleteImages();
 }

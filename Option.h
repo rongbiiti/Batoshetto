@@ -86,6 +86,12 @@ private:
 
 	float BGMVolume;	// BGM‚Ì‰¹—Ê
 	float SEVolume;		// SE‚Ì‰¹—Ê
+
+	void DrawBackGroundImage();		// ”wŒi‰æ‘œ•`‰æ
+	void LoadImages();		// ‰æ‘œ“Ç‚İ‚İ
+	void DeleteImages();	// ‰æ‘œƒf[ƒ^ƒƒ‚ƒŠ‚©‚çÁ‹
+
+	int i_BackImage;	// ”wŒi‰æ‘œ
 };
 
 #endif // !_OPTION_H_

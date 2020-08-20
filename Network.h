@@ -165,6 +165,12 @@ private:
 
 	int randSeedNum;	// 乱数のシード値
 	int recvCheckTime;	// 受信できたかの応答待ち時間　既定値に達するとタイムアウトでエラーとする
+
+	void DrawBackGroundImage();		// 背景画像描画
+	void LoadImages();		// 画像読み込み
+	void DeleteImages();	// 画像データメモリから消去
+
+	int i_BackImage;	// 背景画像
 };
 
 #endif // !_NETWORK_H_

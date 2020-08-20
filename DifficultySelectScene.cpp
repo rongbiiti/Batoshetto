@@ -16,6 +16,7 @@ DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font
 		dicideNumFlg[i] = false;
 	}
 
+	LoadImages();
 }
 
 ////////////////////////////////////////////////
@@ -241,6 +242,12 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60-waitTime));
 	}
 
+	DrawGraph(0, 0, i_BackImage, TRUE);		// 背景画像描画
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 127);
+	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
+
 	// DIFFICULTYSELECTの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
@@ -286,6 +293,12 @@ void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	DrawGraph(0, 0, i_BackImage, TRUE);		// 背景画像描画
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 127);
+	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 	// DIFFICULTYSELECTの文字描画
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
@@ -313,8 +326,9 @@ void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
 }
-
+////////////////////////////////////////////////
 // 難易度をGameManagerの変数にセットしてシーンを遷移
+////////////////////////////////////////////////
 void DifficultySelectScene::SetDifficulty() {
 
 	switch (selectNum[GameManager::BLUE])
@@ -330,8 +344,22 @@ void DifficultySelectScene::SetDifficulty() {
 }
 
 ////////////////////////////////////////////////
+// 画像読み込み
+////////////////////////////////////////////////
+void DifficultySelectScene::LoadImages() {
+	if (!(i_BackImage = LoadGraph("Image/SelectBackImage.png"))) return;
+}
+
+////////////////////////////////////////////////
+// 画像データメモリから消去
+////////////////////////////////////////////////
+void DifficultySelectScene::DeleteImages() {
+	i_BackImage = DeleteGraph(i_BackImage);
+}
+
+////////////////////////////////////////////////
 // デストラクタ
 ////////////////////////////////////////////////
 DifficultySelectScene::~DifficultySelectScene() {
-
+	DeleteImages();
 }

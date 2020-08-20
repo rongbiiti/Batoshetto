@@ -24,6 +24,9 @@ private:
 	GameManager* gameMangaer;	// コンストラクタの引数で受け取ったポインタ
 
 	void SetDifficulty();	// 難易度をGameManagerの変数にセットしてシーンを遷移
+	void LoadImages();		// 画像読み込み
+
+	void DeleteImages();	// 画像データメモリから消去
 
 	const static int SELECT_NUM_MAX = 1;
 	const static int SCENE_TRANSITION_WAITING_TIME = 60;	// シーン遷移するときのちょっとした待ち時間
@@ -35,6 +38,8 @@ private:
 	int selectNum[SELECT_NUM_MAX + 1];	// 選択中のボタン番号
 	bool dicideNumFlg[2];				// 番号を決定したかのフラグ
 	bool returnFlg;		// タイトル画面へ戻りたいフラグ
+
+	int i_BackImage;	// 背景画像
 
 };
 
