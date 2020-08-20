@@ -212,6 +212,7 @@ void Option::ControllVolumeScreen() {
 					ChangeBulletSoundVolume();
 				}
 				gameMain->ChangeVolume(BGMVolume, SEVolume);
+				gameMain->gameManager->ChangeVolume(SEVolume);
 				SaveFile();
 				BackOptionMenu();
 				break;
@@ -295,6 +296,7 @@ void Option::ControllVolumeScreen() {
 				ChangeBulletSoundVolume();
 			}
 			gameMain->ChangeVolume(BGMVolume, SEVolume);
+			gameMain->gameManager->ChangeVolume(SEVolume);
 			SaveFile();
 			BackOptionMenu();
 			break;
