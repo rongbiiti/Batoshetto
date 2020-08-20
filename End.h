@@ -28,6 +28,11 @@ private:
 	};
 
 	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
+
+	void LoadImages();	// 画像読み込み
+	void DeleteImages();	// 画像データメモリから消去
+
+	int i_EndImage;	// 背景画像
 };
 
 #endif // !_END_H_
