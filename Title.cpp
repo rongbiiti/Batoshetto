@@ -181,10 +181,15 @@ void Title::DrawTitle() {
 
 	DrawRotaGraph(x, starty - 200, 1, 0, i_LogoImage, TRUE);	// タイトルロゴ
 
-	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i], TRUE);	// 各項目画像
+		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xffffff, fontData->f_FontData[1], "%s", MenuName[i].c_str());
 	}
+
+	// 各項目名描画
+	/*for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i], TRUE);	// 各項目画像
+	}*/
 
 	for (int i = 0; i < 2; i++) {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
