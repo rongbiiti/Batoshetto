@@ -180,6 +180,11 @@ void Option::ControllVolumeScreen() {
 				}
 				break;
 			}
+			if (previousNum == PAUSE) {
+				ChangeBulletSoundVolume();
+			}
+			gameMain->ChangeVolume(BGMVolume, SEVolume);
+			gameMain->gameManager->ChangeVolume(SEVolume);
 			gameMain->PlayCursorSE();
 		}
 
@@ -200,6 +205,11 @@ void Option::ControllVolumeScreen() {
 				}
 				break;
 			}
+			if (previousNum == PAUSE) {
+				ChangeBulletSoundVolume();
+			}
+			gameMain->ChangeVolume(BGMVolume, SEVolume);
+			gameMain->gameManager->ChangeVolume(SEVolume);
 			gameMain->PlayCursorSE();
 		}
 
@@ -233,6 +243,11 @@ void Option::ControllVolumeScreen() {
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = VOLUME_SELECT_NUM_MAX;
 		}
+		if (previousNum == PAUSE) {
+			ChangeBulletSoundVolume();
+		}
+		gameMain->ChangeVolume(BGMVolume, SEVolume);
+		gameMain->gameManager->ChangeVolume(SEVolume);
 		gameMain->PlayCursorSE();
 	}
 
@@ -242,6 +257,11 @@ void Option::ControllVolumeScreen() {
 		if (++selectNum[GameManager::BLUE] > VOLUME_SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
+		if (previousNum == PAUSE) {
+			ChangeBulletSoundVolume();
+		}
+		gameMain->ChangeVolume(BGMVolume, SEVolume);
+		gameMain->gameManager->ChangeVolume(SEVolume);
 		gameMain->PlayCursorSE();
 	}
 
@@ -263,6 +283,11 @@ void Option::ControllVolumeScreen() {
 			}
 			break;
 		}
+		if (previousNum == PAUSE) {
+			ChangeBulletSoundVolume();
+		}
+		gameMain->ChangeVolume(BGMVolume, SEVolume);
+		gameMain->gameManager->ChangeVolume(SEVolume);
 		gameMain->PlayCursorSE();
 	}
 
@@ -284,6 +309,11 @@ void Option::ControllVolumeScreen() {
 			}
 			break;
 		}
+		if (previousNum == PAUSE) {
+			ChangeBulletSoundVolume();
+		}
+		gameMain->ChangeVolume(BGMVolume, SEVolume);
+		gameMain->gameManager->ChangeVolume(SEVolume);
 		gameMain->PlayCursorSE();
 	}
 
