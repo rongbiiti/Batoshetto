@@ -408,12 +408,12 @@ void GameMain::Output(void) {
 		if (bullet->IsAlive()) {
 			bullet->DrawBullet();
 
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 230);
 
 			int fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[2], "%d", bullet->GetRicochetCount());
 
 			if(0 <= bullet->GetRicochetCount())
-			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[1], "%d", bullet->GetRicochetCount());
+			DrawFormatStringToHandle(SCREEN_WIDTH_HALF - fontwidth / 2, SCREEN_HEIGHT_HALF - fontwidth, 0xFFFFFF, fontData->f_FontData[2], "%d", bullet->GetRicochetCount());
 
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
