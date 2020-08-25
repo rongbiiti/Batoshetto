@@ -98,6 +98,7 @@ void Player::AimControll() {
 		}
 	}
 
+	// 角度が360度以内に収まるようにする
 	angle = AngleCorrection(angle);
 
 	targetx = cosf(angle * DX_PI_F / 180.0f) * 10000 + x;	// 狙っている方向のX座標
@@ -122,7 +123,7 @@ void Player::AimControll() {
 void Player::ShooterPlayerControll(void) {	
 	int shooter = gameMain->gameManager->GetNowShooter();
 
-	AimControll();
+	AimControll();	// 操作処理
 
 	// PASSして隠れる側フェーズに
 	if (inputManager->GetPadInput()[shooter].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
@@ -179,7 +180,7 @@ void Player::ShooterPlayerControll_Net() {
 			return;
 		}
 
-		AimControll();
+		AimControll();	// 操作処理
 
 		// PASSして隠れる側フェーズに
 		if (inputManager->GetPadInput()[0].in_Button[X] == 1 || inputManager->In_Key()[KEY_INPUT_SPACE] == 1) {
@@ -369,6 +370,7 @@ void Player::HidingPlayerControll_Net() {
 // 描画用
 ////////////////////////////////////////////////
 void Player::DrawPlayer(void) {
+	// プレイヤー画像表示
 	DrawRotaGraph(x, y, 1.0f, angle * DX_PI_F / 180.0f, i_Playerimage[isShooter], TRUE);
 
 	if(effect->MuzzleFlashEffectFlg == TRUE){		//TRUE時にエフェクト関数に移行

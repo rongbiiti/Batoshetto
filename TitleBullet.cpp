@@ -17,7 +17,7 @@ TitleBullet::TitleBullet(FontData* font) {
 	effect = new Effect;	// エフェクトオブジェクトの生成
 	collision = new Collision;	// 衝突判定してくれるオブジェクトを生成し、ポインタを保存しておく
 
-	LoadSounds();
+	LoadSounds();		// 音データ読み込み
 }
 
 ////////////////////////////////////////////////
@@ -58,7 +58,7 @@ void TitleBullet::BulletInit(bool alive, int randx, int randy) {
 	preY = y;
 	ricochetCount = BulletRicochetCount;// 弾の残り跳弾回数リセット
 	ChangeAngle();						// angleをもとに、移動量をリセットする
-	PlaySoundMem(s_Fire, DX_PLAYTYPE_BACK);
+	PlaySoundMem(s_Fire, DX_PLAYTYPE_BACK);	// 発射時の音を鳴らす
 }
 
 ////////////////////////////////////////////////
@@ -98,6 +98,7 @@ void TitleBullet::DrawTitleBullet() {
 // 弾の残り跳弾回数チェック
 ////////////////////////////////////////////////
 bool TitleBullet::RemainingRicochetTimesCheck() {
+	// 跳弾回数0未満なら生存フラグを折る
 	if (ricochetCount < 0) {
 		isAlive = false;
 		return true;
@@ -118,7 +119,7 @@ bool TitleBullet::IsScreenOutside() {
 		else {
 			effAng = (180 * 3.14) / 180;
 		}
-		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
+		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);		// 跳弾音再生
 		angle = (360 - angle) + 180;	// 向きの上下を反転させる
 		if (angle > 360) angle -= 360;	// 360度におさまるようにする
 		ChangeAngle();					// 角度をもとに進行方向変更
@@ -126,7 +127,7 @@ bool TitleBullet::IsScreenOutside() {
 		y = preY;
 		preX = x;
 		preY = y;
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, effAng);
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, effAng);	// エフェクト描画
 		return true;
 	}
 
@@ -146,7 +147,7 @@ bool TitleBullet::IsScreenOutside() {
 		y = preY;
 		preX = x;
 		preY = y;
-		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, effAng);
+		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, preX, preY, effAng);	// エフェクト描画
 		return true;
 	}
 
@@ -184,6 +185,8 @@ void TitleBullet::LoadSounds() {
 TitleBullet::~TitleBullet() {
 	delete collision;
 	delete effect;
+	collision = NULL;
+	effect = NULL;
 
 	s_Fire = DeleteSoundMem(s_Fire);
 	s_Ricochet = DeleteSoundMem(s_Ricochet);

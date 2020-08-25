@@ -8,7 +8,11 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 	fontData = font;
 	inputManager = input;
 	gameManager = gameMNG;
-	this->hitPlayerNumber = hitplayernum;
+
+	// 弾に当たったプレイヤーの番号
+	hitPlayerNumber = hitplayernum;
+
+	// 変数初期化
 	waitTime = 0;
 	timeOutFlg = FALSE;
 	soundFlg = FALSE;
@@ -20,6 +24,7 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG, int hi
 		dicideNumFlg[i] = false;
 	}
 
+	// 画像音読み込み
 	LoadImages();
 	LoadSounds();
 }
@@ -31,6 +36,8 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 	fontData = font;
 	inputManager = input;
 	gameManager = gameMNG;
+
+	// 変数初期化
 	waitTime = 0;
 	timeOutFlg = TRUE;
 	soundFlg = FALSE;
@@ -42,6 +49,7 @@ Result::Result(FontData* font, InputManager* input, GameManager* gameMNG) {
 		dicideNumFlg[i] = false;
 	}
 
+	// 画像音読み込み
 	LoadImages();
 	LoadSounds();
 }
@@ -66,7 +74,7 @@ void Result::ResultControll(void) {
 		if (dicideNumFlg[i]) continue;
 
 		if (inputManager->GetButtonDown(PAD_UP, i) || inputManager->GetButtonHold(PAD_UP, i, 4)) {
-			// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+			// ゲームパッドの方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
 			// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 			if (--selectNum[i] < 0) {
 				selectNum[i] = SELECT_NUM_MAX;
@@ -75,7 +83,7 @@ void Result::ResultControll(void) {
 		}
 
 		if (inputManager->GetButtonDown(PAD_DOWN, i) || inputManager->GetButtonHold(PAD_DOWN, i, 4)) {
-			// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+			// ゲームパッドの方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
 			// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 			if (++selectNum[i] > SELECT_NUM_MAX) {
 				selectNum[i] = 0;
@@ -84,7 +92,7 @@ void Result::ResultControll(void) {
 		}
 
 		if (inputManager->GetButtonDown(B, i)) {
-			// ゲームパッド1のBボタン入力。
+			// ゲームパッドのBボタン入力。
 			dicideNumFlg[i] = true;
 			gameManager->gameMain->PlayDicideSE();
 		}
@@ -93,7 +101,7 @@ void Result::ResultControll(void) {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		//  キーボードの方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
@@ -103,7 +111,7 @@ void Result::ResultControll(void) {
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		//  キーボードの方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
@@ -112,7 +120,7 @@ void Result::ResultControll(void) {
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
-		// ゲームパッド1のBボタン入力。
+		//  キーボードの決定ボタン入力。
 		dicideNumFlg[GameManager::BLUE] = true;
 		gameManager->gameMain->PlayDicideSE();
 		return;
@@ -158,6 +166,7 @@ void Result::ResultControll_Net(void) {
 	}
 
 
+	// 決定済みなら以下の処理をしない
 	if (dicideNumFlg[GameManager::RED]) return;
 
 
@@ -188,7 +197,7 @@ void Result::ResultControll_Net(void) {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::RED] < 0) {
 			selectNum[GameManager::RED] = SELECT_NUM_MAX;
@@ -197,7 +206,7 @@ void Result::ResultControll_Net(void) {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
 			selectNum[GameManager::RED] = 0;
@@ -206,7 +215,7 @@ void Result::ResultControll_Net(void) {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
-		// ゲームパッド1のBボタン入力。
+		// キーボード決定入力
 		dicideNumFlg[GameManager::RED] = true;
 		gameManager->gameMain->PlayDicideSE();
 		return;
@@ -251,6 +260,7 @@ void Result::DrawResult() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	// 項目決定してたら、ジョジョに透明度を変えていく。タイトルに戻るときのみ。
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
 	}
@@ -314,6 +324,7 @@ void Result::DrawResult_Net() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	// 項目決定してたら、ジョジョに透明度を変えていく。タイトルに戻るときのみ。
 	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
 	}
@@ -364,6 +375,7 @@ void Result::DrawTimeOut() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
+	// 項目決定してたら、ジョジョに透明度を変えていく。タイトルに戻るときのみ。
 	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
 	}
@@ -405,7 +417,7 @@ void Result::DrawTimeOut() {
 void Result::Return_to_Game() {
 	gameManager->SetPhaseStatus(GameManager::DIFFICULTYSELECT);
 	gameManager->gameMain->CreateDifficultySelectSceneObj();
-	gameManager->gameMain->MainObjDelete();
+	gameManager->gameMain->MainObjDelete();		// ゲーム中のオブジェクト削除
 	this->~Result();
 }
 
@@ -414,8 +426,8 @@ void Result::Return_to_Game() {
 ////////////////////////////////////////////////
 void Result::ReMatch() {
 	gameManager->SetPhaseStatus(GameManager::CONNECTION_WAIT);
-	gameManager->gameMain->network->VariableInit();
-	gameManager->gameMain->network->SetSendRand();
+	gameManager->gameMain->network->VariableInit();	// ネット用の変数リセット
+	gameManager->gameMain->network->SetSendRand();	// 乱数再生成
 	this->~Result();
 }
 
@@ -425,8 +437,8 @@ void Result::ReMatch() {
 void Result::Return_to_Title() {
 	gameManager->SetPhaseStatus(GameManager::TITLE);
 	gameManager->gameMain->CreateTitleObj();
-	gameManager->gameMain->MainObjDelete();
-	gameManager->gameMain->PlayBattleBGM(TRUE);
+	gameManager->gameMain->MainObjDelete();		// ゲーム中のオブジェクト削除
+	gameManager->gameMain->PlayBattleBGM(TRUE);	// バトルBGM停止
 	this->~Result();
 }
 

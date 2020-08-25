@@ -41,11 +41,11 @@ private:
 													   "Return to Title"
 	};
 
-	int waitTime;
+	int waitTime;						// 項目を決定したあとのちょっとした待ち時間
 	int selectNum[SELECT_NUM_MAX + 1];	// 選択中のボタン番号
 	bool dicideNumFlg[2];				// 番号を決定したかのフラグ
 
-	bool timeOutFlg;
+	bool timeOutFlg;	// 通信対戦で、タイムアウトが発生してリザルト画面へ遷移してきたかのフラグ
 
 	void LoadImages();	// 画像読み込み
 	void LoadSounds();	// 音データ読み込み

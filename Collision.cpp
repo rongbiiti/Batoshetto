@@ -100,7 +100,7 @@ Collision::Vector2 Collision::IsHitTargetAndBlock(float px, float py, float tx, 
 		if (distance2 <= distance1) {	// 比較したほうがプレイヤーと近かったら渡す用の構造体の値を、その値に更新
 			position.x = cross[i].x;
 			position.y = cross[i].y;
-			position.num = i;
+			position.num = i;		// ブロックのどの辺と当たったかを代入
 			position.flg = true;
 		}
 	}
@@ -136,6 +136,8 @@ bool Collision::IsHitLineAndLine(float ax1, float ay1, float ax2, float ay2, flo
 	return true;
 }
 
+////////////////////////////////////////////////
+// 線と線が衝突しているか返す
 ////////////////////////////////////////////////
 Collision::Vector2 Collision::GetHitLineAndLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2) {
 	Vector2 cross = { -10000, -10000, false };

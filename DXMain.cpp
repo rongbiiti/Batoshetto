@@ -2,7 +2,7 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	GameMain gameMain;
+	GameMain gameMain;	// ƒQ[ƒ€ƒƒCƒ“¶¬
 
 	int success = gameMain.FirstInit();
 

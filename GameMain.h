@@ -18,6 +18,7 @@
 #include "Option.h"
 #include "Network.h"
 
+// クラスのプロトタイプ宣言（多すぎ）
 class Bullet;
 class Player;
 class GameManager;
@@ -78,7 +79,7 @@ public:
 	void CreateUIObj();							// UI管理クラスを生成し、ポインタを保存しておく
 	void CreateOptionObj(int pushPLnum, int prescreennum);						// オプション画面クラスを生成し、ポインタを保存しておく
 	void CreateNetworkObj();					// 通信対戦用クラスを生成し、ポインタを保存しておく
-	void CreateResultObj_TimeOut();
+	void CreateResultObj_TimeOut();				// タイムアウト時のリザルト画面を生成する
 
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
 	FontData* fontData;				// 生成したフォントデータ管理クラスのポインタ
@@ -107,7 +108,7 @@ private:
 
 	void DrawDebugInfo(void);	// デバッグ情報を描画するための関数
 
-	void LoadBlockImages();			// ブロック画像読み込み
+	void LoadBlockImages();		// ブロック画像読み込み
 	void LoadCursorImages();	// カーソル画像読込み
 	void DeleteBlockImages();	// ブロックの画像消去
 

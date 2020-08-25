@@ -14,23 +14,22 @@ class GameManager;
 class TitleBullet;
 class Title {
 public:
-	Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG);
-	~Title();
-	void TitleControll();
-	void DrawTitle();
+	Title(FontData* font, InputManager* inputMNG, GameManager* gameMNG);		// コンストラクタ
+	~Title();						// デストラクタ
+	void TitleControll();			// 処理用関数
+	void DrawTitle();				// 描画用関数
 
-	TitleBullet* titleBullet;		// 背景で反射している弾の描画
+	TitleBullet* titleBullet;		// 背景で反射している弾の描画クラスポインタ
+
 private:
 	FontData* fontData;				// 生成したフォント管理クラスのポインタ
 	InputManager* inputManager;		// 生成した入力管理クラスのポインタ
-	GameManager* gameManager;
-	GameMain* gameMain;
+	GameManager* gameManager;		// ゲーム進行管理クラスポインタ
+	GameMain* gameMain;				// ゲームメインクラスのポインタ
 
-	//void Start();		// 試合を再開する
-	//void OpenOptionScreen();	// オプション画面を開く
-	//void EndSocreen();					// ゲームを終了する
 	void HelpScreenControll();	// ヘルプ画面操作
 	void DrawHelpScreen();		// ヘルプ画面描画
+	void ProcessingOnDetermining(int controllerNum);	// 決定ボタン押下時の処理。引数は、コントローラーの番号
 
 	int backAnimWaitTime;		// 背景の跳弾アニメの待ち時間
 
@@ -44,7 +43,7 @@ private:
 													   "End"
 	};
 
-	int selectNum[SELECT_NUM_MAX + 1];				// 選択中のボタン番号
+	int selectNum[3];				// 選択中のボタン番号
 	bool isOpenHelpScreen;		// ヘルプ画面を開いているか
 
 	int i_helpImage;	// ヘルプ画像

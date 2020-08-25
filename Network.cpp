@@ -568,7 +568,7 @@ void Network::DrawCommunicationMethodSelect() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
-	DrawBackGroundImage();
+	DrawBackGroundImage();	// 背景画像描画
 
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストになるかゲストになるか");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ホストになるかゲストになるか");
@@ -591,7 +591,7 @@ void Network::DrawIPAddressSelect() {
 	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
-	DrawBackGroundImage();
+	DrawBackGroundImage();	// 背景画像描画
 
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "お使いになる");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "お使いになる");
@@ -614,7 +614,7 @@ void Network::DrawConnectionWait() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 	int min = 0, sec = 0;
 
-	DrawBackGroundImage();
+	DrawBackGroundImage();	// 背景画像描画
 
 	// ホスト////////////////////////////////////////////
 	if (ConnectType == HOST) {
@@ -672,7 +672,7 @@ void Network::DrawConnectionWait() {
 }
 
 ////////////////////////////////////////////////
-// ネット系のデータ表示
+// ネット系のデータ表示(デバッグ用)
 ////////////////////////////////////////////////
 void Network::DrawNetWorkData() {
 	int handle = fontData->f_FontData[0];

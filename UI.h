@@ -11,7 +11,6 @@ public:
 	UI(GameMain* main);	// コンストラクタ
 	~UI();	// デストラクタ
 
-	void UIControll();	// パラメータを変更処理
 	bool TransitionAnimationWaiting();	// 隠れる・撃つの切替時のアニメーションの処理
 	void DrawTransitionAnimation();		// 隠れる・撃つの切替時のアニメーション
 	void TransitionParameterReset();	// 遷移アニメに使う変数リセット
@@ -30,9 +29,9 @@ private:
 
 	bool isBattleStart;	// 試合を開始した直後か
 	int firstAnimWaitTime;	// 試合開始時のアニメの待ち時間
-	int firstAnimX;
-	int firstAnimY;
-	int firstAnimAlpha;
+	int firstAnimX;			// 試合開始時アニメの文字のX座標
+	int firstAnimY;			// 試合開始時アニメの文字のY座標
+	int firstAnimAlpha;		// 試合開始時アニメの透明度
 
 	bool BattleStartAnim();	// 試合開始時のアニメ。演出が終わっていたらFALSEを返す
 	void DrawBattleStartAnim();	// 試合開始時のアニメ描画

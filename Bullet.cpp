@@ -40,20 +40,23 @@ void Bullet::BulletInit(bool alive, float rx, float ry, float ang, GameMain* mai
 	ChangeAngle();						// angleをもとに、移動量をリセットする
 	gameMain = main;					// GameMainのポインタ
 	shooterHitOK = false;				// 撃った瞬間に撃つ側に当たり判定しないようにする
-	isPlayerHit = false;
-	waitingTimeAfterPlayerHit = 0;
-	HitPlayerNum = 0;
-	PlaySoundMem(s_Fire, DX_PLAYTYPE_BACK);
+	isPlayerHit = false;				// プレイヤーに当たったかのフラグ折る
+	waitingTimeAfterPlayerHit = 0;		// プレイヤーヒット後の余韻リセット
+	HitPlayerNum = 0;					// 当たったプレイヤーの番号リセット
+	PlaySoundMem(s_Fire, DX_PLAYTYPE_BACK);	// 発射音再生
 }
 
 ////////////////////////////////////////////////
 // 弾が実際に動くときの処理
 ////////////////////////////////////////////////
 void Bullet::BulletControll(void) {
+	// プレイヤーにヒットしていてかつヒット後余韻時間が過ぎていたらリザルト画面へ移行
 	if (isPlayerHit && ResultTransitionWaiting()) {
 		gameMain->gameManager->SetPhaseStatus(GameManager::RESULT, gameMain->player[HitPlayerNum]->GetPlayerNum());
+		return;
 	}
 
+	// 隠れる側フェーズへ行く前に、エフェクトが消えるまで待つ
 	if (0 < toHidePhaseTransitionWaitTime--) {
 		if (0 == toHidePhaseTransitionWaitTime) {
 			isAlive = false;
@@ -95,6 +98,7 @@ void Bullet::BulletControll(void) {
 // 描画
 ////////////////////////////////////////////////
 void Bullet::DrawBullet(void) {
+	// 跳弾回数が0未満なら描画しない
 	if (0 <= ricochetCount) {
 		int dx = (int)x;
 		int dy = (int)y;
@@ -144,7 +148,7 @@ bool Bullet::IsScreenOutside(void) {
 			effAng = (180 * 3.14) / 180;
 			x = GameMain::SCREEN_WIDTH;
 		}
-		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
+		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);	// 跳弾音再生
 		angle = (360 - angle) + 180;	// 向きの上下を反転させる
 		if (angle > 360) angle -= 360;	// 360度におさまるようにする
 		ChangeAngle();					// 角度をもとに進行方向変更
@@ -168,7 +172,7 @@ bool Bullet::IsScreenOutside(void) {
 			effAng = (270 * 3.14) / 180;
 			y = GameMain::SCREEN_HEIGHT;
 		}
-		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
+		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);	// 跳弾音再生
 		angle = (360 - angle);			// 向きの左右を反転させる
 		ChangeAngle();					// 角度をもとに進行方向変更
 		x = preX;					
@@ -201,8 +205,8 @@ bool Bullet::IsHitPlayer(void) {
 		if (collision->IsHit((int)x, (int)y, Size, playerX, playerY, playerSize)) {
 			HitPlayerNum = i;
 			isPlayerHit = true;
-			PlaySoundMem(s_PlayerHit[HitPlayerNum], DX_PLAYTYPE_BACK);
-			PlaySoundMem(s_Blood, DX_PLAYTYPE_BACK);
+			PlaySoundMem(s_PlayerHit[HitPlayerNum], DX_PLAYTYPE_BACK);	// プレイヤー叫び声
+			PlaySoundMem(s_Blood, DX_PLAYTYPE_BACK);					// ヒット音
 			ricochetCount = -1;
 			effect->InitHitEffectCount(playerX,playerY);
 			return true;
@@ -341,7 +345,11 @@ bool Bullet::IsHitBlock(void) {
 	return false;
 }
 
+////////////////////////////////////////////////
+// リザルト画面に飛ぶ前に少し待つ
+////////////////////////////////////////////////
 bool Bullet::ResultTransitionWaiting(void) {
+	
 	if (++waitingTimeAfterPlayerHit <= 480) {
 		if (waitingTimeAfterPlayerHit == 210) {
 			gameMain->PlayBattleBGM(TRUE);
@@ -352,6 +360,9 @@ bool Bullet::ResultTransitionWaiting(void) {
 	return true;
 }
 
+////////////////////////////////////////////////
+// 勝負ありの描画
+////////////////////////////////////////////////
 void Bullet::DrawSHINOBIEXECUTION() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
 
@@ -375,19 +386,9 @@ void Bullet::DrawSHINOBIEXECUTION() {
 	return;
 }
 
-Bullet::~Bullet() {
-	delete collision;
-	delete effect;
-	s_Fire = DeleteSoundMem(s_Fire);
-	s_Ricochet = DeleteSoundMem(s_Ricochet);
-	s_BlockBreak = DeleteSoundMem(s_BlockBreak);
-	s_PlayerHit[0] = DeleteSoundMem(s_PlayerHit[0]);
-	s_PlayerHit[1] = DeleteSoundMem(s_PlayerHit[1]);
-	s_Blood = DeleteSoundMem(s_Blood);
-	s_MatchEnd = DeleteSoundMem(s_MatchEnd);
-}
-
+////////////////////////////////////////////////
 // 音データ読み込み
+////////////////////////////////////////////////
 void Bullet::LoadSounds(void) {
 	if ((s_Fire = LoadSoundMem("sounds/Fire.mp3")) == -1) return;
 	if ((s_Ricochet = LoadSoundMem("sounds/Ricochet.mp3")) == -1) return;
@@ -398,7 +399,9 @@ void Bullet::LoadSounds(void) {
 	if ((s_MatchEnd = LoadSoundMem("sounds/MatchEnd.mp3")) == -1) return;
 }
 
+////////////////////////////////////////////////
 // 音量変更
+////////////////////////////////////////////////
 void Bullet::ChangeVolume(float persent) {
 	int volume = 255.0f * persent;
 
@@ -409,4 +412,19 @@ void Bullet::ChangeVolume(float persent) {
 	ChangeVolumeSoundMem(volume, s_PlayerHit[1]);
 	ChangeVolumeSoundMem(volume, s_Blood);
 	ChangeVolumeSoundMem(volume, s_MatchEnd);
+}
+
+////////////////////////////////////////////////
+// デストラクタ
+////////////////////////////////////////////////
+Bullet::~Bullet() {
+	delete collision;
+	delete effect;
+	s_Fire = DeleteSoundMem(s_Fire);
+	s_Ricochet = DeleteSoundMem(s_Ricochet);
+	s_BlockBreak = DeleteSoundMem(s_BlockBreak);
+	s_PlayerHit[0] = DeleteSoundMem(s_PlayerHit[0]);
+	s_PlayerHit[1] = DeleteSoundMem(s_PlayerHit[1]);
+	s_Blood = DeleteSoundMem(s_Blood);
+	s_MatchEnd = DeleteSoundMem(s_MatchEnd);
 }
