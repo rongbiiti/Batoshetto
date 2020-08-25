@@ -47,6 +47,9 @@ void GameMain::UpdateWait(void) {
 	}
 }
 
+////////////////////////////////////////////////
+// ゲームループに入る前にする初期化処理
+////////////////////////////////////////////////
 int GameMain::FirstInit(void) {
 	SetMainWindowText("バトシェット");	// ウィンドウの名前設定
 	SetGraphMode(DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, 32);	// ウィンドウの計算用大きさ設定
@@ -99,6 +102,9 @@ void GameMain::Init() {
 	option = NULL;
 }
 
+////////////////////////////////////////////////
+// プレイヤーやブロックなど主要なオブジェクトのデストラクタを呼ぶ
+////////////////////////////////////////////////
 void GameMain::MainObjDelete() {	
 	// UIクラス消去
 	delete ui;
@@ -440,7 +446,7 @@ void GameMain::Output(void) {
 		pauseScreen->DrawPauseScreen();
 	}
 
-	DrawDebugInfo();	// デバッグ情報描画
+	//DrawDebugInfo();	// デバッグ情報描画
 }
 
 ////////////////////////////////////////////////
@@ -481,18 +487,24 @@ bool GameMain::IsPushPauseButton() {
 	return false;
 }
 
+////////////////////////////////////////////////
+// ポーズ画面に関する処理がまとまっている
+////////////////////////////////////////////////
 bool GameMain::PauseProcess(void) {
 	if (IsPushPauseButton()) {
+		// ポーズキーが押された時、ポーズ画面開いてたら閉じる。
 		if (pauseFlg) {
 			pauseScreen->~PauseScreen();
 			pauseFlg = false;
 		}
+		// 開いてなかったら開く
 		else {
 			CreatePauseScreenObj();
 		}
 		return true;
 	}
 
+	// ポーズ画面開いてたらポーズ画面の処理
 	if (pauseFlg) {
 		pauseScreen->PauseScreenControll();
 		return true;
@@ -500,6 +512,9 @@ bool GameMain::PauseProcess(void) {
 	return false;
 }
 
+////////////////////////////////////////////////
+// ブロック画像読み込み
+////////////////////////////////////////////////
 void GameMain::LoadBlockImages() {
 	if (!(i_BlockImages[0] = LoadGraph("Image/Block03.png"))) return;
 	if (!(i_BlockImages[1] = LoadGraph("Image/Block02.png"))) return;
@@ -507,11 +522,17 @@ void GameMain::LoadBlockImages() {
 	if (LoadDivGraph("Image/Block04.png", 4, 2, 2, 40, 40, i_BrokenBlockImages) == -1) return;
 }
 
+////////////////////////////////////////////////
+// カーソル画像読込み
+////////////////////////////////////////////////
 void GameMain::LoadCursorImages() {
 	if (!(i_CursorImage[0] = LoadGraph("Image/PlayerCursor01.png"))) return;
 	if (!(i_CursorImage[1] = LoadGraph("Image/PlayerCursor02.png"))) return;
 }
 
+////////////////////////////////////////////////
+// ゲーム全体でよく使う音データ読み込み
+////////////////////////////////////////////////
 void GameMain::LoadSounds() {
 	if ((m_TitleBGM = LoadSoundMem("sounds/BGM/魔王魂/game_maoudamashii_7_event46.mp3")) == -1) return;
 	if ((m_BattleBGM = LoadSoundMem("sounds/BGM/魔王魂/game_maoudamashii_1_battle27.mp3")) == -1) return;
@@ -520,7 +541,9 @@ void GameMain::LoadSounds() {
 	if ((s_CursorSE = LoadSoundMem("sounds/Cursor.mp3")) == -1) return;
 }
 
+////////////////////////////////////////////////
 // タイトルBGM再生。stopFlgにTRUEを渡すとBGMを止める
+////////////////////////////////////////////////
 void GameMain::PlayTitleBGM(bool stopFlg) {
 	if (stopFlg) {
 		StopSoundMem(m_TitleBGM);
@@ -533,7 +556,9 @@ void GameMain::PlayTitleBGM(bool stopFlg) {
 	}
 }
 
+////////////////////////////////////////////////
 // 試合中BGM再生。stopFlgにTRUEを渡すとBGMを止める
+////////////////////////////////////////////////
 void GameMain::PlayBattleBGM(bool stopFlg) {
 	if (stopFlg) {
 		StopSoundMem(m_BattleBGM);
@@ -546,7 +571,9 @@ void GameMain::PlayBattleBGM(bool stopFlg) {
 	}
 }
 
+////////////////////////////////////////////////
 // 音量変更
+////////////////////////////////////////////////
 void GameMain::ChangeVolume(float BGMpersent, float SEpersent) {
 	int BGMvolume = 255.0f * BGMpersent;
 	int SEvolume = 255.0f * SEpersent;
@@ -559,35 +586,56 @@ void GameMain::ChangeVolume(float BGMpersent, float SEpersent) {
 	ChangeVolumeSoundMem(SEvolume, s_CursorSE);
 }
 
+////////////////////////////////////////////////
+// ブロックの画像消去
+////////////////////////////////////////////////
 void GameMain::DeleteBlockImages() {
 	DeleteGraph(i_BlockImages[0]);
 	DeleteGraph(i_BlockImages[1]);
 	DeleteGraph(i_BlockImages[2]);
 }
 
+////////////////////////////////////////////////
+// 入力管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateInputManagerObj() {
 	// 入力管理クラスを生成。ポインタを保存しておく。
 	inputManager = new InputManager;
 }
 
+////////////////////////////////////////////////
+// フォントデータ管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateFontDataObj() {
 	fontData = new FontData();
 }
 
+////////////////////////////////////////////////
+// プレイヤー管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreatePlayerObj() {
 	player[GameManager::RED] = new Player(0, 0xE71122, false, this);
 	player[GameManager::BLUE] = new Player(1, 0x1122E7, false, this);
 }
 
+////////////////////////////////////////////////
+// 弾管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateBulletObj() {
 	bullet = new Bullet();
 	bullet->ChangeVolume(option->GetSEVolume());
 }
 
+////////////////////////////////////////////////
+// ゲーム進行管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateGameManagerObj() {
 	gameManager = new GameManager(this);
 }
 
+////////////////////////////////////////////////
+// ブロック管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateBlockObj() {
 	for (int i = 0; i < BLOCK_MAX; i++) {
 		block[i] = new Block(i, fontData, this);
@@ -595,6 +643,9 @@ void GameMain::CreateBlockObj() {
 	LoadBlockImages();
 }
 
+////////////////////////////////////////////////
+// リザルト画面管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateResultObj(int hitPNum) {
 	result = new Result(fontData, inputManager, gameManager, hitPNum);
 	CreateOptionObj(0, 0);
@@ -603,6 +654,9 @@ void GameMain::CreateResultObj(int hitPNum) {
 	option = NULL;
 }
 
+////////////////////////////////////////////////
+// タイトル画面管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateTitleObj() {
 	title = new Title(fontData, inputManager, gameManager);
 	if (ui != nullptr) {
@@ -618,6 +672,9 @@ void GameMain::CreateTitleObj() {
 	option = NULL;
 }
 
+////////////////////////////////////////////////
+// エンド画面管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateEndObj() {
 	end = new End(fontData, inputManager, gameManager);
 	if (ui != nullptr) {
@@ -626,21 +683,33 @@ void GameMain::CreateEndObj() {
 	}
 }
 
+////////////////////////////////////////////////
+// 難易度選択画面管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateDifficultySelectSceneObj() {
 	diffiSelectScene = new DifficultySelectScene(inputManager, fontData, gameManager);
 }
 
+////////////////////////////////////////////////
+// ポーズ画面管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreatePauseScreenObj() {
 	pauseScreen = new PauseScreen(fontData, inputManager, this, pausePushPLNum);
 	pauseFlg = true;
 }
 
+////////////////////////////////////////////////
+// UI管理クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateUIObj() {
 	ui = new UI(this);
 	PlayTitleBGM(TRUE);
 	PlayBattleBGM();
 }
 
+////////////////////////////////////////////////
+// オプション画面クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
 	if (prescreennum == Option::PAUSE) {
 		option = new Option(this, pushPLnum, prescreennum, gameManager->GetPhaseStatus());
@@ -649,10 +718,16 @@ void GameMain::CreateOptionObj(int pushPLnum, int prescreennum) {
 	option = new Option(this, pushPLnum, prescreennum);
 }
 
+////////////////////////////////////////////////
+// 通信対戦用クラスを生成し、ポインタを保存しておく
+////////////////////////////////////////////////
 void GameMain::CreateNetworkObj() {
 	network = new Network(fontData, inputManager, gameManager);
 }
 
+////////////////////////////////////////////////
+// タイムアウト時のリザルト画面を生成する
+////////////////////////////////////////////////
 void GameMain::CreateResultObj_TimeOut() {
 	result = new Result(fontData, inputManager, gameManager);
 	PlayBattleBGM(TRUE);

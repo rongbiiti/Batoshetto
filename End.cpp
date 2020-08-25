@@ -1,5 +1,8 @@
 #include "End.h"
 
+////////////////////////////////////////////////
+// コンストラクタ
+////////////////////////////////////////////////
 End::End(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	fontData = font;
 	inputManager = inputMNG;
@@ -12,6 +15,9 @@ End::End(FontData* font, InputManager* inputMNG, GameManager* gameMNG) {
 	selectNum[1] = 0;
 }
 
+////////////////////////////////////////////////
+// 処理
+////////////////////////////////////////////////
 void End::EndControll() {
 	for (int i = 0; i < 2; i++) {
 		if (inputManager->GetButtonDown(PAD_UP, i) || inputManager->GetButtonHold(PAD_UP, i, 4)) {
@@ -57,7 +63,7 @@ void End::EndControll() {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
@@ -66,7 +72,7 @@ void End::EndControll() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
@@ -75,27 +81,28 @@ void End::EndControll() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN) == 1) {
-		// ゲームパッド1のBボタン入力。
+		// キーボード決定入力
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
-			//if (DxLib_Init() == -1) return -1;
-			//DxLib_End();
 			gameManager->SetPhaseStatus(GameManager::QUIT);
 			this->~End();
 			break;
+
 		case 1:
 			gameManager->SetPhaseStatus(GameManager::TITLE);
-
 			gameMain->CreateTitleObj();
-
 			this->~End();
 			break;
 		}
+
 		gameManager->gameMain->PlayDicideSE();
 	}
 }
 
+////////////////////////////////////////////////
+// 描画
+////////////////////////////////////////////////
 void End::DrawEnd() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
 	//DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
@@ -126,14 +133,23 @@ void End::DrawEnd() {
 	}
 }
 
-//画像読み込み
+////////////////////////////////////////////////
+// 画像読み込み
+////////////////////////////////////////////////
 void End::LoadImages() {
 	if (!(i_EndImage = LoadGraph("Image/TitleBulletBackImage.png"))) return;
 }
 
+////////////////////////////////////////////////
+// 画像消去
+////////////////////////////////////////////////
 void End::DeleteImages() {
 	i_EndImage = DeleteGraph(i_EndImage);
 }
+
+////////////////////////////////////////////////
+// デストラクタ
+////////////////////////////////////////////////
 End::~End() {
 	DeleteImages();
 }

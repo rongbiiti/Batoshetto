@@ -56,7 +56,7 @@ private:
 	int HitPlayerNum;		// ヒットしたプレイヤーの番号
 	int toHidePhaseTransitionWaitTime;	// 隠れる側フェーズに遷移する前のちょっとした待ち時間
 
-	int bnum;
+	int bnum;				// ブロックのどの辺に衝突したかを保存しておく
 
 	void LoadSounds(void);	// 音データ読み込み
 

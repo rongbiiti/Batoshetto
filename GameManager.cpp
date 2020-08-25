@@ -25,7 +25,7 @@ void GameManager::Init() {
 	NowShooter = FirstShooter;
 	NowHider = FirstHider;
 	PhaseStatus = HIDE;
-	PlaySoundMem(s_MatchStartSE, DX_PLAYTYPE_BACK);
+	PlaySoundMem(s_MatchStartSE, DX_PLAYTYPE_BACK);	// 試合開始時SE流す
 }
 
 ////////////////////////////////////////////////
@@ -108,6 +108,7 @@ void GameManager::HideTimerControll(void) {
 	}
 
 	// 残り時間が迫ってきたときの音
+	// だんだんと早くなる
 	if (t_HideTime <= HidePhaseTime / 4) {
 		if (t_HideTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
@@ -127,6 +128,7 @@ void GameManager::ShotTimerControll(void) {
 	--t_ShotTime;
 
 	// 残り時間が迫ってきたときの音
+	// だんだんと早くなる
 	if (t_ShotTime <= ShotPhaseTime / 4) {
 		if (t_ShotTime % 12 == 0) PlaySoundMem(s_TimeLimitSE, DX_PLAYTYPE_BACK);
 	}
@@ -146,10 +148,12 @@ void GameManager::HideTimerControll_Net(void) {
 	// 隠れる側残り時間を減らす
 	--t_HideTime;
 
+	// 返信待ちでないときかつ残り時間がないとき、相手からの返信待ち状態にする
 	if (!gameMain->network->GetIsWaitRecvCheck() && t_HideTime < 0) {
 		gameMain->network->SetIsWaitRecvCheck(TRUE);
 	}
 
+	// 10秒間返信がないとき、タイムアウトということで試合を中断してリザルト画面に移行
 	if (t_HideTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
 		SetPhaseStatus(RESULT);
 		gameMain->CreateResultObj_TimeOut();
@@ -163,10 +167,12 @@ void GameManager::ShotTimerControll_Net(void) {
 	// 撃つ側残り時間を減らす
 	--t_ShotTime;
 
+	// 返信待ちでないときかつ残り時間がないとき、相手からの返信待ち状態にする
 	if (!gameMain->network->GetIsWaitRecvCheck() && t_ShotTime < 0) {
 		gameMain->network->SetIsWaitRecvCheck(TRUE);
 	}
 
+	// 10秒間返信がないとき、タイムアウトということで試合を中断してリザルト画面に移行
 	if (t_ShotTime < -600 && gameMain->network->GetIsWaitRecvCheck()) {
 		SetPhaseStatus(RESULT);
 		gameMain->CreateResultObj_TimeOut();
@@ -177,21 +183,21 @@ void GameManager::ShotTimerControll_Net(void) {
 // 隠れる側のフェーズに移行する処理がまとめてある。
 ////////////////////////////////////////////////
 void GameManager::ToHidePhase(void) {
-	SetHideTime();
-	SetPhaseStatus(HIDE);
-	ShooterChange();
-	gameMain->ui->TransitionParameterReset();
-	PlaySoundMem(s_HiderChangeSE, DX_PLAYTYPE_BACK);
+	SetHideTime();			// 隠れる側のタイマーリセット
+	SetPhaseStatus(HIDE);	// 隠れるフェーズにする
+	ShooterChange();		// 撃つ側交代
+	gameMain->ui->TransitionParameterReset();	// UIのパラメーターリセット
+	PlaySoundMem(s_HiderChangeSE, DX_PLAYTYPE_BACK);	// 隠れる側時の音鳴らす
 }
 
 ////////////////////////////////////////////////
 // 撃つ側のフェーズに移行する処理がまとめてある。
 ////////////////////////////////////////////////
 void GameManager::ToShotPhase(void) {
-	SetShotTime();
-	SetPhaseStatus(SHOT);
-	gameMain->ui->TransitionParameterReset();
-	PlaySoundMem(s_ShooterChangeSE, DX_PLAYTYPE_BACK);
+	SetShotTime();			// 撃つ側のタイマーリセット
+	SetPhaseStatus(SHOT);	// 撃つフェーズにする
+	gameMain->ui->TransitionParameterReset();	// UIのパラメーターリセット
+	PlaySoundMem(s_ShooterChangeSE, DX_PLAYTYPE_BACK);	// 隠れる側時の音鳴らす
 }
 
 ////////////////////////////////////////////////
@@ -216,6 +222,12 @@ void GameManager::ChangeVolume(float SEVolume) {
 	ChangeVolumeSoundMem(volume, s_MatchStartSE);
 }
 
+////////////////////////////////////////////////
+// デストラクタ
+////////////////////////////////////////////////
 GameManager::~GameManager() {
-	
+	s_TimeLimitSE = DeleteSoundMem(s_TimeLimitSE);
+	s_ShooterChangeSE = DeleteSoundMem(s_ShooterChangeSE);
+	s_HiderChangeSE = DeleteSoundMem(s_HiderChangeSE);
+	s_MatchStartSE = DeleteSoundMem(s_MatchStartSE);
 }

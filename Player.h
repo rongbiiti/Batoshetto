@@ -36,7 +36,7 @@ public:
 
 	void DrawWaitRecvCheck();		// 通信待機中を表示
 
-	Effect* effect;							// 生成したUI管理クラスのポインタ
+	Effect* effect;					// 生成したUI管理クラスのポインタ
 
 private:
 	Collision* collision;	// 生成した衝突判定するクラスのポインタ
@@ -79,10 +79,10 @@ private:
 	int preX, preY;				// 移動前の座標
 	int num;					// REDかBLUEか
 	float directionalKeyAng;	// 方向キーで角度操作するときの角度変化量
-	int blocknumber;
+	int blocknumber;			// ブロックの番号を記憶しておく
 	int i_Playerimage[2];	// ゲージの画像
-	bool shotFlg;
-	bool passFlg;
+	bool shotFlg;			// 通信用。発砲したかのフラグ
+	bool passFlg;			// 通信用。パスしたかのフラグ
 };
 
 #endif // !_PLAYER_H_

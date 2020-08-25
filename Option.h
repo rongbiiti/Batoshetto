@@ -33,8 +33,8 @@ public:
 	void OptionControll();	// オプション画面の処理関数
 	void DrawOption();		// オプション画面の描画
 
-	float GetBGMVolume() { return BGMVolume; }
-	float GetSEVolume() { return SEVolume; }
+	float GetBGMVolume() { return BGMVolume; }		// BGMの音量を返す
+	float GetSEVolume() { return SEVolume; }		// SEの音量を返す
 
 private:
 	GameMain* gameMain;	// ゲームメインのポインタ

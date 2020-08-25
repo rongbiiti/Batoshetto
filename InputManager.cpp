@@ -49,8 +49,7 @@ void InputManager::InputButton(void) {
 			if (i == 10 || i == 11) continue;
 			if (input[num].Buttons[i]) gamePad[num].in_Button[i]++;
 			else				  gamePad[num].in_Button[i] = 0;
-			// デバッグ用描画
-			//DrawFormatString(400 + i % 2 * 200, 200 + i / 2 * 16, 0xFFFFFF, "%s:%d", buttonName[i].c_str(), in_Button[i]);
+			
 		}
 
 		gamePad[num].in_Stick_LX = (float)(input[num].ThumbLX / 32767.0f);	// スティックの傾きはshort型で保存されているので、
@@ -66,11 +65,6 @@ void InputManager::InputButton(void) {
 			gamePad[num].in_Stick_RX = 0;
 			gamePad[num].in_Stick_RY = 0;
 		}
-
-		// デバッグ用描画
-		//DrawFormatString(900, 0, 0xFFFFFF, "LeftTrigger:%d RightTrigger:%d", input.LeftTrigger, input.RightTrigger);
-		//DrawFormatString(900, 16, 0xFFFFFF, "ThumbLX:%.4f ThumbLY:%.4f", in_Stick_LX, in_Stick_LY);
-		//DrawFormatString(900, 32, 0xFFFFFF, "ThumbRX:%.4f ThumbRY:%.4f", in_Stick_RX, in_Stick_RY);
 	}
 }
 

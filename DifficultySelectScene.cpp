@@ -7,6 +7,8 @@ DifficultySelectScene::DifficultySelectScene(InputManager* input, FontData* font
 	inputManager = input;
 	fontData = font;
 	gameMangaer = gameMNG;
+
+	// 変数初期化
 	waitTime = 0;
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		selectNum[i] = 0;
@@ -82,7 +84,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
@@ -91,7 +93,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
@@ -100,7 +102,7 @@ void DifficultySelectScene::DifficultySelectControll() {
 	}
 
 	if (!dicideNumFlg[GameManager::BLUE] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
-		// ゲームパッド1のBボタン入力。
+		// キーボード決定入力
 		dicideNumFlg[GameManager::BLUE] = true;
 		gameMangaer->gameMain->PlayDicideSE();
 		return;
@@ -176,7 +178,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_ESCAPE))) {
-		// ゲームパッド1のBボタン入力。
+		// キーボードエスケープキー入力
 		returnFlg = true;
 		gameMangaer->gameMain->CreateTitleObj();
 		gameMangaer->gameMain->PlayCanselSE();
@@ -185,7 +187,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4))) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::RED] < 0) {
 			selectNum[GameManager::RED] = SELECT_NUM_MAX;
@@ -194,7 +196,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4))) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::RED] > SELECT_NUM_MAX) {
 			selectNum[GameManager::RED] = 0;
@@ -203,7 +205,7 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 	}
 
 	if (!dicideNumFlg[GameManager::RED] && (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN))) {
-		// ゲームパッド1のBボタン入力。
+		// キーボード決定入力
 		dicideNumFlg[GameManager::RED] = true;
 		gameMangaer->gameMain->PlayDicideSE();
 		return;

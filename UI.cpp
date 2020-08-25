@@ -7,20 +7,16 @@ UI::UI(GameMain* main) {
 	gameMain = main;
 	gameManager = gameMain->gameManager;
 	fontData = gameMain->fontData;
-	LoadImages();
+
+	LoadImages();		// 画像読み込み
+
+	// 変数初期化
 	TransitionParameterReset();
 	isBattleStart = TRUE;
 	firstAnimWaitTime = 0;
 	firstAnimX = 500;
 	firstAnimY = 0;
 	firstAnimAlpha = 90;
-}
-
-////////////////////////////////////////////////
-// パラメータを変更処理
-////////////////////////////////////////////////
-void UI::UIControll() {
-
 }
 
 ////////////////////////////////////////////////
@@ -37,14 +33,15 @@ bool UI::BattleStartAnim() {
 	}
 	
 	if (firstAnimWaitTime <= 45) {
-		firstAnimY += 500 / 45;
+		firstAnimY += 500 / 45;		// 下に動かす
 		return true;
 	}
 	if (firstAnimWaitTime <= 90) {
+		// ちょっと待機
 		return true;
 	}
 	if (firstAnimWaitTime <= 180) {
-		--firstAnimAlpha;
+		--firstAnimAlpha;			// 透明度を上げて消す
 		return true;
 	}
 
@@ -57,13 +54,16 @@ bool UI::BattleStartAnim() {
 // 処理が終わっていたらtrue、まだならfalseが返る
 ////////////////////////////////////////////////
 bool UI::TransitionAnimationWaiting() {
-	if (BattleStartAnim()) return false;
+	if (BattleStartAnim()) return false;	// 試合開始時アニメをしていたら以下の処理をしないで早期リターン
 
+	// 最初のフレームでネット対戦時のバッファークリアする
+	// 構造体も初期化する
 	if (++animationWaitingTime <= 1) {
 		gameMain->network->BufferClear();
 		gameMain->network->StructsReset();
 	}
 	
+	// 撃て！と動け！の文字のX座標を動かす。REDは右に動いていき、BLUEは左に動いていくように処理を分岐
 	if (animationWaitingTime <= 35) {
 
 		if ((gameManager->GetPhaseStatus() == GameManager::SHOT && gameManager->GetNowShooter() == GameManager::BLUE) ||
@@ -77,15 +77,17 @@ bool UI::TransitionAnimationWaiting() {
 		return false;
 	}
 	if (animationWaitingTime <= 55) {
-		
+		// ちょっと待機
 		return false;
 	}
 	if (animationWaitingTime <= 90) {
+		// 縮小しながら上に動かす
 		transitionY -= 270 / 35;
 		transitionExRate -= 1.0 / 35.0;
 		return false;
 	}
 
+	// ここまで来て、撃つ側の画像が変わるようにする
 	if (gameManager->GetPhaseStatus() == GameManager::SHOT) {
 		gameManager->ShooterFlgChange(true);
 	}
@@ -106,8 +108,9 @@ void UI::DrawTransitionAnimation() {
 
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2;
 
+	// 隠れる側時の処理
 	if (gameManager->GetPhaseStatus() == GameManager::HIDE) {
-		//DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowHider()], fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
+		// 動け！の画像表示
 		DrawRotaGraph(transitionX, transitionY, transitionExRate, 0, i_OrderImage[gameManager->GetNowHider()][gameManager->GetPhaseStatus() - GameManager::HIDE], TRUE);
 
 		// 操作方法表示
@@ -119,8 +122,9 @@ void UI::DrawTransitionAnimation() {
 		}
 		
 	}
+	// 撃つ側時の処理
 	else {
-		//DrawFormatStringToHandle(transitionX, transitionY, COLOR_VALUE_PLAYER[gameManager->GetNowShooter()], fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
+		// 撃て！の画像表示
 		DrawRotaGraph(transitionX, transitionY, transitionExRate, 0, i_OrderImage[gameManager->GetNowShooter()][gameManager->GetPhaseStatus() - GameManager::HIDE], TRUE);
 
 		// 操作方法表示
@@ -145,25 +149,30 @@ void UI::DrawTransitionAnimation() {
 ////////////////////////////////////////////////
 void UI::DrawBattleStartAnim() {
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70;
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * firstAnimAlpha / 90);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * firstAnimAlpha / 90);	// 透明度を変える
+
 	fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "あ");
 	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 70) + y, 0xFFFFFF, gameMain->fontData->f_FontData[2], "勝");
 	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 200) + y, 0xFFFFFF, gameMain->fontData->f_FontData[2], "負");
 	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 330) + y, 0xFFFFFF, gameMain->fontData->f_FontData[2], "開");
 	DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 460) + y, 0xFFFFFF, gameMain->fontData->f_FontData[2], "始");
 
-	//fontwidth = GetDrawFormatStringWidthToHandle(gameMain->fontData->f_FontData[1], "Battle Start");
-	//DrawFormatStringToHandle(x - fontwidth / 2, firstAnimY - (500 - 560), 0xFFFFFF, gameMain->fontData->f_FontData[1], "Battle Start");
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);	// 透明度をもとに戻す
 }
 
+////////////////////////////////////////////////
+// アニメ用の変数リセット
+////////////////////////////////////////////////
 void UI::TransitionParameterReset() {
 	animationWaitingTime = 0;
 	transitionExRate = 2.0;
+
+	// BLUEのターンなら、X座標初期位置を画面右側にする
 	if ( ( gameManager->GetPhaseStatus() == GameManager::SHOT && gameManager->GetNowShooter() == GameManager::BLUE ) ||
 		 ( gameManager->GetPhaseStatus() == GameManager::HIDE && gameManager->GetNowHider() == GameManager::BLUE ) ) {
 		transitionX = 1340;
 	}
+	// REDなら、X座標初期位置を画面左側にする
 	else {
 		transitionX = 0;
 	}

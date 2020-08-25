@@ -29,6 +29,7 @@ public:
 	// 引数は、プレイヤーの中心X、Y、ターゲットX、Y、ブロックの中心X、Y、直径サイズ。
 	Vector2 IsHitTargetAndBlock(float px, float py, float tx, float ty, float bx, float by, float bsize);
 
+	// 線と線が衝突しているか返す
 	Vector2 GetHitLineAndLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2);
 	
 private:

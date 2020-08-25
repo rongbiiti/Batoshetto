@@ -10,11 +10,11 @@
 class Effect;
 class TitleBullet {
 public:
-	TitleBullet(FontData* font);
-	~TitleBullet();
+	TitleBullet(FontData* font);		// コンストラクタ
+	~TitleBullet();						// デストラクタ
 	void BulletInit(bool alive, int randx, int randy);	// 初期化用関数
-	void TitleBulletControll();
-	void DrawTitleBullet();
+	void TitleBulletControll();			// 処理用関数
+	void DrawTitleBullet();				// 描画用関数
 	void ChangeVolume(float persent);	// 音量変更
 
 	bool GetIsAlive() { return isAlive; }		// 弾が生きているか返す

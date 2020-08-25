@@ -7,13 +7,16 @@ Option::Option(GameMain* main, int pushPLnum, int prescreennum, int prephase) {
 	gameMain = main;
 	inputManager = gameMain->inputManager;
 	fontData = gameMain->fontData;
+
 	LoadFile();
+
 	BGMVolume = saveData.bgmVolume;	// BGMの音量
 	SEVolume = saveData.seVolume;	// SEの音量
-	screenNum = VOLUME;
-	optionPushPLNum = pushPLnum;
-	previousNum = prescreennum;
-	previousGamePhase = prephase;
+	screenNum = VOLUME;		// 音量変更画面に直接遷移させる。以前はオプショントップ画面だった。
+
+	optionPushPLNum = pushPLnum;	// オプション画面を開いたプレイヤー番号
+	previousNum = prescreennum;		// タイトル画面から来たか、ポーズ画面から来たか。
+	previousGamePhase = prephase;	// ポーズ画面からきたときの直前のフェーズ（SHOTとかHIDE）
 	selectNum[0] = 0;
 	selectNum[1] = 0;
 	
@@ -94,7 +97,7 @@ void Option::ControllOptionTop() {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = SELECT_NUM_MAX;
@@ -103,7 +106,7 @@ void Option::ControllOptionTop() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
@@ -112,7 +115,7 @@ void Option::ControllOptionTop() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
-		// ゲームパッド1のBボタン入力。
+		// キーボード決定入力
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 0:
@@ -238,35 +241,25 @@ void Option::ControllVolumeScreen() {
 
 	// キーボードからの入力。2プレイヤーのカーソルを操作する。
 	if (inputManager->GetKeyDown(KEY_INPUT_UP) || inputManager->GetKeyHold(KEY_INPUT_UP, 4)) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー上の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		if (--selectNum[GameManager::BLUE] < 0) {
 			selectNum[GameManager::BLUE] = VOLUME_SELECT_NUM_MAX;
 		}
-		if (previousNum == PAUSE) {
-			ChangeBulletSoundVolume();
-		}
-		gameMain->ChangeVolume(BGMVolume, SEVolume);
-		gameMain->gameManager->ChangeVolume(SEVolume);
 		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_DOWN) || inputManager->GetKeyHold(KEY_INPUT_DOWN, 4)) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー下の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		if (++selectNum[GameManager::BLUE] > VOLUME_SELECT_NUM_MAX) {
 			selectNum[GameManager::BLUE] = 0;
 		}
-		if (previousNum == PAUSE) {
-			ChangeBulletSoundVolume();
-		}
-		gameMain->ChangeVolume(BGMVolume, SEVolume);
-		gameMain->gameManager->ChangeVolume(SEVolume);
 		gameMain->PlayCursorSE();
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_RIGHT) || inputManager->GetKeyHold(KEY_INPUT_RIGHT, 4)) {
-		// ゲームパッド1の方向パッド下の入力。18フレ以上押し続けてたら連続でインクリメント
+		// キーボード方向キー右の入力。18フレ以上押し続けてたら連続でインクリメント
 		// 項目最大数の数字より大きくなったら0に戻す（カーソル下に移動、一番下のときに下を押したらメニューの一番上にカーソルをあわせる）
 		switch (selectNum[GameManager::BLUE])
 		{
@@ -292,7 +285,7 @@ void Option::ControllVolumeScreen() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_LEFT) || inputManager->GetKeyHold(KEY_INPUT_LEFT, 4)) {
-		// ゲームパッド1の方向パッド上の入力。18フレ以上押し続けてたら連続でデクリメント
+		// キーボード方向キー左の入力。18フレ以上押し続けてたら連続でデクリメント
 		// 0未満になったら項目最大数の数字にする（カーソル上に移動、一番上のときに上を押したらメニューの一番下にカーソルをあわせる）
 		switch (selectNum[GameManager::BLUE])
 		{
@@ -318,7 +311,7 @@ void Option::ControllVolumeScreen() {
 	}
 
 	if (inputManager->GetKeyDown(KEY_INPUT_F) || inputManager->GetKeyDown(KEY_INPUT_RETURN)) {
-		// ゲームパッド1のBボタン入力。
+		// キーボード決定入力
 		switch (selectNum[GameManager::BLUE])
 		{
 		case 2:
@@ -360,9 +353,11 @@ void Option::DrawOption() {
 	switch (screenNum)
 	{
 	case TOP:
+		// オプショントップ画面描画
 		DrawOptionMain();
 		break;
 	case VOLUME:
+		// 音量変更画面描画
 		DrawVolumeMenu();
 		break;
 	}
@@ -436,12 +431,15 @@ void Option::DrawVolumeMenu() {
 
 	extraX = 400;
 	x = x - 100;
+	// 音量バーの外枠、黒い四角描画
 	DrawBox(x , starty - 115, x + extraX, starty - 95 , 0x222222, 1);
 	DrawBox(x , starty - 115 + y, x + extraX, starty - 95 + y, 0x222222, 1);
 
+	// 音量バーの内枠、赤い四角描画
 	DrawBox(x, starty - 115, x + extraX * BGMVolume, starty - 95, 0xE7132c, 1);
 	DrawBox(x, starty - 115 + y, x + extraX * SEVolume, starty - 95 + y, 0xE7132c, 1);
 
+	// 音量バーの円描画
 	DrawCircle(x + extraX * BGMVolume, starty - 105, 15, 0xEEEEEE, 1);
 	DrawCircle(x + extraX * SEVolume, starty - 105 + y, 15, 0xEEEEEE, 1);
 
@@ -470,10 +468,12 @@ void Option::BackOptionMenu() {
 ////////////////////////////////////////////////
 void Option::ChangeBulletSoundVolume() {
 	gameMain->bullet->ChangeVolume(SEVolume);
-	gameMain->ChangeVolume(BGMVolume, SEVolume);
+	gameMain->ChangeVolume(BGMVolume, SEVolume);	// 決定音、カーソル音なども音量変更
 }
 
+////////////////////////////////////////////////
 // セーブデータ読込み
+////////////////////////////////////////////////
 void Option::LoadFile() {
 	const char *fileName = "config.txt";
 	FILE *fp;
@@ -482,6 +482,7 @@ void Option::LoadFile() {
 		return;
 	}
 	else {
+		// 構造体に入れている
 		fread(&saveData, sizeof(option_save_data_t), 1, fp);
 		fclose(fp);
 	}

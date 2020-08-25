@@ -30,11 +30,6 @@ public:
 	void InputButton(void);	// Xboxコントローラーの入力を受け取る関数
 
 	int* In_Key()		{ return in_Key; }		// キー入力の結果を他から書き換えられないようにしている
-	//int* In_Button()	{ return in_Button; }	// ボタン入力の結果を他から書き換えられないようにしている
-	//float In_Stick_LX() { return in_Stick_LX; }	// 左スティックX軸の値を他から書き換えられないようにしている
-	//float In_Stick_LY() { return in_Stick_LY; }	// 左スティックY軸Get
-	//float In_Stick_RX() { return in_Stick_RX; }	// 右スティックX軸Get
-	//float IN_Stick_RY() { return in_Stick_RY; }	// 右スティックY軸Get
 
 	// ボタンの名前
 	const std::string buttonName[16] = { "方向パッド上",
@@ -72,16 +67,16 @@ public:
 	bool GetKeyHold(int KeyCode);	// キーボードのキーを押し続けているかを受け取る
 	bool GetKeyHold(int KeyCode, int reduceValue);	// 押し続けているかを受け取り、キーの押し続け秒数を減らす。
 
-	GamePad* GetPadInput() { return gamePad; }
+	GamePad* GetPadInput() { return gamePad; }	// ゲームパッドの構造体ポインタを渡す
 	
 private:
 	const static int HOLD_FRAMECOUNT = 18;
 
-	char Key[256];		// キーボードが押されているかをこの配列に全て入れる。
+	char Key[256];				// キーボードが押されているかをこの配列に全て入れる。
 	XINPUT_STATE input[2];		// DXLibで定義されているXINPUTの入力を受け取ることができる構造体
 
 	int in_Key[256];			// どのキーが何フレーム押されているかの結果を記憶している関数
-	GamePad gamePad[2];
+	GamePad gamePad[2];			// 指定した番号のコントローラーの構造体を渡す
 };
 
 #endif // !_INPUTMANAGER_H_
