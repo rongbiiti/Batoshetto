@@ -10,14 +10,14 @@ public:
 	Effect();	// コンストラクタ
 	~Effect();	// デストラクタ
 	void LoadImages();	// 画像読み込み
-	void InitEffectCount() { effectcount = 0; }
-	void InitRicochetCount(int num, int x, int y, float angle);
-	void InitHitEffectCount(int x, int y);
+	void InitEffectCount() { effectcount = 0; }	// 初期値設定
+	void InitRicochetCount(int num, int x, int y, float angle);	// 初期値設定
+	void InitHitEffectCount(int x, int y);	// 初期値設定
 	void DrawRicochetEffect();	//跳弾エフェクト描画
 	void DrawEffect(int x, int y, float angle);	//エフェクトを描画
-	void DrawHitEffect();
+	void DrawHitEffect();	//ヒット時エフェクトの描画
 	bool MuzzleFlashEffectFlg = FALSE;	// マズルフラッシュflg、デフォルトはFALSE
-	bool HitEffectFlg = FALSE;
+	bool HitEffectFlg = FALSE;		// ヒット時エフェクトflg
 	
 
 
@@ -28,12 +28,12 @@ private:
 	int i_HitEffect[6];		//ヒット時エフェクトの画像
 	int effectcount;	// エフェクトのフレームカウント
 	int RicochetEffectCount[6];		//跳弾時エフェクトのフレームカウント
-	int HitEffectcount;
-	int rico_x[6];
-	int rico_y[6];
-	float rico_angle[6];
-	int hit_effect_x;
-	int hit_effect_y;
+	int HitEffectcount;				// ヒット時エフェクトのフレームカウント
+	int rico_x[6];					// 跳弾時エフェクトのX座標
+	int rico_y[6];					// 跳弾時エフェクトのY座標
+	float rico_angle[6];			// 跳弾時エフェクトのアングル変更
+	int hit_effect_x;				// ヒット時エフェクトのX座標
+	int hit_effect_y;				//　ヒット時エフェクトのY座標
 
 };
 

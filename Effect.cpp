@@ -3,6 +3,8 @@
 // コンストラクタ
 Effect::Effect() {
 	LoadImages();
+
+	// 配列の初期化
 	for (int i = 0; i < 6; i++) {
 		rico_x[i] = 0;
 		rico_y[i] = 0;
@@ -16,6 +18,7 @@ Effect::Effect() {
 	HitEffectFlg = FALSE;		// flgを０に戻す
 }
 
+//初期値設定
 void Effect::InitRicochetCount(int num, int x, int y, float angle) {
 	rico_x[num] = x;
 	rico_y[num] = y;
@@ -24,6 +27,7 @@ void Effect::InitRicochetCount(int num, int x, int y, float angle) {
 	RicochetEffectFlg[num] = TRUE;
 }
 
+//初期値設定
 void Effect::InitHitEffectCount(int x, int y) {
 	hit_effect_x = x;
 	hit_effect_y = y;
@@ -35,7 +39,9 @@ void Effect::InitHitEffectCount(int x, int y) {
 void Effect::DrawEffect(int x, int y, float angle) {
 	
 	if (effectcount < 12) {
-		DrawRotaGraph(x + cosf(angle * DX_PI_F / 180.0f) * 65, y + sinf(angle * DX_PI_F / 180.0f) * 65, 1.5f, angle * DX_PI_F / 180.0f, i_ShotEffect[effectcount / 3], TRUE);
+		DrawRotaGraph(x + cosf(angle * DX_PI_F / 180.0f) * 65, y + sinf(angle * DX_PI_F / 180.0f) * 65, 1.5f,
+			angle * DX_PI_F / 180.0f, i_ShotEffect[effectcount / 3], TRUE);	// 3フレーム間隔で画像を更新
+
 		effectcount++;
 	}
 	else {
@@ -48,7 +54,7 @@ void Effect::DrawRicochetEffect() {
 	for(int i = 0; i<6; i++){
 		if (RicochetEffectCount[i] < 12 && RicochetEffectFlg[i]) {
 			DrawRotaGraph(rico_x[i], rico_y[i], 1.0f, rico_angle[i], i_RicochetEffect[(++RicochetEffectCount[i]-1) / 3], TRUE);
-			
+			//3フレーム間隔で画像を更新
 		}
 		else {
 			RicochetEffectFlg[i] = FALSE;		// flgを０に戻す
@@ -60,6 +66,7 @@ void Effect::DrawRicochetEffect() {
 void Effect::DrawHitEffect() {
 	if (HitEffectcount < 18 && HitEffectFlg) {
 		DrawRotaGraph(hit_effect_x , hit_effect_y , 1.0f, 180.0f, i_HitEffect[HitEffectcount / 3], TRUE);
+		//3フレーム間隔で画像を更新
 		HitEffectcount++;
 	}
 	else {
