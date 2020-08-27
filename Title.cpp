@@ -112,7 +112,7 @@ void Title::ProcessingOnDetermining(int controllerNum) {
 	int num = controllerNum;
 	if (controllerNum == GameManager::BLUE + 1) --num;
 
-	switch (selectNum[num])
+	switch (num)
 	{
 	case 0:
 		// 通常プレイ。難易度選択画面へする

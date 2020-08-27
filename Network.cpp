@@ -662,7 +662,7 @@ void Network::DrawConnectionWait() {
 		}
 		else if (GEST_phaseNum == GEST_MATCH_START) {
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストが見つかりました。");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストが見つかりました。");
 			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "対戦を開始します！");
 			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "対戦を開始します！");
 		}
