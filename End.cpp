@@ -105,26 +105,18 @@ void End::EndControll() {
 ////////////////////////////////////////////////
 void End::DrawEnd() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 190);
-	//DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x202020, 1);	// 背景黒色で塗りつぶし
 	DrawGraph(0, 0, i_EndImage, TRUE);	// 背景描画
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+	// 画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
-	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "終了しますか？");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "終了しますか？");
+	// 終了しますか？の文字描画
+	DrawRotaGraph(x, starty - 200, 1, 0, i_MenuImage[0], 1);
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
-	}
-	// 各項目名描画
-	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xeeff14, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 1], 1);
 	}
 
 	for (int i = 0; i < 2; i++) {
@@ -138,6 +130,9 @@ void End::DrawEnd() {
 ////////////////////////////////////////////////
 void End::LoadImages() {
 	if (!(i_EndImage = LoadGraph("Image/TitleBulletBackImage.png"))) return;
+	if (!(i_MenuImage[0] = LoadGraph("Image/End_jp.png"))) return;
+	if (!(i_MenuImage[1] = LoadGraph("Image/EndYes_jp.png"))) return;
+	if (!(i_MenuImage[2] = LoadGraph("Image/EndNo_jp.png"))) return;
 }
 
 ////////////////////////////////////////////////
@@ -145,6 +140,9 @@ void End::LoadImages() {
 ////////////////////////////////////////////////
 void End::DeleteImages() {
 	i_EndImage = DeleteGraph(i_EndImage);
+	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
+	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
+	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
 }
 
 ////////////////////////////////////////////////

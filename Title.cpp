@@ -70,7 +70,7 @@ void Title::TitleControll() {
 
 		if (inputManager->GetButtonDown(B, i)) {
 			// ゲームパッドのBボタン入力
-			ProcessingOnDetermining(selectNum[i]);
+			ProcessingOnDetermining(i);
 			return;
 		}
 	}
@@ -112,7 +112,7 @@ void Title::ProcessingOnDetermining(int controllerNum) {
 	int num = controllerNum;
 	if (controllerNum == GameManager::BLUE + 1) --num;
 
-	switch (num)
+	switch (selectNum[num])
 	{
 	case 0:
 		// 通常プレイ。難易度選択画面へする
@@ -199,16 +199,16 @@ void Title::DrawTitle() {
 	titleBullet->DrawTitleBullet();
 
 	// ビルドした日
-	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/08/25");
+	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/08/28");
 	
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
+	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	DrawRotaGraph(x, starty - 200, 1, 0, i_LogoImage, TRUE);	// タイトルロゴ
 
+	// 項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xffffff, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i], 1);
 	}
 
 	for (int i = 0; i < 2; i++) {

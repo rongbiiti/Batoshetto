@@ -401,9 +401,8 @@ void Option::DrawVolumeMenu() {
 	// 文字の幅、		画面の横中心、　　　　　　　	Y軸の増加量、　初期Yの位置
 	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400, extraX = 300, extraFlg = 1;
 
-	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Volume");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Volume");
+	// Volumeの文字描画
+	DrawRotaGraph(x, starty - 300, 1, 0, i_MenuImage[0], 1);
 
 	// ポーズ画面押したのがコントローラーなら赤か青を、キーボードなら必ず青を表示させる
 	if (optionPushPLNum <= GameManager::BLUE && !(selectNum[optionPushPLNum] < VOLUME_SELECT_NUM_MAX)) {
@@ -424,13 +423,13 @@ void Option::DrawVolumeMenu() {
 
 	// 各項目名描画
 	for (int i = 0; i < VOLUME_SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", VolumeMenuName[i].c_str());
 		if (!(i < VOLUME_SELECT_NUM_MAX)) extraFlg = 0;
-		DrawFormatStringToHandle(x - fontwidth / 2 - extraX * extraFlg, starty - 130 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", VolumeMenuName[i].c_str());
+		DrawRotaGraph(x - extraX * extraFlg, starty - 100 + y * i, 1, 0, i_MenuImage[i + 1], 1);
 	}
 
 	extraX = 400;
 	x = x - 100;
+
 	// 音量バーの外枠、黒い四角描画
 	DrawBox(x , starty - 115, x + extraX, starty - 95 , 0x222222, 1);
 	DrawBox(x , starty - 115 + y, x + extraX, starty - 95 + y, 0x222222, 1);
@@ -523,6 +522,10 @@ void Option::DrawBackGroundImage() {
 ////////////////////////////////////////////////
 void Option::LoadImages() {
 	if (!(i_BackImage = LoadGraph("Image/SelectBackImage.png"))) return;
+	if (!(i_MenuImage[0] = LoadGraph("Image/Volume.png"))) return;
+	if (!(i_MenuImage[1] = LoadGraph("Image/BGM.png"))) return;
+	if (!(i_MenuImage[2] = LoadGraph("Image/SE.png"))) return;
+	if (!(i_MenuImage[3] = LoadGraph("Image/BACK.png"))) return;
 }
 
 ////////////////////////////////////////////////
@@ -530,6 +533,10 @@ void Option::LoadImages() {
 ////////////////////////////////////////////////
 void Option::DeleteImages() {
 	i_BackImage = DeleteGraph(i_BackImage);
+	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
+	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
+	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
+	i_MenuImage[3] = DeleteGraph(i_MenuImage[3]);
 }
 
 ////////////////////////////////////////////////

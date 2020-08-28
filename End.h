@@ -33,6 +33,7 @@ private:
 	void DeleteImages();	// ‰æ‘œƒf[ƒ^ƒƒ‚ƒŠ‚©‚çÁ‹
 
 	int i_EndImage;	// ”wŒi‰æ‘œ
+	int i_MenuImage[3];	// €–Ú–¼‰æ‘œ
 };
 
 #endif // !_END_H_

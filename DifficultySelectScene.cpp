@@ -237,8 +237,8 @@ void DifficultySelectScene::DifficultySelectControll_Net() {
 // 難易度選択画面の描画処理
 ////////////////////////////////////////////////
 void DifficultySelectScene::DrawDifficultySelectScene() {
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60-waitTime));
@@ -250,14 +250,8 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
 
-	// DIFFICULTYSELECTの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
-
-	// 難易度を選んでくださいの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "難易度を選んでください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "難易度を選んでください");
-	
+	DrawRotaGraph(x, starty - 300, 1, 0, i_MenuImage[0], 1);	// DIFFICULTYSELECTの文字描画
+	DrawRotaGraph(x, starty - 200, 1, 0, i_MenuImage[1], 1);	// 難易度を選んでくださいの文字描画
 
 	for (int i = 0; i < 2; i++) {
 
@@ -279,8 +273,7 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 3], 1);
 	}
 
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE]) {
@@ -292,8 +285,8 @@ void DifficultySelectScene::DrawDifficultySelectScene() {
 // 難易度選択画面の描画処理・ネット用
 ////////////////////////////////////////////////
 void DifficultySelectScene::DrawDifficultySelectScene_Net() {
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
 	DrawGraph(0, 0, i_BackImage, TRUE);		// 背景画像描画
 
@@ -301,17 +294,9 @@ void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 	DrawBox(0, 0, GameMain::SCREEN_WIDTH, GameMain::SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// DIFFICULTYSELECTの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "Mode Select");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "Mode Select");
-
-	// 難易度を選んでくださいの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "難易度を選んでください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "難易度を選んでください");
-
-	// ネット対戦のみ。
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "同じ難易度を選択した人同士で遊びます");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 135, 0xFFFFFF, fontData->f_FontData[1], "同じ難易度を選択した人同士で遊びます");
+	DrawRotaGraph(x, starty - 300, 1, 0, i_MenuImage[0], 1);	// DIFFICULTYSELECTの文字描画
+	DrawRotaGraph(x, starty - 200, 1, 0, i_MenuImage[1], 1);	// 難易度を選んでくださいの文字描画
+	DrawRotaGraph(x, starty - 135, 1, 0, i_MenuImage[2], 1);	// ネット対戦のみ。
 
 	// 項目を決定していたら、長い四角を表示する
 	if (dicideNumFlg[GameManager::RED]) {
@@ -324,8 +309,7 @@ void DifficultySelectScene::DrawDifficultySelectScene_Net() {
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 3], 1);
 	}
 }
 ////////////////////////////////////////////////
@@ -350,6 +334,11 @@ void DifficultySelectScene::SetDifficulty() {
 ////////////////////////////////////////////////
 void DifficultySelectScene::LoadImages() {
 	if (!(i_BackImage = LoadGraph("Image/SelectBackImage.png"))) return;
+	if (!(i_MenuImage[0] = LoadGraph("Image/ModeSelect.png"))) return;
+	if (!(i_MenuImage[1] = LoadGraph("Image/ModeSelect_jp.png"))) return;
+	if (!(i_MenuImage[2] = LoadGraph("Image/SameMode.png"))) return;
+	if (!(i_MenuImage[3] = LoadGraph("Image/Casual.png"))) return;
+	if (!(i_MenuImage[4] = LoadGraph("Image/Expert.png"))) return;
 }
 
 ////////////////////////////////////////////////
@@ -357,6 +346,11 @@ void DifficultySelectScene::LoadImages() {
 ////////////////////////////////////////////////
 void DifficultySelectScene::DeleteImages() {
 	i_BackImage = DeleteGraph(i_BackImage);
+	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
+	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
+	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
+	i_MenuImage[3] = DeleteGraph(i_MenuImage[3]);
+	i_MenuImage[4] = DeleteGraph(i_MenuImage[4]);
 }
 
 ////////////////////////////////////////////////

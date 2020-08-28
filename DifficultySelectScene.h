@@ -40,6 +40,7 @@ private:
 	bool returnFlg;		// タイトル画面へ戻りたいフラグ
 
 	int i_BackImage;	// 背景画像
+	int i_MenuImage[5];	// 項目名画像
 
 };
 
