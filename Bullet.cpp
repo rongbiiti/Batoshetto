@@ -293,7 +293,6 @@ bool Bullet::IsHitBlock(void) {
 		effect->InitRicochetCount(BulletRicochetCount - ricochetCount - 1, crossPosition.x, crossPosition.y, effAng);
 		bnum = crossPosition.num;
 		PlaySoundMem(s_Ricochet, DX_PLAYTYPE_BACK);
-		//hitFlg = true;	// 連続でブロックに当たらないようにフラグを立てる
 
 		lastHitPointX = x - cosf(angle * DX_PI_F / 180.0f) * movespeedX;	// 狙っている方向のX座標
 		lastHitPointY = y - sinf(angle * DX_PI_F / 180.0f) * movespeedY;	// 狙っている方向のY座標
@@ -338,7 +337,6 @@ bool Bullet::IsHitBlock(void) {
 		preX = x;
 		preY = y;
 		RemainingRicochetTimesCheck();
-		
 
 		return true;
 	}
@@ -390,13 +388,13 @@ void Bullet::DrawSHINOBIEXECUTION() {
 // 音データ読み込み
 ////////////////////////////////////////////////
 void Bullet::LoadSounds(void) {
-	if ((s_Fire = LoadSoundMem("sounds/Fire.mp3")) == -1) return;
-	if ((s_Ricochet = LoadSoundMem("sounds/Ricochet.mp3")) == -1) return;
-	if ((s_BlockBreak = LoadSoundMem("sounds/BlockBreak.mp3")) == -1) return;
-	if ((s_PlayerHit[0] = LoadSoundMem("sounds/PlayerHit.mp3")) == -1) return;
-	if ((s_PlayerHit[1] = LoadSoundMem("sounds/PlayerHit2.mp3")) == -1) return;
-	if ((s_Blood = LoadSoundMem("sounds/Blood_Sibuki.mp3")) == -1) return;
-	if ((s_MatchEnd = LoadSoundMem("sounds/MatchEnd.mp3")) == -1) return;
+	if ((s_Fire = LoadSoundMem("sounds/SE/Fire.mp3")) == -1) return;
+	if ((s_Ricochet = LoadSoundMem("sounds/SE/Ricochet.mp3")) == -1) return;
+	if ((s_BlockBreak = LoadSoundMem("sounds/SE/BlockBreak.mp3")) == -1) return;
+	if ((s_PlayerHit[0] = LoadSoundMem("sounds/SE/PlayerHit.mp3")) == -1) return;
+	if ((s_PlayerHit[1] = LoadSoundMem("sounds/SE/PlayerHit2.mp3")) == -1) return;
+	if ((s_Blood = LoadSoundMem("sounds/SE/Blood_Sibuki.mp3")) == -1) return;
+	if ((s_MatchEnd = LoadSoundMem("sounds/SE/MatchEnd.mp3")) == -1) return;
 }
 
 ////////////////////////////////////////////////

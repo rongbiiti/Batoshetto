@@ -242,12 +242,7 @@ void Result::SceneTransition() {
 		
 		break;
 	case 1:
-		if (gameManager->gameMain->GetNetBallteFlg()) {
-			Return_to_Title();
-		}
-		else {
-			Return_to_Title();
-		}
+		Return_to_Title();
 		
 		break;
 	}
@@ -460,8 +455,8 @@ void Result::DeleteImages() {
 // âπÉfÅ[É^ì«Ç›çûÇ›
 ////////////////////////////////////////////////
 void Result::LoadSounds() {
-	if ((s_WinSE = LoadSoundMem("sounds/Result_Win.mp3")) == -1) return;
-	if ((s_LoseSE = LoadSoundMem("sounds/Result_Zimetsu.mp3")) == -1) return;
+	if ((s_WinSE = LoadSoundMem("sounds/SE/Result_Win.mp3")) == -1) return;
+	if ((s_LoseSE = LoadSoundMem("sounds/SE/Result_Zimetsu.mp3")) == -1) return;
 }
 
 ////////////////////////////////////////////////

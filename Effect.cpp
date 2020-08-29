@@ -96,6 +96,26 @@ void Effect::LoadImages() {
 
 }
 
+// âÊëúè¡ãé
+void Effect::DeleteImages() {
+	i_ShotEffect[0] = DeleteGraph(i_ShotEffect[0]);
+	i_ShotEffect[1] = DeleteGraph(i_ShotEffect[1]);
+	i_ShotEffect[2] = DeleteGraph(i_ShotEffect[2]);
+	i_ShotEffect[3] = DeleteGraph(i_ShotEffect[3]);
+
+	i_RicochetEffect[0] = DeleteGraph(i_RicochetEffect[0]);
+	i_RicochetEffect[1] = DeleteGraph(i_RicochetEffect[1]);
+	i_RicochetEffect[2] = DeleteGraph(i_RicochetEffect[2]);
+	i_RicochetEffect[3] = DeleteGraph(i_RicochetEffect[3]);
+
+	i_HitEffect[0] = DeleteGraph(i_HitEffect[0]);
+	i_HitEffect[1] = DeleteGraph(i_HitEffect[1]);
+	i_HitEffect[2] = DeleteGraph(i_HitEffect[2]);
+	i_HitEffect[3] = DeleteGraph(i_HitEffect[3]);
+	i_HitEffect[4] = DeleteGraph(i_HitEffect[4]);
+	i_HitEffect[5] = DeleteGraph(i_HitEffect[5]);
+}
+
 Effect::~Effect() {
-	//DeleteImages();
+	DeleteImages();
 }

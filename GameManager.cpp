@@ -204,10 +204,10 @@ void GameManager::ToShotPhase(void) {
 // âπÉfÅ[É^ì«Ç›çûÇ›
 ////////////////////////////////////////////////
 void GameManager::LoadSounds() {
-	if ((s_TimeLimitSE = LoadSoundMem("sounds/limitgauge.mp3")) == -1) return;
-	if ((s_ShooterChangeSE = LoadSoundMem("sounds/ShooterChangeSE.mp3")) == -1) return;
-	if ((s_HiderChangeSE = LoadSoundMem("sounds/HiderChangeSE.mp3")) == -1) return;
-	if ((s_MatchStartSE = LoadSoundMem("sounds/MatchStart.mp3")) == -1) return;
+	if ((s_TimeLimitSE = LoadSoundMem("sounds/SE/limitgauge.mp3")) == -1) return;
+	if ((s_ShooterChangeSE = LoadSoundMem("sounds/SE/ShooterChangeSE.mp3")) == -1) return;
+	if ((s_HiderChangeSE = LoadSoundMem("sounds/SE/HiderChangeSE.mp3")) == -1) return;
+	if ((s_MatchStartSE = LoadSoundMem("sounds/SE/MatchStart.mp3")) == -1) return;
 }
 
 ////////////////////////////////////////////////

@@ -177,8 +177,8 @@ void TitleBullet::ChangeVolume(float persent) {
 // 弾の効果音読み込み
 ////////////////////////////////////////////////
 void TitleBullet::LoadSounds() {
-	if ((s_Fire = LoadSoundMem("sounds/Fire.mp3")) == -1) return;
-	if ((s_Ricochet = LoadSoundMem("sounds/Ricochet.mp3")) == -1) return;
+	if ((s_Fire = LoadSoundMem("sounds/SE/Fire.mp3")) == -1) return;
+	if ((s_Ricochet = LoadSoundMem("sounds/SE/Ricochet.mp3")) == -1) return;
 }
 
 // デストラクタ

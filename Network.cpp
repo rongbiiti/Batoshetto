@@ -579,7 +579,6 @@ void Network::DrawCommunicationMethodSelect() {
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30, 0xFFFFFF, fontData->f_FontData[1], "ホストになる");
 	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y, 0xFFFFFF, fontData->f_FontData[1], "ゲストになる");
 
-
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 	DrawRotaGraph(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 1, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 }
@@ -597,11 +596,13 @@ void Network::DrawIPAddressSelect() {
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "お使いになる");
 	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "IPアドレスを選択してください");
 	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xFFFFFF, fontData->f_FontData[1], "IPアドレスを選択してください");
+
 	// 各項目名描画
 	for (int i = 0; i < IPsNumber; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d.%d.%d.%d", All_IP[i].d1, All_IP[i].d2, All_IP[i].d3, All_IP[i].d4);
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%d.%d.%d.%d", All_IP[i].d1, All_IP[i].d2, All_IP[i].d3, All_IP[i].d4);
 	}
+
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 	DrawRotaGraph(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 1, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 }

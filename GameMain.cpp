@@ -149,8 +149,6 @@ void GameMain::GameLoop(void) {
 		Update();	// オブジェクトの処理を進めて値を更新する
 		Output();	// オブジェクトの描画系関数を呼び出す
 
-		//network->DrawNetWorkData();
-
 		SetDrawScreen(DX_SCREEN_BACK);
 		// 画面を描画用の大きさに引き伸ばして描画する
 		DrawExtendGraph(0, 0, DRAW_SCREEN_WIDTH, DRAW_SCREEN_HEIGHT, offscreen_handle, FALSE);
@@ -362,7 +360,6 @@ void GameMain::Output(void) {
 		}
 		
 		// 隠れるフェーズ時の文字描画
-		//DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s動け！", PlayerName[gameManager->GetNowHider()]);
 		ui->DrawTransitionAnimation();
 
 		
@@ -386,7 +383,6 @@ void GameMain::Output(void) {
 			block[i]->DrawBlocks();
 		}
 		// 撃つ側フェーズの文字描画、撃つ側の狙っている方向描画
-		//DrawFormatStringToHandle(500, 120, 0xFFFFFF, fontData->f_FontData[1], "%s撃て！", PlayerName[gameManager->GetNowShooter()]);
 		ui->DrawTransitionAnimation();
 
 		if (ui->GetTransitionFlg()) return;
@@ -446,7 +442,6 @@ void GameMain::Output(void) {
 		pauseScreen->DrawPauseScreen();
 	}
 
-	//DrawDebugInfo();	// デバッグ情報描画
 }
 
 ////////////////////////////////////////////////
@@ -534,11 +529,11 @@ void GameMain::LoadCursorImages() {
 // ゲーム全体でよく使う音データ読み込み
 ////////////////////////////////////////////////
 void GameMain::LoadSounds() {
-	if ((m_TitleBGM = LoadSoundMem("sounds/BGM/魔王魂/game_maoudamashii_7_event46.mp3")) == -1) return;
-	if ((m_BattleBGM = LoadSoundMem("sounds/BGM/魔王魂/game_maoudamashii_1_battle27.mp3")) == -1) return;
-	if ((s_DicideSE = LoadSoundMem("sounds/Dicide.mp3")) == -1) return;
-	if ((s_CanselSE = LoadSoundMem("sounds/Cansel.mp3")) == -1) return;
-	if ((s_CursorSE = LoadSoundMem("sounds/Cursor.mp3")) == -1) return;
+	if ((m_TitleBGM = LoadSoundMem("sounds/BGM/Title.mp3")) == -1) return;
+	if ((m_BattleBGM = LoadSoundMem("sounds/BGM/Battle.mp3")) == -1) return;
+	if ((s_DicideSE = LoadSoundMem("sounds/SE/Dicide.mp3")) == -1) return;
+	if ((s_CanselSE = LoadSoundMem("sounds/SE/Cansel.mp3")) == -1) return;
+	if ((s_CursorSE = LoadSoundMem("sounds/SE/Cursor.mp3")) == -1) return;
 }
 
 ////////////////////////////////////////////////

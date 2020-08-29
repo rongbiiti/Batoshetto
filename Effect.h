@@ -18,7 +18,7 @@ public:
 	void DrawHitEffect();	//ヒット時エフェクトの描画
 	bool MuzzleFlashEffectFlg = FALSE;	// マズルフラッシュflg、デフォルトはFALSE
 	bool HitEffectFlg = FALSE;		// ヒット時エフェクトflg
-	
+	void DeleteImages();	// 画像消去
 
 
 private:
