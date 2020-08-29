@@ -54,6 +54,7 @@ private:
 	void DeleteSounds();	// 音データ消去
 
 	int i_ResultImage;	// 背景画像
+	int i_MenuImage[4];	// 項目名画像
 
 	bool soundFlg;		// 勝敗SEを鳴らしたかのフラグ
 	int s_WinSE;		// 普通に勝ったときの音

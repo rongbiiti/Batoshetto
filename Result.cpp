@@ -252,8 +252,8 @@ void Result::SceneTransition() {
 // 描画用
 ////////////////////////////////////////////////
 void Result::DrawResult() {
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
 	// 項目決定してたら、ジョジョに透明度を変えていく。タイトルに戻るときのみ。
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE] && selectNum[GameManager::RED] == 1) {
@@ -262,20 +262,14 @@ void Result::DrawResult() {
 
 	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
-	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "GAME SET !!");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "GAME SET !!");
-
 	// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
 	if (hitPlayerNumber == gameManager->GetNowShooter()) {
 		// 同じだった場合、自滅だったことを表示する。
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
+		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter() + 2], 1);	// 自滅　の画像描画
 	}
 	else {
 		// 違った場合、撃つ側の勝利と表示する
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
+		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter()], 1);	// 勝ち　の画像描画
 	}
 
 	for (int i = 0; i < 2; i++) {
@@ -296,12 +290,6 @@ void Result::DrawResult() {
 
 	}
 
-	// 各項目名描画
-	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
-	}
-
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 	}
@@ -316,8 +304,8 @@ void Result::DrawResult_Net() {
 		return;
 	}
 
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
+	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
 	// 項目決定してたら、ジョジョに透明度を変えていく。タイトルに戻るときのみ。
 	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
@@ -326,20 +314,14 @@ void Result::DrawResult_Net() {
 
 	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
-	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "GAME SET !!");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "GAME SET !!");
-
 	// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
 	if (hitPlayerNumber == gameManager->GetNowShooter()) {
 		// 同じだった場合、自滅だったことを表示する。
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの自滅", PlayerName[gameManager->GetNowShooter()]);
+		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter() + 2], 1);	// 自滅　の画像描画
 	}
 	else {
 		// 違った場合、撃つ側の勝利と表示する
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
-		DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "%sの勝ち！", PlayerName[gameManager->GetNowShooter()]);
+		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter()], 1);	// 勝ち　の画像描画
 	}
 
 	// 項目を決定していたら、長い四角を表示する
@@ -352,10 +334,10 @@ void Result::DrawResult_Net() {
 	}
 
 	// 各項目名描画
-	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+	/*for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
 		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
 		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
-	}
+	}*/
 
 	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
@@ -442,6 +424,10 @@ void Result::Return_to_Title() {
 ////////////////////////////////////////////////
 void Result::LoadImages() {
 	if (!(i_ResultImage = LoadGraph("Image/Result.png"))) return;
+	if (!(i_MenuImage[0] = LoadGraph("Image/RedWin.png"))) return;
+	if (!(i_MenuImage[1] = LoadGraph("Image/BlueWin.png"))) return;
+	if (!(i_MenuImage[2] = LoadGraph("Image/RedWarota.png"))) return;
+	if (!(i_MenuImage[3] = LoadGraph("Image/BlueWarota.png"))) return;
 }
 
 ////////////////////////////////////////////////
@@ -449,6 +435,10 @@ void Result::LoadImages() {
 ////////////////////////////////////////////////
 void Result::DeleteImages() {
 	i_ResultImage = DeleteGraph(i_ResultImage);
+	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
+	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
+	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
+	i_MenuImage[3] = DeleteGraph(i_MenuImage[3]);
 }
 
 ////////////////////////////////////////////////

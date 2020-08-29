@@ -565,19 +565,16 @@ void Network::BufferClear() {
 // ホストになるかゲストになるかを選択させる画面の描画
 ////////////////////////////////////////////////
 void Network::DrawCommunicationMethodSelect() {
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
+	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
+	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
 
 	DrawBackGroundImage();	// 背景画像描画
 
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストになるかゲストになるか");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ホストになるかゲストになるか");
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "選択してください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xFFFFFF, fontData->f_FontData[1], "選択してください");
+	DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[2], 1);	// ホストになるかゲストになるか
+	DrawRotaGraph(x, starty - 110, 1, 0, i_MenuImage[3], 1);	// 選択してください
 
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストになる");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30, 0xFFFFFF, fontData->f_FontData[1], "ホストになる");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y, 0xFFFFFF, fontData->f_FontData[1], "ゲストになる");
+	DrawRotaGraph(x, starty, 1, 0, i_MenuImage[4], 1);	// ホストになる
+	DrawRotaGraph(x, starty + y, 1, 0, i_MenuImage[5], 1);	// ゲストになる
 
 	// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 	DrawRotaGraph(GameMain::SCREEN_WIDTH / 4, starty + y * selectNum, 1, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
@@ -592,10 +589,8 @@ void Network::DrawIPAddressSelect() {
 
 	DrawBackGroundImage();	// 背景画像描画
 
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "お使いになる");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "お使いになる");
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "IPアドレスを選択してください");
-	DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xFFFFFF, fontData->f_FontData[1], "IPアドレスを選択してください");
+	DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[0], 1);	// お使いになる
+	DrawRotaGraph(x, starty - 110, 1, 0, i_MenuImage[1], 1);	// IPアドレスを選択してください
 
 	// 各項目名描画
 	for (int i = 0; i < IPsNumber; i++) {
@@ -620,29 +615,32 @@ void Network::DrawConnectionWait() {
 	// ホスト////////////////////////////////////////////
 	if (ConnectType == HOST) {
 		if (HOST_phaseNum == HOST_GEST_WAITING) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストを待っています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ゲストを待っています...");
+
+			DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[6], 1);	// ゲストを待っています...
 
 			sec = HOST_gestSerchWaitTime / 60;
 			min = sec / 60;
 			if (60 <= sec) sec -= 60;
 
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xFFFFFF, fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d:%02d", min, sec);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 + fontwidth / 2, starty, 0xFFFFFF, fontData->f_FontData[1], "%d:%02d", min, sec);
+
+			DrawRotaGraph(x - fontwidth, starty + 30, 1, 0, i_MenuImage[12], 1);	// 経過時間
 
 		}
 		else if (HOST_phaseNum == HOST_GEST_REPTY_WAITING) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ゲストが見つかりました。");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ゲストが見つかりました。");
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "返答を待っています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "返答を待っています...");
+
+			DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[7], 1);	// ゲストが見つかりました。
+			DrawRotaGraph(x, starty - 110, 1, 0, i_MenuImage[8], 1);	// 返答を待っています...
 
 			sec = HOST_gestReplyWaitTime / 60;
 			min = sec / 60;
 			if (60 <= sec) sec -= 60;
 
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d:%02d", min, sec);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 + fontwidth / 2, starty, 0xeeff14, fontData->f_FontData[1], "%d:%02d", min, sec);
+
+			DrawRotaGraph(x - fontwidth, starty + 30, 1, 0, i_MenuImage[12], 1);	// 経過時間
 		}
 
 	}
@@ -651,21 +649,22 @@ void Network::DrawConnectionWait() {
 	// ゲスト/////////////////////////////////////////////
 	else if (ConnectType == GEST) {
 		if (GEST_phaseNum == GEST_HOST_SEARCHING) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストを探しています...");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xFFFFFF, fontData->f_FontData[1], "ホストを探しています...");
+
+			DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[9], 1);	// ホストを探しています...
 
 			sec = GEST_hostSerchWaitTime / 60;
 			min = sec / 60;
 			if (60 <= sec) sec -= 60;
 
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty, 0xFFFFFF, fontData->f_FontData[1], "経過時間：%d:%02d", min, sec);
+			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%d:%02d", min, sec);
+			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 + fontwidth / 2, starty, 0xFFFFFF, fontData->f_FontData[1], "%d:%02d", min, sec);
+
+			DrawRotaGraph(x - fontwidth, starty + 30, 1, 0, i_MenuImage[12], 1);	// 経過時間
+
 		}
 		else if (GEST_phaseNum == GEST_MATCH_START) {
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "ホストが見つかりました。");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 200, 0xeeff14, fontData->f_FontData[1], "ホストが見つかりました。");
-			fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "対戦を開始します！");
-			DrawFormatStringToHandle(GameMain::SCREEN_WIDTH / 2 - fontwidth / 2, starty - 140, 0xeeff14, fontData->f_FontData[1], "対戦を開始します！");
+			DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[10], 1);	// ホストが見つかりました。
+			DrawRotaGraph(x, starty - 110, 1, 0, i_MenuImage[11], 1);	// 対戦を開始します！
 		}
 
 	}
@@ -726,6 +725,19 @@ void Network::DrawBackGroundImage() {
 ////////////////////////////////////////////////
 void Network::LoadImages() {
 	if (!(i_BackImage = LoadGraph("Image/SelectBackImage.png"))) return;
+	if (!(i_MenuImage[0] = LoadGraph("Image/use.png"))) return;
+	if (!(i_MenuImage[1] = LoadGraph("Image/IPuse.png"))) return;
+	if (!(i_MenuImage[2] = LoadGraph("Image/HostorGuest.png"))) return;
+	if (!(i_MenuImage[3] = LoadGraph("Image/Choose.png"))) return;
+	if (!(i_MenuImage[4] = LoadGraph("Image/Host.png"))) return;
+	if (!(i_MenuImage[5] = LoadGraph("Image/Guest.png"))) return;
+	if (!(i_MenuImage[6] = LoadGraph("Image/GuestWait.png"))) return;
+	if (!(i_MenuImage[7] = LoadGraph("Image/GuestLook.png"))) return;
+	if (!(i_MenuImage[8] = LoadGraph("Image/ReWait,.png"))) return;
+	if (!(i_MenuImage[9] = LoadGraph("Image/HostLook.png"))) return;
+	if (!(i_MenuImage[10] = LoadGraph("Image/HostWait.png"))) return;
+	if (!(i_MenuImage[11] = LoadGraph("Image/DuelStart,.png"))) return;
+	if (!(i_MenuImage[12] = LoadGraph("Image/ProTime.png"))) return;
 }
 
 ////////////////////////////////////////////////

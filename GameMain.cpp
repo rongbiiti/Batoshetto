@@ -56,11 +56,13 @@ int GameMain::FirstInit(void) {
 	ChangeWindowMode(TRUE);				// ウィンドウモードで起動
 	SetDoubleStartValidFlag(TRUE);		// ウィンドウを2個まで多重起動を許可
 	if (DxLib_Init() == -1) return -1;	// DxLibの初期化処理が上手くいかなかったら強制終了
-	SetAlwaysRunFlag(TRUE);
+	SetAlwaysRunFlag(TRUE);				// バックグラウンドでも動作する
+	SetMouseDispFlag(FALSE);			// マウスカーソル非表示
 	offscreen_handle = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);	// ウィンドウの描画時の大きさを設定
 	SetDrawScreen(offscreen_handle);
 
-	LoadCursorImages();
+	LoadCursorImages();		// カーソルの画像読み込み
+
 	// 音の音量変更
 	LoadSounds();
 	CreateOptionObj(0, 0);

@@ -171,6 +171,7 @@ private:
 	void DeleteImages();	// ‰æ‘œƒf[ƒ^ƒƒ‚ƒŠ‚©‚çÁ‹
 
 	int i_BackImage;	// ”wŒi‰æ‘œ
+	int i_MenuImage[13];	// €–Ú–¼‰æ‘œ
 };
 
 #endif // !_NETWORK_H_
