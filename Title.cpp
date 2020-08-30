@@ -242,11 +242,10 @@ Title::~Title() {
 	i_helpImage = DeleteGraph(i_helpImage);
 	i_LogoImage = DeleteGraph(i_LogoImage);
 	i_BGImage = DeleteGraph(i_BGImage);
-	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
-	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
-	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
-	i_MenuImage[3] = DeleteGraph(i_MenuImage[3]);
-	i_MenuImage[4] = DeleteGraph(i_MenuImage[4]);
+	
+	for (int i = 0; i < 5; i++) {
+		i_MenuImage[i] = DeleteGraph(i_MenuImage[i]);
+	}
 
 	gameMain->title = NULL;
 }

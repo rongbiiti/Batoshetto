@@ -738,6 +738,7 @@ void Network::LoadImages() {
 	if (!(i_MenuImage[10] = LoadGraph("Image/HostWait.png"))) return;
 	if (!(i_MenuImage[11] = LoadGraph("Image/DuelStart,.png"))) return;
 	if (!(i_MenuImage[12] = LoadGraph("Image/ProTime.png"))) return;
+	
 }
 
 ////////////////////////////////////////////////
@@ -745,6 +746,10 @@ void Network::LoadImages() {
 ////////////////////////////////////////////////
 void Network::DeleteImages() {
 	i_BackImage = DeleteGraph(i_BackImage);
+
+	for (int i = 0; i < 13; i++) {
+		i_MenuImage[i] = DeleteGraph(i_MenuImage[i]);
+	}
 }
 
 ////////////////////////////////////////////////

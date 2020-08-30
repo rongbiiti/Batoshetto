@@ -290,6 +290,11 @@ void Result::DrawResult() {
 
 	}
 
+	// 各項目名描画
+	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 4], 1);	// 項目描画
+	}
+
 	if (dicideNumFlg[GameManager::RED] && dicideNumFlg[GameManager::BLUE] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 	}
@@ -331,13 +336,12 @@ void Result::DrawResult_Net() {
 	else {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 1.0f, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
-	}
+	}	
 
 	// 各項目名描画
-	/*for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
-	}*/
+	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 4], 1);	// 項目描画
+	}
 
 	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
@@ -379,8 +383,7 @@ void Result::DrawTimeOut() {
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "%s", MenuName[i].c_str());
-		DrawFormatStringToHandle(x - fontwidth / 2, starty - 30 + y * i, 0xFFFFFF, fontData->f_FontData[1], "%s", MenuName[i].c_str());
+		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 4], 1);	// 項目描画
 	}
 
 	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
@@ -428,6 +431,8 @@ void Result::LoadImages() {
 	if (!(i_MenuImage[1] = LoadGraph("Image/BlueWin.png"))) return;
 	if (!(i_MenuImage[2] = LoadGraph("Image/RedWarota.png"))) return;
 	if (!(i_MenuImage[3] = LoadGraph("Image/BlueWarota.png"))) return;
+	if (!(i_MenuImage[4] = LoadGraph("Image/ReMatch.png"))) return;
+	if (!(i_MenuImage[5] = LoadGraph("Image/ReTitle.png"))) return;
 }
 
 ////////////////////////////////////////////////
@@ -435,10 +440,10 @@ void Result::LoadImages() {
 ////////////////////////////////////////////////
 void Result::DeleteImages() {
 	i_ResultImage = DeleteGraph(i_ResultImage);
-	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
-	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
-	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
-	i_MenuImage[3] = DeleteGraph(i_MenuImage[3]);
+
+	for (int i = 0; i < 6; i++) {
+		i_MenuImage[i] = DeleteGraph(i_MenuImage[i]);
+	}
 }
 
 ////////////////////////////////////////////////

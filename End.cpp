@@ -140,9 +140,10 @@ void End::LoadImages() {
 ////////////////////////////////////////////////
 void End::DeleteImages() {
 	i_EndImage = DeleteGraph(i_EndImage);
-	i_MenuImage[0] = DeleteGraph(i_MenuImage[0]);
-	i_MenuImage[1] = DeleteGraph(i_MenuImage[1]);
-	i_MenuImage[2] = DeleteGraph(i_MenuImage[2]);
+
+	for (int i = 0; i < 3; i++) {
+		i_MenuImage[i] = DeleteGraph(i_MenuImage[i]);
+	}
 }
 
 ////////////////////////////////////////////////
