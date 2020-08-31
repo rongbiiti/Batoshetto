@@ -304,11 +304,7 @@ void Result::DrawResult() {
 // 描画用：ネット対戦用
 ////////////////////////////////////////////////
 void Result::DrawResult_Net() {
-	if (timeOutFlg) {
-		DrawTimeOut();
-		return;
-	}
-
+	
 	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
 
@@ -319,14 +315,22 @@ void Result::DrawResult_Net() {
 
 	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
 
-	// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
-	if (hitPlayerNumber == gameManager->GetNowShooter()) {
-		// 同じだった場合、自滅だったことを表示する。
-		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter() + 2], 1);	// 自滅　の画像描画
+	// タイムアウトしていたら、タイムアウトしたことを描画
+	if (timeOutFlg) {
+		// 相手からの応答が10秒間ありませんでしたの文字描画
+		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[6], 1);
 	}
+	// 普通に対戦が終了したら、勝敗結果を描画
 	else {
-		// 違った場合、撃つ側の勝利と表示する
-		DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter()], 1);	// 勝ち　の画像描画
+		// 引数で受け取ったヒットしたプレイヤーの番号が、GameManagerの現在の撃つ側と同じか否かを判定する。
+		if (hitPlayerNumber == gameManager->GetNowShooter()) {
+			// 同じだった場合、自滅だったことを表示する。
+			DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter() + 2], 1);	// 自滅　の画像描画
+		}
+		else {
+			// 違った場合、撃つ側の勝利と表示する
+			DrawRotaGraph(x, starty - 170, 1, 0, i_MenuImage[gameManager->GetNowShooter()], 1);	// 勝ち　の画像描画
+		}
 	}
 
 	// 項目を決定していたら、長い四角を表示する
@@ -337,49 +341,6 @@ void Result::DrawResult_Net() {
 		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
 		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 1.0f, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
 	}	
-
-	// 各項目名描画
-	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
-		DrawRotaGraph(x, starty + y * i, 1, 0, i_MenuImage[i + 4], 1);	// 項目描画
-	}
-
-	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-	}
-}
-
-////////////////////////////////////////////////
-// 描画用
-////////////////////////////////////////////////
-void Result::DrawTimeOut() {
-
-	// 文字の幅、			画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
-	int fontwidth = 0, x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 400;
-
-	// 項目決定してたら、ジョジョに透明度を変えていく。タイトルに戻るときのみ。
-	if (dicideNumFlg[GameManager::RED] && selectNum[GameManager::RED] == 1) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 / 60 * (60 - waitTime));
-	}
-
-	DrawGraph(0, 0, i_ResultImage, TRUE);	// 背景画像描画
-
-	// Pauseの文字描画
-	fontwidth = GetDrawFormatStringWidthToHandle(fontData->f_FontData[1], "相手からの応答が10秒間ありませんでした");
-	DrawFormatStringToHandle(x - fontwidth / 2, starty - 300, 0xFFFFFF, fontData->f_FontData[1], "相手からの応答が10秒間ありませんでした");
-
-	// 項目を決定していたら、長い四角を表示する
-	if (dicideNumFlg[0]) {
-		if (0 == GameManager::RED) {
-			DrawBox(0, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
-		}
-		else {
-			DrawBox(GameMain::SCREEN_WIDTH, starty + y * selectNum[0] - 15, GameMain::SCREEN_WIDTH / 2, starty + y * selectNum[0] + 15, COLOR_VALUE_PLAYER[0], 1);
-		}
-	}
-	else {
-		// プレイヤーの選択中のカーソル位置にプレイヤー色の丸を描画
-		DrawRotaGraph(GameMain::SCREEN_WIDTH / 4 + (GameMain::SCREEN_WIDTH / 2 * 0), starty + y * selectNum[0], 1.0f, 0, gameManager->gameMain->GetCursorImage(0), TRUE);
-	}
 
 	// 各項目名描画
 	for (int i = 0; i < SELECT_NUM_MAX + 1; i++) {
@@ -433,6 +394,7 @@ void Result::LoadImages() {
 	if (!(i_MenuImage[3] = LoadGraph("Image/BlueWarota.png"))) return;
 	if (!(i_MenuImage[4] = LoadGraph("Image/ReMatch.png"))) return;
 	if (!(i_MenuImage[5] = LoadGraph("Image/ReTitle.png"))) return;
+	if (!(i_MenuImage[6] = LoadGraph("Image/Mokou.png"))) return;
 }
 
 ////////////////////////////////////////////////
@@ -441,7 +403,7 @@ void Result::LoadImages() {
 void Result::DeleteImages() {
 	i_ResultImage = DeleteGraph(i_ResultImage);
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		i_MenuImage[i] = DeleteGraph(i_MenuImage[i]);
 	}
 }

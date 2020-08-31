@@ -19,7 +19,6 @@ public:
 	void ResultControll_Net(void);	// ネット対戦用のリザルト処理
 	void DrawResult(void);		// 描画
 	void DrawResult_Net(void);	// 描画・ネット対戦用
-	void DrawTimeOut(void);		// タイムアウトしたことを描画
 
 	void ChangeVolume(float SEVolume);	// 音の音量変更
 
@@ -54,7 +53,7 @@ private:
 	void DeleteSounds();	// 音データ消去
 
 	int i_ResultImage;	// 背景画像
-	int i_MenuImage[6];	// 項目名画像
+	int i_MenuImage[7];	// 項目名画像
 
 	bool soundFlg;		// 勝敗SEを鳴らしたかのフラグ
 	int s_WinSE;		// 普通に勝ったときの音

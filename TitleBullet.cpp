@@ -8,7 +8,7 @@ TitleBullet::TitleBullet(FontData* font) {
 	fontData = font;
 
 	isAlive = false;			// ’e‚ª¶‚«‚Ä‚¢‚é‚©
-	x = 0, y = 0;				// À•W x,y
+	x = -10, y = -10;				// À•W x,y
 	preX = 0, preY = 0;
 	moveX = 0, moveY = 0;		// ˆÚ“® x,y
 	ricochetCount = 0;		// c‚è’µ’e‰ñ”

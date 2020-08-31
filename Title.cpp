@@ -197,9 +197,6 @@ void Title::DrawTitle() {
 	DrawGraph(0, 0, i_BGImage, TRUE);	// 背景画像
 
 	titleBullet->DrawTitleBullet();
-
-	// ビルドした日
-	DrawFormatStringToHandle(0, 0, 0xFFFFFF, fontData->f_FontData[0], "ビルドした日：2020/08/28");
 	
 	// 画面の横中心、　　　　　　　Y軸の増加量、　初期Yの位置
 	int x = GameMain::SCREEN_WIDTH / 2, y = 70, starty = 300;
